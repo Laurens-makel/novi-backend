@@ -5,5 +5,42 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
 		https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.8.xsd">
 
+    <changeSet  id="Fill USERS table"  author="Laurens Mäkel">
+        <insert tableName="USERS">
+            <column name="USERNAME">ADMIN</column>
+            <column name="PASSWORD">$2a$10$NxRWDQv3S9gP712lmscWzeewhROdokezkgjfgf8bt59XRRyuFrZsq</column>
+            <column name="FIRSTNAME">John</column>
+            <column name="LASTNAME">Doe</column>
+        </insert>
+
+        <insert tableName="USERS">
+            <column name="USERNAME">USER</column>
+            <column name="PASSWORD">$2a$10$NxRWDQv3S9gP712lmscWzeewhROdokezkgjfgf8bt59XRRyuFrZsq</column>
+            <column name="FIRSTNAME">Peter</column>
+            <column name="LASTNAME">Griffin</column>
+        </insert>
+    </changeSet>
+
+    <changeSet  id="Fill ROLES table"  author="Laurens Mäkel">
+        <insert tableName="ROLES">
+            <column name="ROLE_NAME">ADMIN</column>
+        </insert>
+
+        <insert tableName="ROLES">
+            <column name="ROLE_NAME">USER</column>
+        </insert>
+    </changeSet>
+
+    <changeSet  id="Fill USER_ROLES table"  author="Laurens Mäkel">
+        <insert tableName="USER_ROLES">
+            <column name="UID">1</column>
+            <column name="ROLE_ID">1</column>
+        </insert>
+
+        <insert tableName="USER_ROLES">
+            <column name="UID">2</column>
+            <column name="ROLE_ID">2</column>
+        </insert>
+    </changeSet>
 
 </databaseChangeLog>
