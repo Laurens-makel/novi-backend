@@ -9,8 +9,6 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import student.laurens.novibackend.entities.Blogpost;
-import student.laurens.novibackend.entities.Role;
-import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.BlogpostRepository;
 
 import java.util.Arrays;

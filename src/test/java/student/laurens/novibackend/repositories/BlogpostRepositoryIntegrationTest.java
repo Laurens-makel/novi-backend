@@ -4,8 +4,6 @@ import org.junit.After;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import student.laurens.novibackend.entities.Blogpost;
-import student.laurens.novibackend.entities.Role;
-import student.laurens.novibackend.entities.User;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
