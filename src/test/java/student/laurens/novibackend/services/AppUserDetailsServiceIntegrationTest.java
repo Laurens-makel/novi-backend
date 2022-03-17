@@ -2,7 +2,6 @@ package student.laurens.novibackend.services;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +9,6 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import student.laurens.novibackend.users.AppUserDetails;
 import student.laurens.novibackend.users.AppUserDetailsService;
 import student.laurens.novibackend.users.User;
@@ -22,9 +19,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringRunner.class)
-@TestPropertySource(locations = "classpath:application-integration-test.properties")
-public class AppUserDetailsServiceIntegrationTest {
+public class AppUserDetailsServiceIntegrationTest extends ServiceIntegrationTestBase {
 
     @TestConfiguration
     static class EmployeeServiceImplTestContextConfiguration {
