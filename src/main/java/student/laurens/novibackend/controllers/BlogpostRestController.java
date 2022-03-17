@@ -4,35 +4,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import student.laurens.novibackend.entities.AppUserDetails;
 import student.laurens.novibackend.entities.Blogpost;
 import student.laurens.novibackend.services.BlogpostService;
-
-import java.security.Principal;
 
 /**
  * Rest Controller that exposes CRUD methods for blogposts.
  *
- * Admin
+ * Admins
  * <ul>
  *     <li>GET /blogposts</li>
- *     <li>POST /blogposts</li>
- *     <li>PUT /blogposts/blogpostId</li>
  * </ul>
  *
- * Content Creator
- * <ul>
- *     <li>GET /blogposts</li>
- *     <li>POST /blogposts</li>
- *     <li>PUT /blogposts/blogpostId</li>
- * </ul>
+ * Users
  *
- * Moderator
- * <ul>
- *     <li>GET /blogposts<</li>
- * </ul>
- *
- * User
  * <ul>
  *     <li>GET /blogposts<</li>
  * </ul>
@@ -52,10 +36,7 @@ public class BlogpostRestController {
     }
 
     @PostMapping("/blogposts")
-    public ResponseEntity<Blogpost> addBlogpost(@RequestBody Blogpost blogpost, Principal principal) {
-        AppUserDetails userDetails = (AppUserDetails) appUserDetailsService.loadUserByUsername(principal.getName());
-        blogpost.setAuthor(userDetails.getUser());
-
+    public ResponseEntity<Blogpost> addBlogpost(@RequestBody Blogpost blogpost) {
         service.addBlogpost(blogpost);
 
         return new ResponseEntity<>(blogpost, HttpStatus.CREATED);
