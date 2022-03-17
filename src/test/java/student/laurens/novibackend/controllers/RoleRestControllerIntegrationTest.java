@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.ResultActions;
 import student.laurens.novibackend.entities.Role;
 import student.laurens.novibackend.repositories.RoleRepository;
 
@@ -27,8 +28,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     @Test
     public void getRoles_isUnauthorized() throws Exception {
         // when
-        mvc.perform(get("/roles")
-            .contentType(MediaType.APPLICATION_JSON))
+        getRoles()
 
         // then
         .andExpect(status().isUnauthorized());
@@ -38,8 +38,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     @WithMockUser(value = USER, roles = {USER_ROLE} )
     public void getRoles_AsUser_Ok() throws Exception {
         // when
-        mvc.perform(get("/roles")
-            .contentType(MediaType.APPLICATION_JSON))
+        getRoles()
 
         // then
         .andExpect(status().isOk());
@@ -49,20 +48,41 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void getRoles_AsAdmin_Ok() throws Exception {
         // when
-        mvc.perform(get("/roles")
-                .contentType(MediaType.APPLICATION_JSON))
+        getRoles()
 
         // then
         .andExpect(status().isOk());
     }
 
     @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    public void getRoles_AsContentCreator_Ok() throws Exception {
+        // when
+        getRoles()
+
+        // then
+        .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    public void getRoles_AsModerator_Ok() throws Exception {
+        // when
+        getRoles()
+
+        // then
+        .andExpect(status().isOk());
+    }
+
+    private ResultActions getRoles() throws Exception {
+        return mvc.perform(get("/roles")
+                .contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
     public void postRoles_isUnauthorized() throws Exception {
         // when
-        mvc.perform(post("/roles")
-            .content(asJsonString(createRole("TEST")))
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+        postRole()
 
         // then
         .andExpect(status().isUnauthorized());
@@ -72,10 +92,27 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     @WithMockUser(value = USER, roles = {USER_ROLE} )
     public void postRoles_AsUser_Forbidden() throws Exception {
         // when
-        mvc.perform(post("/roles")
-            .content(asJsonString(createRole("TEST")))
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+        postRole()
+
+        // then
+        .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    public void postRoles_AsContentCreator_Forbidden() throws Exception {
+        // when
+        postRole()
+
+        // then
+        .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    public void postRoles_AsModerator_Forbidden() throws Exception {
+        // when
+        postRole()
 
         // then
         .andExpect(status().isForbidden());
@@ -85,13 +122,17 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void postRoles_AsAdmin_Ok() throws Exception {
         // when
-        mvc.perform(post("/roles")
-            .content(asJsonString(createRole("TEST")))
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+        postRole()
 
         // then
         .andExpect(status().isCreated());
+    }
+
+    private ResultActions postRole() throws Exception {
+        return mvc.perform(post("/roles")
+                .content(asJsonString(createRole("TEST")))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
     }
 
     @Test
@@ -101,9 +142,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
         Role role = saveRole(createRole("TEST_ROLE"));
 
         // when
-        mvc.perform(delete("/roles/" + repository.getRoleByName(role.getName()).getId())
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+        deleteRole(role)
 
         // then
         .andExpect(status().isAccepted());
@@ -116,26 +155,53 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
         Role role = saveRole(createRole("TEST_ROLE"));
 
         // when
-        mvc.perform(delete("/roles/" + repository.getRoleByName(role.getName()).getId())
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+        deleteRole(role)
 
         // then
         .andExpect(status().isForbidden());
     }
 
     @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    public void deleteRoles_AsContentCreator_Forbidden() throws Exception {
+        // given
+        Role role = saveRole(createRole("TEST_ROLE"));
+
+        // when
+        deleteRole(role)
+
+        // then
+        .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    public void deleteRoles_AsModerator_Forbidden() throws Exception {
+        // given
+        Role role = saveRole(createRole("TEST_ROLE"));
+
+        // when
+        deleteRole(role)
+
+        // then
+        .andExpect(status().isForbidden());
+    }
+    @Test
     public void deleteRoles_isUnauthorized() throws Exception {
         // given
         Role role = saveRole(createRole("TEST_ROLE"));
 
         // when
-        mvc.perform(delete("/roles/" + repository.getRoleByName(role.getName()).getId())
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+        deleteRole(role)
 
         // then
         .andExpect(status().isUnauthorized());
+    }
+
+    private ResultActions deleteRole(Role role) throws Exception {
+        return mvc.perform(delete("/roles/" + repository.getRoleByName(role.getName()).getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
     }
 
     @Test
@@ -147,10 +213,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
         role.setName("UPDATED_ROLE");
 
         // when
-        mvc.perform(put("/roles/" + role.getId())
-            .content(asJsonString(role))
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+        updateRole(role)
 
         // then
         .andExpect(status().isAccepted());
@@ -165,14 +228,42 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
         role.setName("UPDATED_ROLE");
 
         // when
-        mvc.perform(put("/roles/" + role.getId())
-            .content(asJsonString(role))
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+        updateRole(role)
 
         // then
         .andExpect(status().isForbidden());
     }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    public void updateRoles_AsContentCreator_Forbidden() throws Exception {
+        // given
+        Role role = saveRole(createRole("TEST_ROLE"));
+
+        role.setName("UPDATED_ROLE");
+
+        // when
+        updateRole(role)
+
+        // then
+        .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    public void updateRoles_AsModerator_Forbidden() throws Exception {
+        // given
+        Role role = saveRole(createRole("TEST_ROLE"));
+
+        role.setName("UPDATED_ROLE");
+
+        // when
+        updateRole(role)
+
+        // then
+        .andExpect(status().isForbidden());
+    }
+
 
     @Test
     public void updateRoles_isUnauthorized() throws Exception {
@@ -182,13 +273,17 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
         role.setName("UPDATED_ROLE");
 
         // when
-        mvc.perform(put("/roles/" + role.getId())
-            .content(asJsonString(role))
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+        updateRole(role)
 
         // then
         .andExpect(status().isUnauthorized());
+    }
+
+    private ResultActions updateRole(Role role) throws Exception {
+        return mvc.perform(put("/roles/" + role.getId())
+                .content(asJsonString(role))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
     }
 
     private Role createRole(String rolename){

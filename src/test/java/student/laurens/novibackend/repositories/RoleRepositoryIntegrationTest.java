@@ -34,6 +34,24 @@ public class RoleRepositoryIntegrationTest extends RepositoryIntegrationTestBase
     }
 
     @Test
+    public void whenFindByName_ContentCreator_thenReturnRole() {
+        // when
+        Role found = repository.getRoleByName("CONTENT_CREATOR");
+
+        // then
+        assertThat(found.getName()).isEqualTo("CONTENT_CREATOR");
+    }
+
+    @Test
+    public void whenFindByName_Moderator_thenReturnRole() {
+        // when
+        Role found = repository.getRoleByName("MODERATOR");
+
+        // then
+        assertThat(found.getName()).isEqualTo("MODERATOR");
+    }
+
+    @Test
     public void whenFindByName_Unknown_thenReturnRole() {
         // when
         Role found = repository.getRoleByName("UNKNOWN");

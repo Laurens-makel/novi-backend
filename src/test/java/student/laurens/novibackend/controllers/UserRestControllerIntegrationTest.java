@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.ResultActions;
 import student.laurens.novibackend.repositories.RoleRepository;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.UserRepository;
@@ -31,10 +32,7 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
         saveUser(createDefaultUser());
 
         // when
-        mvc.perform(post("/users")
-            .content(asJsonString(createTestUser("DJ", "Tiesto", "DJ_TIESTO", "MyPassword123", "USER")))
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+        postUser()
 
         // then
         .andExpect(status().isUnauthorized());
@@ -47,10 +45,33 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
         saveUser(createDefaultUser());
 
         // when
-        mvc.perform(post("/users")
-            .content(asJsonString(createTestUser("DJ", "Tiesto", "DJ_TIESTO", "MyPassword123", "USER")))
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+        postUser()
+
+        // then
+        .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    public void postUser_AsContentCreator_Forbidden() throws Exception {
+        // given
+        saveUser(createDefaultUser());
+
+        // when
+        postUser()
+
+        // then
+        .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    public void postUser_AsModerator_Forbidden() throws Exception {
+        // given
+        saveUser(createDefaultUser());
+
+        // when
+        postUser()
 
         // then
         .andExpect(status().isForbidden());
@@ -63,13 +84,17 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
         saveUser(createDefaultUser());
 
         // when
-        mvc.perform(post("/users")
-            .content(asJsonString(createTestUser("DJ", "Tiesto", "DJ_TIESTO", "MyPassword123", "USER")))
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+       postUser()
 
         // then
         .andExpect(status().isCreated());
+    }
+
+    private ResultActions postUser() throws Exception {
+        return mvc.perform(post("/users")
+                .content(asJsonString(createTestUser("DJ", "Tiesto", "DJ_TIESTO", "MyPassword123", "USER")))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
     }
 
     @Test
@@ -78,8 +103,7 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
         saveUser(createDefaultUser());
 
         // when
-        mvc.perform(get("/user")
-            .contentType(MediaType.APPLICATION_JSON))
+        getCurrentUser()
 
         // then
          .andExpect(status().isUnauthorized());
@@ -92,8 +116,32 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
         saveUser(createDefaultUser());
 
         // when
-        mvc.perform(get("/user")
-            .contentType(MediaType.APPLICATION_JSON))
+        getCurrentUser()
+        // then
+        .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    public void getCurrentUser_AsContentCreator_Ok() throws Exception {
+        // given
+        saveUser(createDefaultContentCreator());
+
+        // when
+        getCurrentUser()
+
+        // then
+        .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    public void getCurrentUser_AsModerator_Ok() throws Exception {
+        // given
+        saveUser(createDefaultModerator());
+
+        // when
+        getCurrentUser()
 
         // then
         .andExpect(status().isOk());
@@ -106,11 +154,15 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
         saveUser(createDefaultAdmin());
 
         // when
-        mvc.perform(get("/user")
-            .contentType(MediaType.APPLICATION_JSON))
+        getCurrentUser()
 
         // then
         .andExpect(status().isOk());
+    }
+
+    private ResultActions getCurrentUser() throws Exception {
+        return mvc.perform(get("/user")
+                .contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
@@ -119,8 +171,7 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
         saveUser(createDefaultUser());
 
         // when
-        mvc.perform(get("/users")
-            .contentType(MediaType.APPLICATION_JSON))
+        getUsers()
 
         // then
         .andExpect(status().isUnauthorized());
@@ -133,11 +184,36 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
         saveUser(createDefaultUser());
 
         // when
-        mvc.perform(get("/users")
-            .contentType(MediaType.APPLICATION_JSON))
+        getUsers()
 
         // then
         .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    public void getUsers_AsContentCreator_Forbidden() throws Exception {
+        // given
+        saveUser(createDefaultUser());
+
+        // when
+        getUsers()
+
+        // then
+        .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    public void getUsers_AsModerator_Ok() throws Exception {
+        // given
+        saveUser(createDefaultAdmin());
+
+        // when
+        getUsers()
+
+        // then
+        .andExpect(status().isOk());
     }
 
     @Test
@@ -147,11 +223,15 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
         saveUser(createDefaultAdmin());
 
         // when
-        mvc.perform(get("/users")
-            .contentType(MediaType.APPLICATION_JSON))
+       getUsers()
 
         // then
         .andExpect(status().isOk());
+    }
+
+    private ResultActions getUsers() throws Exception {
+        return mvc.perform(get("/users")
+                .contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
@@ -161,14 +241,37 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
         User user = saveUser(createTestUser("Jan", "Smit", "SMIT", "MyPassword123", "USER"));
 
         // when
-        mvc.perform(delete("/users/" + repository.getUserByUsername(user.getUsername()).getUid())
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+        deleteUser(user)
 
         // then
         .andExpect(status().isAccepted());
     }
 
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    public void deleteUser_AsContentCreator_Forbidden() throws Exception {
+        // given
+        User user = saveUser(createTestUser("Jan", "Smit", "SMIT", "MyPassword123", "USER"));
+
+        // when
+        deleteUser(user)
+
+        // then
+        .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    public void deleteUser_AsModerator_Forbidden() throws Exception {
+        // given
+        User user = saveUser(createTestUser("Jan", "Smit", "SMIT", "MyPassword123", "USER"));
+
+        // when
+        deleteUser(user)
+
+        // then
+        .andExpect(status().isForbidden());
+    }
 
     @Test
     @WithMockUser(value = USER, roles = {USER_ROLE} )
@@ -177,9 +280,7 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
         User user = saveUser(createTestUser("Jan", "Smit", "SMIT", "MyPassword123", "USER"));
 
         // when
-        mvc.perform(delete("/users/" + repository.getUserByUsername(user.getUsername()).getUid())
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+        deleteUser(user)
 
         // then
         .andExpect(status().isForbidden());
@@ -192,14 +293,17 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
         User user = saveUser(createTestUser("Jan", "Smit", "SMIT", "MyPassword123", "USER"));
 
         // when
-        mvc.perform(delete("/users/" + repository.getUserByUsername(user.getUsername()).getUid())
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+        deleteUser(user)
 
         // then
         .andExpect(status().isUnauthorized());
     }
 
+    private ResultActions deleteUser(User user) throws Exception {
+        return mvc.perform(delete("/users/" + repository.getUserByUsername(user.getUsername()).getUid())
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+    }
 
     @Test
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
@@ -210,10 +314,7 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
         user.setUsername("UPDATED_USERNAME");
 
         // when
-        mvc.perform(put("/users/" + user.getUid())
-            .content(asJsonString(user))
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+        updateUser(user)
 
         // then
         .andExpect(status().isAccepted());
@@ -228,10 +329,37 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
         user.setUsername("UPDATED_USERNAME");
 
         // when
-        mvc.perform(put("/users/" + user.getUid())
-            .content(asJsonString(user))
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+        updateUser(user)
+
+        // then
+        .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    public void updateUser_AsContentCreator_Forbidden() throws Exception {
+        // given
+        User user = saveUser(createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER"));
+
+        user.setUsername("UPDATED_USERNAME");
+
+        // when
+        updateUser(user)
+
+        // then
+        .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    public void updateUser_AsModerator_Forbidden() throws Exception {
+        // given
+        User user = saveUser(createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER"));
+
+        user.setUsername("UPDATED_USERNAME");
+
+        // when
+        updateUser(user)
 
         // then
         .andExpect(status().isForbidden());
@@ -245,15 +373,18 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
         user.setUsername("UPDATED_USERNAME");
 
         // when
-        mvc.perform(put("/users/" + user.getUid())
-            .content(asJsonString(user))
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+        updateUser(user)
 
         // then
         .andExpect(status().isUnauthorized());
     }
 
+    private ResultActions updateUser(User user) throws Exception {
+        return mvc.perform(put("/users/" + user.getUid())
+                .content(asJsonString(user))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+    }
 
     private User createTestUser(String firstname, String lastname, String username, String password, String role){
         User testUser = new User();
@@ -282,4 +413,11 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
         return createTestUser("John", "Doe", ADMIN, "MyPassword123", "ADMIN");
     }
 
+    private User createDefaultContentCreator(){
+        return createTestUser("Kanye", "West", CONTENT_CREATOR, "MyPassword123", "CONTENT_CREATOR");
+    }
+
+    private User createDefaultModerator(){
+        return createTestUser("Kanye", "West", MODERATOR, "MyPassword123", "MODERATOR");
+    }
 }
