@@ -1,5 +1,6 @@
 package student.laurens.novibackend.entities;
 
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,7 +18,7 @@ import java.util.Set;
  */
 public class AppUserDetails implements UserDetails {
 
-    private User user;
+    private @Getter User user;
 
     public AppUserDetails(User user) {
         this.user = user;
