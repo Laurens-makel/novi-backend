@@ -2,27 +2,18 @@ package student.laurens.novibackend.controllers;
 
 import org.junit.After;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import student.laurens.novibackend.repositories.RoleRepository;
 import student.laurens.novibackend.entities.User;
-import student.laurens.novibackend.repositories.UserRepository;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class UserRestControllerIntegrationTest extends ControllerIntegrationTestBase {
 
-    @Autowired
-    private UserRepository repository;
-
-    @Autowired
-    private RoleRepository roleRepository;
-
     @After
     public void after(){
-        repository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
@@ -161,7 +152,7 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
         User user = saveUser(createTestUser("Jan", "Smit", "SMIT", "MyPassword123", "USER"));
 
         // when
-        mvc.perform(delete("/users/" + repository.getUserByUsername(user.getUsername()).getUid())
+        mvc.perform(delete("/users/" + userRepository.getUserByUsername(user.getUsername()).getUid())
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
 
@@ -177,7 +168,7 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
         User user = saveUser(createTestUser("Jan", "Smit", "SMIT", "MyPassword123", "USER"));
 
         // when
-        mvc.perform(delete("/users/" + repository.getUserByUsername(user.getUsername()).getUid())
+        mvc.perform(delete("/users/" + userRepository.getUserByUsername(user.getUsername()).getUid())
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
 
@@ -192,7 +183,7 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
         User user = saveUser(createTestUser("Jan", "Smit", "SMIT", "MyPassword123", "USER"));
 
         // when
-        mvc.perform(delete("/users/" + repository.getUserByUsername(user.getUsername()).getUid())
+        mvc.perform(delete("/users/" + userRepository.getUserByUsername(user.getUsername()).getUid())
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
 
@@ -254,32 +245,5 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
         .andExpect(status().isUnauthorized());
     }
 
-
-    private User createTestUser(String firstname, String lastname, String username, String password, String role){
-        User testUser = new User();
-
-        testUser.setFirstName(firstname);
-        testUser.setLastName(lastname);
-        testUser.setUsername(username);
-        testUser.setPassword(password);
-
-        testUser.getRoles().add(roleRepository.getRoleByName(role));
-
-        return testUser;
-    }
-
-    private User saveUser(User testUser){
-        repository.save(testUser);
-
-        return testUser;
-    }
-
-    private User createDefaultUser(){
-        return createTestUser("Bob", "Doe", USER, "MyPassword123", "USER");
-    }
-
-    private User createDefaultAdmin(){
-        return createTestUser("John", "Doe", ADMIN, "MyPassword123", "ADMIN");
-    }
 
 }

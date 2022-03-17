@@ -2,25 +2,20 @@ package student.laurens.novibackend.controllers;
 
 import org.junit.After;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import student.laurens.novibackend.entities.Role;
-import student.laurens.novibackend.repositories.RoleRepository;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class RoleRestControllerIntegrationTest extends ControllerIntegrationTestBase {
 
-    @Autowired
-    private RoleRepository repository;
-
     @After
     public void after(){
-        Role role = repository.getRoleByName("TEST_ROLE");
+        Role role = roleRepository.getRoleByName("TEST_ROLE");
         if(role != null){
-            repository.delete(role);
+            roleRepository.delete(role);
         }
     }
 
@@ -101,7 +96,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
         Role role = saveRole(createRole("TEST_ROLE"));
 
         // when
-        mvc.perform(delete("/roles/" + repository.getRoleByName(role.getName()).getId())
+        mvc.perform(delete("/roles/" + roleRepository.getRoleByName(role.getName()).getId())
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
 
@@ -116,7 +111,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
         Role role = saveRole(createRole("TEST_ROLE"));
 
         // when
-        mvc.perform(delete("/roles/" + repository.getRoleByName(role.getName()).getId())
+        mvc.perform(delete("/roles/" + roleRepository.getRoleByName(role.getName()).getId())
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
 
@@ -130,7 +125,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
         Role role = saveRole(createRole("TEST_ROLE"));
 
         // when
-        mvc.perform(delete("/roles/" + repository.getRoleByName(role.getName()).getId())
+        mvc.perform(delete("/roles/" + roleRepository.getRoleByName(role.getName()).getId())
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
 
@@ -199,7 +194,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     private Role saveRole(Role role){
-        repository.save(role);
+        roleRepository.save(role);
 
         return role;
     }
