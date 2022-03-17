@@ -1,18 +1,15 @@
 package student.laurens.novibackend.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.After;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
 import student.laurens.novibackend.users.RoleRepository;
 import student.laurens.novibackend.users.User;
 import student.laurens.novibackend.users.UserRepository;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class UserRestControllerIntegrationTest extends ControllerIntegrationTestBase {
@@ -156,6 +153,107 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
         // then
         .andExpect(status().isOk());
     }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    public void deleteUser_AsAdmin_Ok() throws Exception {
+        // given
+        User user = saveUser(createTestUser("Jan", "Smit", "SMIT", "MyPassword123", "USER"));
+
+        // when
+        mvc.perform(delete("/users/" + repository.getUserByUsername(user.getUsername()).getUid())
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+
+        // then
+        .andExpect(status().isAccepted());
+    }
+
+
+    @Test
+    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    public void deleteUser_AsUser_Forbidden() throws Exception {
+        // given
+        User user = saveUser(createTestUser("Jan", "Smit", "SMIT", "MyPassword123", "USER"));
+
+        // when
+        mvc.perform(delete("/users/" + repository.getUserByUsername(user.getUsername()).getUid())
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+
+        // then
+        .andExpect(status().isForbidden());
+    }
+
+
+    @Test
+    public void deleteUser_AsUser_isUnauthorized() throws Exception {
+        // given
+        User user = saveUser(createTestUser("Jan", "Smit", "SMIT", "MyPassword123", "USER"));
+
+        // when
+        mvc.perform(delete("/users/" + repository.getUserByUsername(user.getUsername()).getUid())
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+
+        // then
+        .andExpect(status().isUnauthorized());
+    }
+
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    public void updateUser_AsAdmin_Ok() throws Exception {
+        // given
+        User user = saveUser(createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER"));
+
+        user.setUsername("UPDATED_USERNAME");
+
+        // when
+        mvc.perform(put("/users/" + user.getUid())
+            .content(asJsonString(user))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+
+        // then
+        .andExpect(status().isAccepted());
+    }
+
+    @Test
+    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    public void updateUser_AsUser_Forbidden() throws Exception {
+        // given
+        User user = saveUser(createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER"));
+
+        user.setUsername("UPDATED_USERNAME");
+
+        // when
+        mvc.perform(put("/users/" + user.getUid())
+            .content(asJsonString(user))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+
+        // then
+        .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void updateUser_isUnauthorized() throws Exception {
+        // given
+        User user = saveUser(createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER"));
+
+        user.setUsername("UPDATED_USERNAME");
+
+        // when
+        mvc.perform(put("/users/" + user.getUid())
+            .content(asJsonString(user))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+
+        // then
+        .andExpect(status().isUnauthorized());
+    }
+
 
     private User createTestUser(String firstname, String lastname, String username, String password, String role){
         User testUser = new User();

@@ -14,7 +14,7 @@ If you’re new to Spring Data JPA, kind check this quick start guide.
 https://www.codejava.net/frameworks/spring/understand-spring-data-jpa-with-simple-example
  */
 
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Query("SELECT u FROM User u WHERE u.username = :username")
     public User getUserByUsername(@Param("username") String username);

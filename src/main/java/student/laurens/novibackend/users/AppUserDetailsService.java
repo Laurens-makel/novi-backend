@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service
 @Component
@@ -33,6 +34,21 @@ public class AppUserDetailsService implements UserDetailsService {
     }
 
     public void addUser(User user) {
+        repository.save(user);
+    }
+
+    public boolean removeUserById(Integer uid) {
+        Optional<User> user = repository.findById(uid);
+
+        if(user.isPresent()){
+            repository.delete(user.get());
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void updateUser(User user) {
         repository.save(user);
     }
 }
