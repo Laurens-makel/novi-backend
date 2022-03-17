@@ -1,6 +1,8 @@
 package student.laurens.novibackend.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -17,24 +19,30 @@ public class UserController {
     private AppUserDetailsService service;
 
     @GetMapping("/user")
-    public AppUserDetails getUser(Principal principal) {
-        return (AppUserDetails) service.loadUserByUsername(principal.getName());
+    public ResponseEntity<AppUserDetails> getUser(Principal principal) {
+        AppUserDetails userDetails = (AppUserDetails) service.loadUserByUsername(principal.getName());
+
+        return new ResponseEntity<>(userDetails, HttpStatus.OK);
     }
 
     @GetMapping("/users")
-    public Iterable<User> getUsers() {
-        return service.listAll();
+    public ResponseEntity<Iterable<User>> getUsers() {
+        return new ResponseEntity<>(service.listAll(), HttpStatus.OK);
     }
 
     @PostMapping("/users")
-    public void addUser(@RequestBody User user){
+    public ResponseEntity<AppUserDetails> addUser(@RequestBody User user){
         service.addUser(user);
+
+        AppUserDetails userDetails = (AppUserDetails) service.loadUserByUsername(user.getUsername());
+
+        return new ResponseEntity<>(userDetails, HttpStatus.CREATED);
     }
 
     @GetMapping("/password")
-    public String getEncodedPassord(@RequestParam String value) {
+    public ResponseEntity<String> getEncodedPassord(@RequestParam String value) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-        return passwordEncoder.encode(value);
+        return new ResponseEntity<>(passwordEncoder.encode(value), HttpStatus.OK);
     }
 }
