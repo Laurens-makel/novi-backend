@@ -33,7 +33,7 @@ public class User {
         this.password = new BCryptPasswordEncoder().encode(password);
     }
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinTable(
             name = "USER_ROLES",
             joinColumns = @JoinColumn(name = "UID"),
