@@ -13,7 +13,7 @@ import student.laurens.novibackend.users.User;
 import java.security.Principal;
 
 @RestController
-public class UserController {
+public class UserRestController {
 
     @Autowired
     private AppUserDetailsService service;

@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = NoviBackendApplication.class)
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-integration-test.properties")
-public class UserControllerIntegrationTest {
+public class UserRestControllerIntegrationTest {
 
     private final String USER = "DefaultUser";
     private final String USER_ROLE = "USER";
