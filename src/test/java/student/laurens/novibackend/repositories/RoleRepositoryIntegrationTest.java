@@ -57,17 +57,39 @@ public class RoleRepositoryIntegrationTest extends RepositoryIntegrationTestBase
     }
 
     @Test
+    public void whenUpdateRole_thenReturnRole() {
+        // given
+        Role role = createRole("TEST_ROLE");
+
+        role.setName("UPDATED_ROLE");
+
+        // when
+        repository.save(role);
+        Role found = entityManager.find(Role.class, role.getId());
+
+        // then
+        assertThat(found.getName()).isEqualTo(role.getName());
+    }
+
+    @Test
     public void whenDeleteRole_thenReturnNull() {
         // given
-        Role role = new Role();
-        role.setName("TEST_ROLE");
-        repository.save(role);
+        Role role = createRole("TEST_ROLE");
 
         // when
         repository.delete(role);
-        Role found = repository.getRoleByName(role.getName());
+        Role found = entityManager.find(Role.class, role.getId());
 
         // then
         assertThat(found).isEqualTo(null);
+    }
+
+    private Role createRole(String rolename){
+        Role role = new Role();
+        role.setName(rolename);
+
+        entityManager.persistAndFlush(role);
+
+        return role;
     }
 }
