@@ -1,5 +1,6 @@
 package student.laurens.novibackend.repositories;
 
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,11 @@ public class UserRepositoryIntegrationTest {
     @Autowired
     private UserRepository repository;
 
+    @After
+    public void after(){
+        repository.deleteAll();
+    }
+
     @Test
     public void whenFindByName_thenReturnUser() {
         // given
@@ -36,6 +42,18 @@ public class UserRepositoryIntegrationTest {
         assertThat(found.getFirstName()).isEqualTo(user.getFirstName());
         assertThat(found.getLastName()).isEqualTo(user.getLastName());
         assertThat(found.getUsername()).isEqualTo(user.getUsername());
+    }
+
+    @Test
+    public void whenFindByName_Unknown_thenReturnNull() {
+        // given
+        User user = createTestUser("Bob", "Doe", "USER", "myPass123");
+
+        // when
+        User found = repository.getUserByUsername("Unknown");
+
+        // then
+        assertThat(found).isEqualTo(null);
     }
 
     private User createTestUser(String firstname, String lastname, String username, String password){
