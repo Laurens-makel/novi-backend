@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog dbchangelog-4.8.xsd">
 
 
-    <changeSet  id="Fill ROLES table"  author="Laurens Mäkel">
+    <changeSet  id="Fill ROLES table" author="Laurens Mäkel">
         <insert tableName="ROLES">
             <column name="ROLE_NAME">ADMIN</column>
         </insert>
@@ -14,5 +14,16 @@
             <column name="ROLE_NAME">USER</column>
         </insert>
     </changeSet>
+
+    <changeSet  id="Fill ROLES table with blog related roles" author="Laurens Mäkel">
+        <insert tableName="ROLES">
+            <column name="ROLE_NAME">CONTENT_CREATOR</column>
+        </insert>
+
+        <insert tableName="ROLES">
+            <column name="ROLE_NAME">MODERATOR</column>
+        </insert>
+    </changeSet>
+
 
 </databaseChangeLog>

@@ -22,6 +22,12 @@ public abstract class ControllerIntegrationTestBase {
     protected final String ADMIN = "DefaultAdmin";
     protected final String ADMIN_ROLE = "ADMIN";
 
+    protected final String CONTENT_CREATOR = "DefaultContentCreator";
+    protected final String CONTENT_CREATOR_ROLE = "CONTENT_CREATOR";
+
+    protected final String MODERATOR = "DefaultModerator";
+    protected final String MODERATOR_ROLE = "MODERATOR";
+
     @Autowired
     protected MockMvc mvc;
 
