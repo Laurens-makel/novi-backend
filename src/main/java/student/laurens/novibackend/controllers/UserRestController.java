@@ -23,7 +23,13 @@ import java.security.Principal;
  *     <li>DELETE /users/{uid}</li>
  * </ul>
  *
- * Users
+ * Moderators
+ * <ul>
+ *      <li>GET /user</li>
+ *      <li>GET /users</li>
+ * </ul>
+ *
+ * Users, Content Creators
  *
  * <ul>
  *     <li>GET /user</li>
