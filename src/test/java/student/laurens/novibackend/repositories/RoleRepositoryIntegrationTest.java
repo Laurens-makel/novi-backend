@@ -55,4 +55,19 @@ public class RoleRepositoryIntegrationTest extends RepositoryIntegrationTestBase
         // then
         assertThat(found.getName()).isEqualTo(role.getName());
     }
+
+    @Test
+    public void whenDeleteRole_thenReturnNull() {
+        // given
+        Role role = new Role();
+        role.setName("TEST_ROLE");
+        repository.save(role);
+
+        // when
+        repository.delete(role);
+        Role found = repository.getRoleByName(role.getName());
+
+        // then
+        assertThat(found).isEqualTo(null);
+    }
 }
