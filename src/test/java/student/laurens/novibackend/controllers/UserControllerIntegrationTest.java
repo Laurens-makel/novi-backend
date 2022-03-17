@@ -1,5 +1,6 @@
 package student.laurens.novibackend.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +18,7 @@ import student.laurens.novibackend.users.User;
 import student.laurens.novibackend.users.UserRepository;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -46,13 +48,60 @@ public class UserControllerIntegrationTest {
     }
 
     @Test
+    public void postUser_isUnauthorized() throws Exception {
+        // given
+        saveUser(createDefaultUser());
+
+        // when
+        mvc.perform(post("/users")
+            .content(asJsonString(createTestUser("DJ", "Tiesto", "DJ_TIESTO", "MyPassword123", "USER")))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+
+        // then
+        .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    public void postUser_AsUser_Forbidden() throws Exception {
+        // given
+        saveUser(createDefaultUser());
+
+        // when
+        mvc.perform(post("/users")
+            .content(asJsonString(createTestUser("DJ", "Tiesto", "DJ_TIESTO", "MyPassword123", "USER")))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+
+        // then
+        .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    public void postUser_AsAdmin_Created() throws Exception {
+        // given
+        saveUser(createDefaultUser());
+
+        // when
+        mvc.perform(post("/users")
+            .content(asJsonString(createTestUser("DJ", "Tiesto", "DJ_TIESTO", "MyPassword123", "USER")))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+
+        // then
+        .andExpect(status().isCreated());
+    }
+
+    @Test
     public void getCurrentUser_isUnauthorized() throws Exception {
         // given
-        createDefaultUser();
+        saveUser(createDefaultUser());
 
         // when
         mvc.perform(get("/user")
-                        .contentType(MediaType.APPLICATION_JSON))
+            .contentType(MediaType.APPLICATION_JSON))
 
         // then
          .andExpect(status().isUnauthorized());
@@ -62,11 +111,11 @@ public class UserControllerIntegrationTest {
     @WithMockUser(value = USER, roles = {USER_ROLE} )
     public void getCurrentUser_AsUser_Ok() throws Exception {
         // given
-        createDefaultUser();
+        saveUser(createDefaultUser());
 
         // when
         mvc.perform(get("/user")
-                        .contentType(MediaType.APPLICATION_JSON))
+            .contentType(MediaType.APPLICATION_JSON))
 
         // then
         .andExpect(status().isOk());
@@ -76,11 +125,11 @@ public class UserControllerIntegrationTest {
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void getCurrentUser_AsAdmin_Ok() throws Exception {
         // given
-        createDefaultAdmin();
+        saveUser(createDefaultAdmin());
 
         // when
         mvc.perform(get("/user")
-                        .contentType(MediaType.APPLICATION_JSON))
+            .contentType(MediaType.APPLICATION_JSON))
 
         // then
         .andExpect(status().isOk());
@@ -89,11 +138,11 @@ public class UserControllerIntegrationTest {
     @Test
     public void getUsers_isUnauthorized() throws Exception {
         // given
-        createDefaultUser();
+        saveUser(createDefaultUser());
 
         // when
         mvc.perform(get("/users")
-                        .contentType(MediaType.APPLICATION_JSON))
+            .contentType(MediaType.APPLICATION_JSON))
 
         // then
         .andExpect(status().isUnauthorized());
@@ -103,11 +152,11 @@ public class UserControllerIntegrationTest {
     @WithMockUser(value = USER, roles = {USER_ROLE} )
     public void getUsers_AsUser_Forbidden() throws Exception {
         // given
-        createDefaultUser();
+        saveUser(createDefaultUser());
 
         // when
         mvc.perform(get("/users")
-                        .contentType(MediaType.APPLICATION_JSON))
+            .contentType(MediaType.APPLICATION_JSON))
 
         // then
         .andExpect(status().isForbidden());
@@ -117,17 +166,17 @@ public class UserControllerIntegrationTest {
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void getUsers_AsAdmin_Ok() throws Exception {
         // given
-        createDefaultAdmin();
+        saveUser(createDefaultAdmin());
 
         // when
         mvc.perform(get("/users")
-                        .contentType(MediaType.APPLICATION_JSON))
+            .contentType(MediaType.APPLICATION_JSON))
 
         // then
         .andExpect(status().isOk());
     }
 
-    private void createTestUser(String firstname, String lastname, String username, String password, String role){
+    private User createTestUser(String firstname, String lastname, String username, String password, String role){
         User testUser = new User();
 
         testUser.setFirstName(firstname);
@@ -137,14 +186,28 @@ public class UserControllerIntegrationTest {
 
         testUser.getRoles().add(roleRepository.getRoleByName(role));
 
+        return testUser;
+    }
+
+    private User saveUser(User testUser){
         repository.save(testUser);
+
+        return testUser;
     }
 
-    private void createDefaultUser(){
-        createTestUser("Bob", "Doe", USER, "MyPassword123", "USER");
+    private User createDefaultUser(){
+        return createTestUser("Bob", "Doe", USER, "MyPassword123", "USER");
     }
 
-    private void createDefaultAdmin(){
-        createTestUser("John", "Doe", ADMIN, "MyPassword123", "ADMIN");
+    private User createDefaultAdmin(){
+        return createTestUser("John", "Doe", ADMIN, "MyPassword123", "ADMIN");
+    }
+
+    public static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
