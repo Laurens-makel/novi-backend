@@ -62,6 +62,31 @@ public class BlogpostRestControllerIntegrationTest extends ControllerIntegration
         .andExpect(status().isOk());
     }
 
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    public void getBlogposts_AsContentCreator_Ok() throws Exception {
+        // given
+        saveBlogpost(createDefaultBlogpost(createDefaultAdmin()));
+
+        // when
+        getBlogposts()
+
+        // then
+        .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    public void getBlogposts_AsModerator_Ok() throws Exception {
+        // given
+        saveBlogpost(createDefaultBlogpost(createDefaultAdmin()));
+
+        // when
+        getBlogposts()
+
+        // then
+        .andExpect(status().isOk());
+    }
 
     private ResultActions getBlogposts() throws Exception {
         return mvc.perform(get("/blogposts")

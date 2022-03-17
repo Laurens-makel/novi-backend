@@ -57,6 +57,13 @@ public abstract class ControllerIntegrationTestBase {
         return createTestUser("John", "Doe", ADMIN, "MyPassword123", "ADMIN");
     }
 
+    protected User createDefaultContentCreator(){
+        return createTestUser("Kanye", "West", CONTENT_CREATOR, "MyPassword123", "CONTENT_CREATOR");
+    }
+
+    protected User createDefaultModerator(){
+        return createTestUser("Kanye", "West", MODERATOR, "MyPassword123", "MODERATOR");
+    }
     protected User createTestUser(String firstname, String lastname, String username, String password, String role){
         User testUser = new User();
 
@@ -75,4 +82,5 @@ public abstract class ControllerIntegrationTestBase {
 
         return testUser;
     }
+
 }
