@@ -11,6 +11,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import student.laurens.novibackend.services.AppUserDetailsService;
 
+/**
+ * Web Security Configuration class
+ *
+ * Defines all authentication rules for exposed web services.
+ *
+ * @author Laurens Mäkel
+ * @version 1.0, March 2022
+ */
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {

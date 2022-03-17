@@ -8,7 +8,26 @@ import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.Role;
 import student.laurens.novibackend.services.RoleService;
 
-
+/**
+ * Rest Controller that exposes CRUD methods for roles.
+ *
+ * Admins
+ * <ul>
+ *     <li>GET /roles</li>
+ *     <li>POST /roles</li>
+ *     <li>PUT /roles/{roleId}</li>
+ *     <li>DELETE /roles/{roleId}</li>
+ * </ul>
+ *
+ * Users
+ *
+ * <ul>
+ *     <li>GET /roles<</li>
+ * </ul>
+ *
+ * @author Laurens Mäkel
+ * @version 1.0, March 2022
+ */
 @RestController
 public class RoleRestController {
 

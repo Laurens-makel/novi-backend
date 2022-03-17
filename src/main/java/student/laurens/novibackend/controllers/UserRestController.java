@@ -11,6 +11,27 @@ import student.laurens.novibackend.entities.User;
 
 import java.security.Principal;
 
+/**
+ * Rest Controller that exposes CRUD methods for users.
+ *
+ * Admins
+ * <ul>
+ *     <li>GET /user</li>
+ *     <li>GET /users</li>
+ *     <li>POST /users</li>
+ *     <li>PUT /users/{uid}</li>
+ *     <li>DELETE /users/{uid}</li>
+ * </ul>
+ *
+ * Users
+ *
+ * <ul>
+ *     <li>GET /user</li>
+ * </ul>
+ *
+ * @author Laurens Mäkel
+ * @version 1.0, March 2022
+ */
 @RestController
 public class UserRestController {
 

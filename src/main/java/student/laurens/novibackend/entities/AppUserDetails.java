@@ -9,6 +9,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Application specific implementation of UserDetails.
+ *
+ * @author Laurens Mäkel
+ * @version 1.0, March 2022
+ */
 public class AppUserDetails implements UserDetails {
 
     private User user;

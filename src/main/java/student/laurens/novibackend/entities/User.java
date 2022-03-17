@@ -8,6 +8,14 @@ import java.util.*;
 
 import javax.persistence.*;
 
+/**
+ * Entity class for USERS table.
+ *
+ * Joins ROLES table using USER_ROLES table.
+ *
+ * @author Laurens Mäkel
+ * @version 1.0, March 2022
+ */
 @Entity
 @Table(name = "USERS")
 public class User {

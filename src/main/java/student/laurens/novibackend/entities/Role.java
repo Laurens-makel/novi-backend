@@ -5,6 +5,12 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+/**
+ * Entity class for ROLES table.
+ *
+ * @author Laurens Mäkel
+ * @version 1.0, March 2022
+ */
 @Entity
 @Table(name = "ROLES")
 public class Role {

@@ -13,6 +13,12 @@ import student.laurens.novibackend.repositories.UserRepository;
 import javax.transaction.Transactional;
 import java.util.Optional;
 
+/**
+ * Transactional service that takes care of interactions with UserRepository.
+ *
+ * @author Laurens Mäkel
+ * @version 1.0, March 2022
+ */
 @Service
 @Component
 @Transactional
