@@ -3,16 +3,10 @@ package student.laurens.novibackend.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.After;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import student.laurens.novibackend.NoviBackendApplication;
 import student.laurens.novibackend.users.RoleRepository;
 import student.laurens.novibackend.users.User;
 import student.laurens.novibackend.users.UserRepository;
@@ -21,20 +15,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = NoviBackendApplication.class)
-@AutoConfigureMockMvc
-@TestPropertySource(locations = "classpath:application-integration-test.properties")
-public class UserRestControllerIntegrationTest {
-
-    private final String USER = "DefaultUser";
-    private final String USER_ROLE = "USER";
-
-    private final String ADMIN = "DefaultAdmin";
-    private final String ADMIN_ROLE = "ADMIN";
-
-    @Autowired
-    private MockMvc mvc;
+public class UserRestControllerIntegrationTest extends ControllerIntegrationTestBase {
 
     @Autowired
     private UserRepository repository;
@@ -142,10 +123,10 @@ public class UserRestControllerIntegrationTest {
 
         // when
         mvc.perform(get("/users")
-            .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
 
-        // then
-        .andExpect(status().isUnauthorized());
+                // then
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -203,11 +184,4 @@ public class UserRestControllerIntegrationTest {
         return createTestUser("John", "Doe", ADMIN, "MyPassword123", "ADMIN");
     }
 
-    public static String asJsonString(final Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 }
