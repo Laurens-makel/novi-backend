@@ -50,7 +50,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers(HttpMethod.GET,"/users").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET,"/users").hasAnyRole("ADMIN", "MODERATOR")
                 .antMatchers(HttpMethod.POST,"/users").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/users/{uid}").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/users/{uid}").hasRole("ADMIN")

@@ -19,7 +19,7 @@ import student.laurens.novibackend.services.RoleService;
  *     <li>DELETE /roles/{roleId}</li>
  * </ul>
  *
- * Users
+ * Users, Content Creators, Moderators
  *
  * <ul>
  *     <li>GET /roles<</li>
