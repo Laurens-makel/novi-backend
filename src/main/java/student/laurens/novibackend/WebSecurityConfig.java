@@ -9,8 +9,16 @@ import org.springframework.security.config.annotation.web.configuration.*;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import student.laurens.novibackend.users.AppUserDetailsService;
+import student.laurens.novibackend.services.AppUserDetailsService;
 
+/**
+ * Web Security Configuration class
+ *
+ * Defines all authentication rules for exposed web services.
+ *
+ * @author Laurens Mäkel
+ * @version 1.0, March 2022
+ */
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -42,6 +50,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
+                .antMatchers(HttpMethod.GET,"/users").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST,"/users").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/users/{uid}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/users/{uid}").hasRole("ADMIN")
+
+                .antMatchers(HttpMethod.POST, "/roles").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/roles/{roleId}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/roles/{roleId}").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and().httpBasic()
                 .and()
