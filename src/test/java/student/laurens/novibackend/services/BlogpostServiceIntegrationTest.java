@@ -10,6 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import student.laurens.novibackend.entities.Blogpost;
 import student.laurens.novibackend.entities.Role;
+import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.BlogpostRepository;
 
 import java.util.Arrays;
@@ -53,6 +54,19 @@ public class BlogpostServiceIntegrationTest extends ServiceIntegrationTestBase {
 
         assertThat(found.getTitle()).isEqualTo(title);
         verifyFindByTitleIsCalledOnce(title);
+    }
+
+    @Test
+    public void whenAddingUser_ThenRepositorySaveUserIsCalled() {
+        Blogpost post = createBlogpost("Example", "content");
+
+        service.addBlogpost(post);
+        verifySaveIsCalledOnce(post);
+    }
+
+    private void verifySaveIsCalledOnce(Blogpost post) {
+        Mockito.verify(repository, VerificationModeFactory.times(1)).save(post);
+        Mockito.reset(repository);
     }
 
     private void verifyFindByTitleIsCalledOnce(String title) {

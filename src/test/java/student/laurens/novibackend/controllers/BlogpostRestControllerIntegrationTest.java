@@ -11,6 +11,7 @@ import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.BlogpostRepository;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class BlogpostRestControllerIntegrationTest extends ControllerIntegrationTestBase {
@@ -79,7 +80,7 @@ public class BlogpostRestControllerIntegrationTest extends ControllerIntegration
     @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
     public void getBlogposts_AsModerator_Ok() throws Exception {
         // given
-        saveBlogpost(createDefaultBlogpost(createDefaultAdmin()));
+        saveBlogpost(createDefaultBlogpost(createDefaultContentCreator()));
 
         // when
         getBlogposts()
@@ -88,10 +89,82 @@ public class BlogpostRestControllerIntegrationTest extends ControllerIntegration
         .andExpect(status().isOk());
     }
 
+    @Test
+    public void postBlogpost_isUnauthorized() throws Exception {
+        // given
+        saveBlogpost(createDefaultBlogpost(createDefaultAdmin()));
+
+        // when
+        postBlogpost()
+
+        // then
+        .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    public void postBlogpost_AsUser_Forbidden() throws Exception {
+        // given
+        saveBlogpost(createDefaultBlogpost(createDefaultAdmin()));
+
+        // when
+        postBlogpost()
+
+        // then
+        .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    public void postBlogpost_AsModer_Forbidden() throws Exception {
+        // given
+        saveBlogpost(createDefaultBlogpost(createDefaultAdmin()));
+
+        // when
+        postBlogpost()
+
+                // then
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN_ROLE, roles = {ADMIN_ROLE} )
+    public void postBlogpost_AsAdmin_Ok() throws Exception {
+        // given
+        saveBlogpost(createDefaultBlogpost(createDefaultAdmin()));
+
+        // when
+        postBlogpost()
+
+        // then
+        .andExpect(status().isCreated());
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    public void postBlogpost_AsContentCreator_Ok() throws Exception {
+        // given
+        saveBlogpost(createDefaultBlogpost(createDefaultAdmin()));
+
+        // when
+        postBlogpost()
+
+        // then
+        .andExpect(status().isCreated());
+    }
+
     private ResultActions getBlogposts() throws Exception {
         return mvc.perform(get("/blogposts")
                 .contentType(MediaType.APPLICATION_JSON));
     }
+
+    private ResultActions postBlogpost() throws Exception {
+        return mvc.perform(post("/blogposts")
+            .content(asJsonString(createDefaultBlogpost(createDefaultContentCreator())))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON));
+    }
+
 
     private Blogpost createDefaultBlogpost(User author){
         Blogpost blogpost = new Blogpost();

@@ -85,7 +85,6 @@ public class AppUserDetailsServiceIntegrationTest extends ServiceIntegrationTest
         verifySaveUserIsCalledOnce(peter);
     }
 
-
     private void verifyFindByUsernameIsCalledOnce(String name) {
         Mockito.verify(repository, VerificationModeFactory.times(1)).getUserByUsername(name);
         Mockito.reset(repository);

@@ -29,4 +29,8 @@ public class BlogpostService {
     public Blogpost findByTitle(String title){
         return repository.findByTitle(title);
     }
+
+    public void addBlogpost(Blogpost blogpost){
+        repository.save(blogpost);
+    }
 }

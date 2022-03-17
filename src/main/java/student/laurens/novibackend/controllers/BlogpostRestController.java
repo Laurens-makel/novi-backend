@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import student.laurens.novibackend.entities.Blogpost;
 import student.laurens.novibackend.services.BlogpostService;
@@ -34,5 +36,12 @@ public class BlogpostRestController {
     @GetMapping("/blogposts")
     public ResponseEntity<Iterable<Blogpost>> getBlogpost() {
         return new ResponseEntity<>(service.listAllPublished(), HttpStatus.OK);
+    }
+
+    @PostMapping("/blogposts")
+    public ResponseEntity<Blogpost> addBlogpost(@RequestBody Blogpost blogpost) {
+        service.addBlogpost(blogpost);
+
+        return new ResponseEntity<>(blogpost, HttpStatus.CREATED);
     }
 }
