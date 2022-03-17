@@ -5,10 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import student.laurens.novibackend.users.Role;
-import student.laurens.novibackend.users.RoleService;
-
-import javax.websocket.server.PathParam;
+import student.laurens.novibackend.entities.Role;
+import student.laurens.novibackend.services.RoleService;
 
 
 @RestController

@@ -5,9 +5,9 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import student.laurens.novibackend.users.RoleRepository;
-import student.laurens.novibackend.users.User;
-import student.laurens.novibackend.users.UserRepository;
+import student.laurens.novibackend.repositories.RoleRepository;
+import student.laurens.novibackend.entities.User;
+import student.laurens.novibackend.repositories.UserRepository;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

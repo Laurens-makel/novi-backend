@@ -3,13 +3,11 @@ package student.laurens.novibackend.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import student.laurens.novibackend.users.AppUserDetails;
-import student.laurens.novibackend.users.AppUserDetailsService;
-import student.laurens.novibackend.users.Role;
-import student.laurens.novibackend.users.User;
+import student.laurens.novibackend.entities.AppUserDetails;
+import student.laurens.novibackend.services.AppUserDetailsService;
+import student.laurens.novibackend.entities.User;
 
 import java.security.Principal;
 

@@ -9,7 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.*;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import student.laurens.novibackend.users.AppUserDetailsService;
+import student.laurens.novibackend.services.AppUserDetailsService;
 
 @Configuration
 @EnableWebSecurity

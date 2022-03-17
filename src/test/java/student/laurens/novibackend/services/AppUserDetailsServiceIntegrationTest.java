@@ -9,10 +9,9 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import student.laurens.novibackend.users.AppUserDetails;
-import student.laurens.novibackend.users.AppUserDetailsService;
-import student.laurens.novibackend.users.User;
-import student.laurens.novibackend.users.UserRepository;
+import student.laurens.novibackend.entities.AppUserDetails;
+import student.laurens.novibackend.entities.User;
+import student.laurens.novibackend.repositories.UserRepository;
 
 import java.util.Arrays;
 import java.util.List;

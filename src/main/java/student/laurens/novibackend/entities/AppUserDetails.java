@@ -1,4 +1,4 @@
-package student.laurens.novibackend.users;
+package student.laurens.novibackend.entities;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
