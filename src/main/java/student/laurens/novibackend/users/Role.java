@@ -1,6 +1,7 @@
 package student.laurens.novibackend.users;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -14,6 +15,6 @@ public class Role {
     private @Getter Integer id;
 
     @Column(name = "ROLE_NAME", nullable = false, unique = true)
-    private @Getter String name;
+    private @Getter @Setter String name;
 
 }

@@ -123,10 +123,10 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
 
         // when
         mvc.perform(get("/users")
-                        .contentType(MediaType.APPLICATION_JSON))
+            .contentType(MediaType.APPLICATION_JSON))
 
-                // then
-                .andExpect(status().isUnauthorized());
+        // then
+        .andExpect(status().isUnauthorized());
     }
 
     @Test

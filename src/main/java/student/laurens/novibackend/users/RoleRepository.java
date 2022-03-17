@@ -11,7 +11,7 @@ If you’re new to Spring Data JPA, kind check this quick start guide.
 https://www.codejava.net/frameworks/spring/understand-spring-data-jpa-with-simple-example
  */
 
-public interface RoleRepository extends JpaRepository<Role, Long> {
+public interface RoleRepository extends JpaRepository<Role, Integer> {
 
     @Query("SELECT r FROM Role r WHERE r.name = :roleName")
     public Role getRoleByName(@Param("roleName") String roleName);
