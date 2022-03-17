@@ -1,4 +1,4 @@
-package student.laurens.novibackend.users;
+package student.laurens.novibackend.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -6,6 +6,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import student.laurens.novibackend.entities.AppUserDetails;
+import student.laurens.novibackend.entities.User;
+import student.laurens.novibackend.repositories.UserRepository;
 
 import javax.transaction.Transactional;
 import java.util.Optional;

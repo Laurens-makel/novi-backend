@@ -1,4 +1,4 @@
-package student.laurens.novibackend.users;
+package student.laurens.novibackend.entities;
 
 import lombok.Getter;
 import lombok.Setter;

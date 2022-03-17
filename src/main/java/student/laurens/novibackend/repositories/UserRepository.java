@@ -1,11 +1,9 @@
-package student.laurens.novibackend.users;
+package student.laurens.novibackend.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
-
-import java.util.List;
+import student.laurens.novibackend.entities.User;
 
 /*
 This interface is a subtype of CrudRepository defined by Spring Data JPA so Spring will generate implementation class at runtime.
