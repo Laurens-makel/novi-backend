@@ -101,14 +101,4 @@ public class AppUserDetailsServiceIntegrationTest extends ServiceIntegrationTest
         Mockito.reset(repository);
     }
 
-    private User createTestUser(String firstname, String lastname, String username, String password){
-        User testUser = new User();
-
-        testUser.setFirstName(firstname);
-        testUser.setLastName(lastname);
-        testUser.setUsername(username);
-        testUser.setPassword(password);
-
-        return testUser;
-    }
 }
