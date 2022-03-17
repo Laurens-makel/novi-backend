@@ -9,16 +9,16 @@
             <column  name="UID"  type="int"  autoIncrement="true">
                 <constraints  primaryKey="true"  nullable="false"/>
             </column>
-            <column  name="USERNAME"  type="varchar(50)">
-                <constraints  nullable="false"/>
+            <column  name="USERNAME"  type="varchar(255)">
+                <constraints  nullable="false" unique="true" />
             </column>
             <column  name="PASSWORD"  type="varchar(128)">
                 <constraints  nullable="false"/>
             </column>
-            <column  name="FIRSTNAME"  type="varchar(50)">
+            <column  name="FIRSTNAME"  type="varchar(255)">
                 <constraints  nullable="false"/>
             </column>
-            <column  name="LASTNAME"   type="varchar(50)">
+            <column  name="LASTNAME"   type="varchar(255)">
                 <constraints  nullable="false"/>
             </column>
         </createTable>
@@ -29,8 +29,8 @@
             <column  name="ROLE_ID"  type="int"  autoIncrement="true">
                 <constraints  primaryKey="true"  nullable="false"/>
             </column>
-            <column  name="ROLE_NAME"   type="varchar(50)">
-                <constraints  nullable="false"/>
+            <column  name="ROLE_NAME"   type="varchar(255)">
+                <constraints  nullable="false" unique="true"/>
             </column>
         </createTable>
     </changeSet>
