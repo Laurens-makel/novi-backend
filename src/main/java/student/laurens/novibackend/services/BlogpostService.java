@@ -33,4 +33,8 @@ public class BlogpostService {
     public void addBlogpost(Blogpost blogpost){
         repository.save(blogpost);
     }
+
+    public void updateBlogpost(Blogpost blogpost) {
+        repository.save(blogpost);
+    }
 }

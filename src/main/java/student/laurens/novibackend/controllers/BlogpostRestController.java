@@ -3,10 +3,7 @@ package student.laurens.novibackend.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.Blogpost;
 import student.laurens.novibackend.services.BlogpostService;
 
@@ -43,5 +40,12 @@ public class BlogpostRestController {
         service.addBlogpost(blogpost);
 
         return new ResponseEntity<>(blogpost, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/blogposts/{blogpostId}")
+    public ResponseEntity<Blogpost> updateBlogpost(@PathVariable("blogpostId") Integer blogpostId, @RequestBody Blogpost blogpost) {
+        service.updateBlogpost(blogpost);
+
+        return new ResponseEntity<>(blogpost, HttpStatus.ACCEPTED);
     }
 }
