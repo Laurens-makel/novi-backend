@@ -27,7 +27,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         responseHeaders.add(HttpHeaders.CONTENT_TYPE, accept);
 
         try {
-            final String response = translateError(createError(ex), accept);
+            final String response = translateError(createError(ex, request), accept);
 
             return handleExceptionInternal(ex, response, responseHeaders, HttpStatus.NOT_FOUND, request);
         } catch (JsonProcessingException e) {
@@ -37,12 +37,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, ex.getMessage(), responseHeaders, HttpStatus.NOT_FOUND, request);
     }
 
-    private Map<String, String> createError(ResourceNotFoundException exception) {
+    private Map<String, String> createError(final ResourceNotFoundException exception, final WebRequest request) {
         final Map<String, String> error = new HashMap<>();
 
-        error.put("exception", exception.getClass().getName());
+        error.put("exception", exception.getClass().getName().split("[.]")[4]);
         error.put("message", exception.getMessage());
-        error.put("resource", exception.getResourceClassName());
+        error.put("path", request.getDescription(false).split("=")[1]);
+        error.put("resource", exception.getResourceClassName().split("[.]")[4]);
 
         return error;
     }

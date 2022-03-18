@@ -40,7 +40,7 @@ public class RoleService {
         Optional<Role> role = repository.findById(roleId);
 
         if(!role.isPresent()){
-            throw new RoleNotFoundException("Cannot find ID ["+roleId+"]");
+            throw new RoleNotFoundException(roleId);
         }
 
         repository.delete(role.get());
