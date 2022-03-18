@@ -3,6 +3,7 @@ package student.laurens.novibackend.controllers;
 import org.junit.After;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
@@ -10,6 +11,8 @@ import student.laurens.novibackend.entities.Role;
 import student.laurens.novibackend.repositories.RoleRepository;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class RoleRestControllerIntegrationTest extends ControllerIntegrationTestBase {
@@ -202,6 +205,80 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
         return mvc.perform(delete("/roles/" + repository.getRoleByName(role.getName()).getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    public void deleteNonExistingRole_AsAdmin_AcceptJSON_NotFound() throws Exception {
+        // when
+        deleteNonExistingRole()
+
+        // then
+        .andExpect(status().isNotFound())
+        .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
+        .andDo(print());
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    public void deleteNonExistingRole_AsAdmin_AcceptXML_NotFound() throws Exception {
+        // when
+        deleteNonExistingRole(MediaType.APPLICATION_XML)
+
+        // then
+        .andExpect(status().isNotFound())
+        .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE))
+        .andDo(print());
+    }
+
+
+    @Test
+    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    public void deleteNonExistingRole_AsUser_Forbidden() throws Exception {
+        // when
+        deleteNonExistingRole()
+
+        // then
+        .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    public void deleteNonExistingRole_AsContentCreator_Forbidden() throws Exception {
+        // when
+        deleteNonExistingRole()
+
+        // then
+        .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    public void deleteNonExistingRole_AsModerator_Forbidden() throws Exception {
+        // when
+        deleteNonExistingRole()
+
+        // then
+        .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void deleteNonExistingRole_isUnauthorized() throws Exception {
+        // when
+        deleteNonExistingRole()
+
+        // then
+        .andExpect(status().isUnauthorized());
+    }
+
+
+    private ResultActions deleteNonExistingRole() throws Exception {
+        return deleteNonExistingRole(MediaType.APPLICATION_JSON);
+    }
+
+    private ResultActions deleteNonExistingRole(MediaType acceptMediaType) throws Exception {
+        return mvc.perform(delete("/roles/9999")
+                .accept(acceptMediaType));
     }
 
     @Test

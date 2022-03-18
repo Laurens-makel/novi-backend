@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import student.laurens.novibackend.entities.Role;
+import student.laurens.novibackend.exceptions.RoleNotFoundException;
 import student.laurens.novibackend.services.RoleService;
 
 /**
@@ -54,12 +55,10 @@ public class RoleRestController {
     }
 
     @DeleteMapping("/roles/{roleId}")
-    public ResponseEntity deleteRole(@PathVariable("roleId") Integer roleId){
-        if(service.removeRoleById(roleId)){
-            return new ResponseEntity(HttpStatus.ACCEPTED);
-        } else {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity deleteRole(@PathVariable("roleId") Integer roleId) throws RoleNotFoundException {
+        service.removeRoleById(roleId);
+
+        return new ResponseEntity(HttpStatus.ACCEPTED);
     }
 
 }

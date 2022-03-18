@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import student.laurens.novibackend.entities.Role;
+import student.laurens.novibackend.exceptions.RoleNotFoundException;
 import student.laurens.novibackend.repositories.RoleRepository;
 
 import javax.transaction.Transactional;
@@ -35,15 +36,14 @@ public class RoleService {
         repository.save(role);
     }
 
-    public boolean removeRoleById (Integer roleId) {
+    public void removeRoleById (Integer roleId) throws RoleNotFoundException {
         Optional<Role> role = repository.findById(roleId);
 
-        if(role.isPresent()){
-            repository.delete(role.get());
-            return true;
-        } else {
-            return false;
+        if(!role.isPresent()){
+            throw new RoleNotFoundException("Cannot find ID ["+roleId+"]");
         }
+
+        repository.delete(role.get());
     }
 
     public Iterable<Role> listAll(){
