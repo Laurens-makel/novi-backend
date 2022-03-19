@@ -18,7 +18,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "USERS")
-public class User {
+public class User extends AbstractEntity {
 
     @Id
     @Column(name = "UID")

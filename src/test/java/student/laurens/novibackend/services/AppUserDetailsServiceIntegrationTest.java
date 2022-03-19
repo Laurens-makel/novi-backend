@@ -17,7 +17,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
+/**
+ * Test class to test actions on {@link AppUserDetailsService}.
+ *
+ * @author Laurens Mäkel
+ * @version 1.0, March 2022
+ */
 public class AppUserDetailsServiceIntegrationTest extends ServiceIntegrationTestBase {
 
     @TestConfiguration

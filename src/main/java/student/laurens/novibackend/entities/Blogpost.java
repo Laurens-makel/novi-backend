@@ -16,7 +16,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "BLOGPOSTS")
-public class Blogpost {
+public class Blogpost extends AbstractEntity {
 
     @Id
     @Column(name = "BLOGPOST_ID")

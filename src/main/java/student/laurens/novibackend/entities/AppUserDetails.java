@@ -15,7 +15,7 @@ import java.util.Set;
  * @author Laurens Mäkel
  * @version 1.0, March 2022
  */
-public class AppUserDetails implements UserDetails {
+public class AppUserDetails extends AbstractEntity implements UserDetails  {
 
     private User user;
 

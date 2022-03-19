@@ -8,6 +8,12 @@ import student.laurens.novibackend.entities.User;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Test class to test actions on {@link UserRepository}.
+ *
+ * @author Laurens Mäkel
+ * @version 1.0, March 2022
+ */
 public class UserRepositoryIntegrationTest extends RepositoryIntegrationTestBase {
 
     @Autowired

@@ -13,7 +13,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "ROLES")
-public class Role {
+public class Role extends AbstractEntity {
 
     @Id
     @Column(name = "ROLE_ID")

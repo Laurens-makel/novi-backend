@@ -6,13 +6,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.AppUserDetails;
-import student.laurens.novibackend.services.AppUserDetailsService;
 import student.laurens.novibackend.entities.User;
+import student.laurens.novibackend.exceptions.UserNotFoundException;
+import student.laurens.novibackend.services.AppUserDetailsService;
 
 import java.security.Principal;
 
 /**
- * Rest Controller that exposes CRUD methods for users.
+ * Rest Controller that exposes CRUD methods for {@link User}.
  *
  * Admins
  * <ul>
@@ -39,7 +40,7 @@ import java.security.Principal;
  * @version 1.0, March 2022
  */
 @RestController
-public class UserRestController {
+public class UserRestController extends BaseRestController{
 
     @Autowired
     private AppUserDetailsService service;
@@ -66,8 +67,8 @@ public class UserRestController {
     }
 
     @PutMapping("/users/{uid}")
-    public ResponseEntity<AppUserDetails> updateUser(@PathVariable("uid") Integer uid, @RequestBody User user){
-        service.updateUser(user);
+    public ResponseEntity<AppUserDetails> updateUser(@PathVariable("uid") Integer uid, @RequestBody User user) throws UserNotFoundException {
+        service.updateUserById(uid, user);
 
         AppUserDetails userDetails = (AppUserDetails) service.loadUserByUsername(user.getUsername());
 
@@ -75,12 +76,10 @@ public class UserRestController {
     }
 
     @DeleteMapping("/users/{uid}")
-    public ResponseEntity deleteUser(@PathVariable("uid") Integer uid){
-        if(service.removeUserById(uid)){
-            return new ResponseEntity(HttpStatus.ACCEPTED);
-        } else {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity deleteUser(@PathVariable("uid") Integer uid) throws UserNotFoundException {
+        service.removeUserById(uid);
+
+        return new ResponseEntity(createDeletedMessage(), HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/password")

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
+import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.entities.Blogpost;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.BlogpostRepository;
@@ -13,7 +14,7 @@ import student.laurens.novibackend.repositories.BlogpostRepository;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class BlogpostRestControllerIntegrationTest extends ControllerIntegrationTestBase {
+public class BlogpostRestControllerIntegrationTest extends ControllerIntegrationTestBase<Blogpost> {
 
     @Autowired
     private BlogpostRepository repository;
@@ -255,4 +256,48 @@ public class BlogpostRestControllerIntegrationTest extends ControllerIntegration
 
         return blogpost;
     }
+
+    @Override
+    protected String getUrlForGet() {
+        return "/blogposts";
+    }
+
+    @Override
+    protected String getUrlForGet(Blogpost resource) {
+        Integer id = resource.getId();
+        return "/blogposts/" + (id == null ? 9999 : id);
+    }
+
+    @Override
+    protected String getUrlForPut(Blogpost resource) {
+        Integer id = resource.getId();
+        return "/blogposts/" + (id == null ? 9999 : id);
+    }
+
+    @Override
+    protected String getUrlForPost() {
+        return "/blogposts";
+    }
+
+    @Override
+    protected String getUrlForDelete(Blogpost resource) {
+        Integer id = resource.getId();
+        return "/blogposts/" + (id == null ? 9999 : id);
+    }
+
+    @Override
+    protected Blogpost create() {
+        return null;
+    }
+
+    @Override
+    protected Blogpost save(Blogpost resource) {
+        return null;
+    }
+
+    @Override
+    protected Blogpost modify(Blogpost resource) {
+        return null;
+    }
+
 }
