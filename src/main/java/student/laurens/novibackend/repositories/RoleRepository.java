@@ -3,6 +3,7 @@ package student.laurens.novibackend.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import student.laurens.novibackend.entities.Blogpost;
 import student.laurens.novibackend.entities.Role;
 
 /**
@@ -16,7 +17,7 @@ import student.laurens.novibackend.entities.Role;
  * @author Laurens Mäkel
  * @version 1.0, March 2022
  */
-public interface RoleRepository extends JpaRepository<Role, Integer> {
+public interface RoleRepository extends ResourceRepository<Role> {
 
     @Query("SELECT r FROM Role r WHERE r.name = :roleName")
     public Role getRoleByName(@Param("roleName") String roleName);

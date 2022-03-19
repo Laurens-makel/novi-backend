@@ -16,7 +16,7 @@ import student.laurens.novibackend.entities.User;
  * @author Laurens Mäkel
  * @version 1.0, March 2022
  */
-public interface BlogpostRepository extends JpaRepository<Blogpost, Integer> {
+public interface BlogpostRepository extends ResourceRepository<Blogpost> {
 
     @Query("SELECT b FROM Blogpost b WHERE b.published = true")
     Iterable<Blogpost> findAllPublished();

@@ -1,17 +1,43 @@
 package student.laurens.novibackend.services;
 
 import student.laurens.novibackend.entities.AbstractEntity;
+import student.laurens.novibackend.exceptions.ResourceNotFoundException;
+import student.laurens.novibackend.repositories.ResourceRepository;
+
+import java.util.Optional;
 
 public abstract class BaseService<R extends AbstractEntity> {
 
+    abstract protected ResourceRepository getRepository();
+
     abstract public R getResource(String string);
 
-    abstract public Iterable<R> getResource();
+    public Iterable<R> getResource(){
+        return getRepository().findAll();
+    }
 
-    abstract public void createResource(R resource);
+    public void createResource(R resource){
+        getRepository().save(resource);
+    };
 
-    abstract public void updateResourceById(Integer resourceId, R resource);
+    public void updateResourceById(Integer resourceId, R resource){
+        Optional<R> found = getRepository().findById(resourceId);
 
-    abstract public void deleteResourceById(Integer resourceId);
+        if(!found.isPresent()){
+            throw new ResourceNotFoundException(resource.getClass(), resourceId);
+        }
+
+        getRepository().delete(found.get());
+    }
+
+    public void deleteResourceById(Integer resourceId){
+        Optional<R> resource = getRepository().findById(resourceId);
+
+        if(!resource.isPresent()){
+            throw new ResourceNotFoundException(null, resourceId);
+        }
+
+        getRepository().delete(resource.get());
+    };
 
 }

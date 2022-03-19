@@ -1,11 +1,13 @@
 package student.laurens.novibackend.services;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import student.laurens.novibackend.entities.Blogpost;
 import student.laurens.novibackend.exceptions.BlogpostNotFoundException;
 import student.laurens.novibackend.repositories.BlogpostRepository;
+import student.laurens.novibackend.repositories.ResourceRepository;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
@@ -22,8 +24,9 @@ import java.util.Optional;
 public class BlogpostService extends BaseService<Blogpost> {
 
     @Autowired
-    private BlogpostRepository repository;
+    private @Getter BlogpostRepository repository;
 
+    @Override
     public Iterable<Blogpost> getResource() {
         return repository.findAllPublished();
     }
@@ -32,27 +35,4 @@ public class BlogpostService extends BaseService<Blogpost> {
         return repository.findByTitle(title);
     }
 
-    public void createResource(Blogpost blogpost){
-        repository.save(blogpost);
-    }
-
-    public void updateResourceById(Integer id, Blogpost blogpost) {
-        Optional<Blogpost> found = repository.findById(id);
-
-        if(!found.isPresent()){
-            throw new BlogpostNotFoundException(id);
-        }
-
-        repository.save(blogpost);
-    }
-
-    public void deleteResourceById(Integer id) {
-        Optional<Blogpost> found = repository.findById(id);
-
-        if(!found.isPresent()){
-            throw new BlogpostNotFoundException(id);
-        }
-
-        repository.delete(found.get());
-    }
 }

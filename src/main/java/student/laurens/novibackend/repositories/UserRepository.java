@@ -1,6 +1,5 @@
 package student.laurens.novibackend.repositories;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import student.laurens.novibackend.entities.User;
@@ -17,7 +16,7 @@ import student.laurens.novibackend.entities.User;
  * @version 1.0, March 2022
  */
 
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface UserRepository extends ResourceRepository<User> {
 
     @Query("SELECT u FROM User u WHERE u.username = :username")
     public User getUserByUsername(@Param("username") String username);

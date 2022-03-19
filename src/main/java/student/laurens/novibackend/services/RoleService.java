@@ -1,5 +1,6 @@
 package student.laurens.novibackend.services;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -22,37 +23,10 @@ import java.util.Optional;
 public class RoleService extends BaseService<Role> {
 
     @Autowired
-    private RoleRepository repository;
+    private @Getter RoleRepository repository;
 
     public Role getResource(String roleName){
         return repository.getRoleByName(roleName);
     }
 
-    public void createResource(Role role) {
-        repository.save(role);
-    }
-
-    public void updateResourceById(Integer roleId, Role role) throws RoleNotFoundException {
-        Optional<Role> found = repository.findById(roleId);
-
-        if(!found.isPresent()){
-            throw new RoleNotFoundException(roleId);
-        }
-
-        repository.save(role);
-    }
-
-    public void deleteResourceById (Integer roleId) throws RoleNotFoundException {
-        Optional<Role> role = repository.findById(roleId);
-
-        if(!role.isPresent()){
-            throw new RoleNotFoundException(roleId);
-        }
-
-        repository.delete(role.get());
-    }
-
-    public Iterable<Role> getResource(){
-        return repository.findAll();
-    }
 }
