@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import student.laurens.novibackend.entities.Role;
 import student.laurens.novibackend.exceptions.RoleNotFoundException;
 import student.laurens.novibackend.services.RoleService;
@@ -30,7 +29,7 @@ import student.laurens.novibackend.services.RoleService;
  * @version 1.0, March 2022
  */
 @RestController
-public class RoleRestController {
+public class RoleRestController extends BaseRestController {
 
     @Autowired
     private RoleService service;
@@ -58,7 +57,7 @@ public class RoleRestController {
     public ResponseEntity deleteRole(@PathVariable("roleId") Integer roleId) throws RoleNotFoundException {
         service.removeRoleById(roleId);
 
-        return new ResponseEntity(HttpStatus.ACCEPTED);
+        return new ResponseEntity(createDeletedMessage(), HttpStatus.ACCEPTED);
     }
 
 }

@@ -6,9 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.AppUserDetails;
+import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.exceptions.UserNotFoundException;
 import student.laurens.novibackend.services.AppUserDetailsService;
-import student.laurens.novibackend.entities.User;
 
 import java.security.Principal;
 
@@ -40,7 +40,7 @@ import java.security.Principal;
  * @version 1.0, March 2022
  */
 @RestController
-public class UserRestController {
+public class UserRestController extends BaseRestController{
 
     @Autowired
     private AppUserDetailsService service;
@@ -79,7 +79,7 @@ public class UserRestController {
     public ResponseEntity deleteUser(@PathVariable("uid") Integer uid) throws UserNotFoundException {
         service.removeUserById(uid);
 
-        return new ResponseEntity(HttpStatus.ACCEPTED);
+        return new ResponseEntity(createDeletedMessage(), HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/password")
