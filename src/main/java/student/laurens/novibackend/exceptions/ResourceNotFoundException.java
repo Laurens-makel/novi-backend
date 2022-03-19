@@ -8,7 +8,7 @@ public class ResourceNotFoundException extends RuntimeException {
     protected Class resourceClass;
     protected Object identifier;
 
-    public ResourceNotFoundException(Class resourceClass, Object identifier) {
+    public ResourceNotFoundException(final Class resourceClass, final Object identifier) {
         super("Unable to find resource with provided ID ["+identifier+"]");
         this.resourceClass = resourceClass;
         this.identifier = identifier;

@@ -48,7 +48,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return error;
     }
 
-    private String translateError(final Map<String, String> error, String accept) throws JsonProcessingException {
+    private String translateError(final Map<String, String> error, final String accept) throws JsonProcessingException {
         final String response;
 
         if(MediaType.APPLICATION_JSON_VALUE.equals(accept)) {
@@ -60,7 +60,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return response;
     }
 
-    private String parseAcceptHeader(WebRequest request){
+    private String parseAcceptHeader(final WebRequest request){
         String accept = request.getHeader(HttpHeaders.ACCEPT);
 
         return accept == null ? DEFAULT_CONTENT_TYPE : accept;

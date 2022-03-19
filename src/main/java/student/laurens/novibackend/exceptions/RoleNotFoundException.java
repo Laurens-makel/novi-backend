@@ -4,7 +4,7 @@ import student.laurens.novibackend.entities.Role;
 
 public class RoleNotFoundException extends ResourceNotFoundException {
 
-    public RoleNotFoundException(Object identifier) {
+    public RoleNotFoundException(final Object identifier) {
         super(Role.class, identifier);
     }
 
