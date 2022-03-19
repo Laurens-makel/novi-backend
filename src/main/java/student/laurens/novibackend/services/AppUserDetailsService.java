@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import student.laurens.novibackend.entities.AppUserDetails;
 import student.laurens.novibackend.entities.User;
+import student.laurens.novibackend.exceptions.RoleNotFoundException;
+import student.laurens.novibackend.exceptions.UserNotFoundException;
 import student.laurens.novibackend.repositories.UserRepository;
 
 import javax.transaction.Transactional;
@@ -46,18 +48,25 @@ public class AppUserDetailsService implements UserDetailsService {
         repository.save(user);
     }
 
-    public boolean removeUserById(Integer uid) {
+    public void removeUserById(Integer uid) throws UserNotFoundException {
         Optional<User> user = repository.findById(uid);
 
-        if(user.isPresent()){
-            repository.delete(user.get());
-            return true;
-        } else {
-            return false;
+        if(!user.isPresent()){
+            throw new UserNotFoundException(uid);
         }
+
+        repository.delete(user.get());
     }
 
-    public void updateUser(User user) {
+    public void updateUserById(Integer uid, User user) {
+        Optional<User> current = repository.findById(uid);
+
+        // TODO: Check user.getUid() == uid.
+
+        if(!current.isPresent()){
+            throw new UserNotFoundException(uid);
+        }
+
         repository.save(user);
     }
 }

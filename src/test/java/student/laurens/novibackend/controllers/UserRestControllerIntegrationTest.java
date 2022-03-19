@@ -3,6 +3,7 @@ package student.laurens.novibackend.controllers;
 import org.junit.After;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
@@ -11,6 +12,8 @@ import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.UserRepository;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class UserRestControllerIntegrationTest extends ControllerIntegrationTestBase {
@@ -288,7 +291,7 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
 
 
     @Test
-    public void deleteUser_AsUser_isUnauthorized() throws Exception {
+    public void deleteUser_isUnauthorized() throws Exception {
         // given
         User user = saveUser(createTestUser("Jan", "Smit", "SMIT", "MyPassword123", "USER"));
 
@@ -303,6 +306,74 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
         return mvc.perform(delete("/users/" + repository.getUserByUsername(user.getUsername()).getUid())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    public void deleteNonExistingUser_AsAdmin_AcceptJSON_NotFound() throws Exception {
+        // when
+        deleteNonExistingUser(MediaType.APPLICATION_JSON)
+
+        // then
+        .andExpect(status().isNotFound())
+        .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
+        .andDo(print());
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    public void deleteNonExistingUser_AsAdmin_AcceptXML_NotFound() throws Exception {
+        // when
+        deleteNonExistingUser(MediaType.APPLICATION_XML)
+
+        // then
+        .andExpect(status().isNotFound())
+        .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE))
+        .andDo(print());
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    public void deleteNonExistingUser_AsContentCreator_Forbidden() throws Exception {
+        // when
+        deleteNonExistingUser(MediaType.APPLICATION_JSON)
+
+        // then
+        .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    public void deleteNonExistingUser_AsModerator_Forbidden() throws Exception {
+        // when
+        deleteNonExistingUser(MediaType.APPLICATION_JSON)
+
+        // then
+        .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    public void deleteNonExistingUser_AsUser_Forbidden() throws Exception {
+        // when
+        deleteNonExistingUser(MediaType.APPLICATION_JSON)
+
+        // then
+        .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void deleteNonExistingUser_isUnauthorized() throws Exception {
+        // when
+        deleteNonExistingUser(MediaType.APPLICATION_JSON)
+
+        // then
+        .andExpect(status().isUnauthorized());
+    }
+
+    private ResultActions deleteNonExistingUser(MediaType acceptMediaType) throws Exception {
+        return mvc.perform(delete("/users/9999")
+                .accept(acceptMediaType));
     }
 
     @Test
@@ -384,6 +455,94 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
                 .content(asJsonString(user))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    public void updateNonExistingUser_AsAdmin_AcceptJSON_NotFound() throws Exception {
+        // given
+        User user = createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER");
+
+        // when
+        updateNonExistingUser(MediaType.APPLICATION_JSON, user)
+
+        // then
+        .andExpect(status().isNotFound())
+        .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
+        .andDo(print());
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    public void updateNonExistingUser_AsAdmin_AcceptXML_NotFound() throws Exception {
+        // given
+        User user = createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER");
+
+        // when
+        updateNonExistingUser(MediaType.APPLICATION_XML, user)
+
+        // then
+        .andExpect(status().isNotFound())
+        .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE))
+        .andDo(print());
+    }
+
+    @Test
+    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    public void updateNonExistingUser_AsUser_Forbidden() throws Exception {
+        // given
+        User user = createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER");
+
+        // when
+        updateNonExistingUser(MediaType.APPLICATION_XML, user)
+
+        // then
+        .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    public void updateNonExistingUser_AsContentCreator_Forbidden() throws Exception {
+        // given
+        User user = createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER");
+
+        // when
+        updateNonExistingUser(MediaType.APPLICATION_XML, user)
+
+        // then
+        .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    public void updateNonExistingUser_AsModerator_Forbidden() throws Exception {
+        // given
+        User user = createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER");
+
+        // when
+        updateNonExistingUser(MediaType.APPLICATION_XML, user)
+
+        // then
+        .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void updateNonExistingUser_isUnauthorized() throws Exception {
+        // given
+        User user = createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER");
+
+        // when
+        updateNonExistingUser(MediaType.APPLICATION_XML, user)
+
+        // then
+        .andExpect(status().isUnauthorized());
+    }
+
+    private ResultActions updateNonExistingUser(MediaType acceptMediaType, User user) throws Exception {
+        return mvc.perform(delete("/users/9999")
+                .content(asJsonString(user))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(acceptMediaType));
     }
 
     private User createTestUser(String firstname, String lastname, String username, String password, String role){
