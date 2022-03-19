@@ -7,6 +7,12 @@ import org.springframework.test.web.servlet.ResultActions;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Helper class to provide a default way of validating an API response.
+ *
+ * @author Laurens Mäkel
+ * @version 1.0, March 2022
+ */
 public class ResponseValidator {
 
     private ResultActions mvc;

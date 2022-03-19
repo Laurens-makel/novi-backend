@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import student.laurens.novibackend.NoviBackendApplication;
 import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.entities.Role;
+import student.laurens.novibackend.entities.User;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -93,10 +94,39 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
 
     /* Prepare HTTP calls with media types for content type and accept headers. */
 
+    /**
+     * Implement this method by a resource specific implementation to return the uri pattern for retrieving a list of the resource.
+     *
+     * @return URL to call.
+     */
     abstract protected String getUrlForGet();
+
+    /**
+     * Implement this method by a resource specific implementation to return the uri pattern for retrieving a specific instance of the resource.
+     *
+     * @return URL to call.
+     */
     abstract protected String getUrlForGet(R resource);
+
+    /**
+     * Implement this method by a resource specific implementation to return the uri pattern for updating a specific instance of the resource.
+     *
+     * @return URL to call.
+     */
     abstract protected String getUrlForPut(R resource);
+
+    /**
+     * Implement this method by a resource specific implementation to return the uri pattern for creating a new instance of the resource.
+     *
+     * @return URL to call.
+     */
     abstract protected String getUrlForPost();
+
+    /**
+     * Implement this method by a resource specific implementation to return the uri pattern for deleting a specific instance of the resource.
+     *
+     * @return URL to call.
+     */
     abstract protected String getUrlForDelete(R resource);
 
     protected ResultActions deleteAsJson(R resource) throws Exception {
@@ -205,31 +235,77 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
 
     /* Default testing */
 
+    /**
+     * Implement this method by a resource specific implementation to create sample instances of the resource.
+     *
+     * @return Sample instance of resource.
+     */
     abstract protected R create();
 
+    /**
+     * Implement this method by a resource specific implementation to save into the repository a sample instances of the resource.
+     *
+     * @return Sample instance of resource.
+     */
     abstract protected R save(R resource);
+
+    /**
+     * Implement this method by a resource specific implementation to modify a sample instances of the resource.
+     *
+     * @return Sample instance of resource.
+     */
     abstract protected R modify(R resource);
 
+    /**
+     * Override this method by a resource specific implementation to send GET messages with JSON as default data format.
+     *
+     * @return ResultActions instance which contains the response of the GET call.
+     */
     public ResultActions defaultJsonTestForGet() throws Exception {
         return getAsJson();
     }
 
+    /**
+     * Override this method by a resource specific implementation to send GET messages with XML as default data format.
+     *
+     * @return ResultActions instance which contains the response of the GET call.
+     */
     public ResultActions defaultXmlTestForGet() throws Exception {
         return getAsXml();
     }
 
+    /**
+     * Override this method by a resource specific implementation to override the default value of HttpStatus.FORBIDDEN.
+     *
+     * @return The expected HttpStatus when a {@link User} with admin {@link Role} calls GET endpoint for specified resource.
+     */
     public HttpStatus expectedStatusForGetAsAdmin() {
         return HttpStatus.OK;
     }
 
+    /**
+     * Override this method by a resource specific implementation to override the default value of HttpStatus.FORBIDDEN.
+     *
+     * @return The expected HttpStatus when a {@link User} with user {@link Role} calls GET endpoint for specified resource.
+     */
     public HttpStatus expectedStatusForGetAsUser() {
         return HttpStatus.FORBIDDEN;
     }
 
+    /**
+     * Override this method by a resource specific implementation to override the default value of HttpStatus.FORBIDDEN.
+     *
+     * @return The expected HttpStatus when a {@link User} with content creator {@link Role} calls GET endpoint for specified resource.
+     */
     public HttpStatus expectedStatusForGetAsContentCreator() {
         return HttpStatus.FORBIDDEN;
     }
 
+    /**
+     * Override this method by a resource specific implementation to override the default value of HttpStatus.FORBIDDEN.
+     *
+     * @return The expected HttpStatus when a {@link User} with moderator {@link Role} calls GET endpoint for specified resource.
+     */
     public HttpStatus expectedStatusForGetAsModerator() {
         return HttpStatus.FORBIDDEN;
     }
@@ -327,26 +403,56 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         validator.validate();
     }
 
+    /**
+     * Override this method by a resource specific implementation to send POST messages with JSON as default data format.
+     *
+     * @return ResultActions instance which contains the response of the POST call.
+     */
     public ResultActions defaultJsonTestForPost() throws Exception {
         return postAsJson(create());
     }
 
+    /**
+     * Override this method by a resource specific implementation to send POST messages with XML as default data format.
+     *
+     * @return ResultActions instance which contains the response of the POST call.
+     */
     public ResultActions defaultXmlTestForPost() throws Exception {
         return postAsXml(create());
     }
 
+    /**
+     * Override this method by a resource specific implementation to override the default value of HttpStatus.CREATED.
+     *
+     * @return The expected HttpStatus when a {@link User} with admin {@link Role} calls POST endpoint for specified resource.
+     */
     public HttpStatus expectedStatusForPostAsAdmin() {
         return HttpStatus.CREATED;
     }
 
+    /**
+     * Override this method by a resource specific implementation to override the default value of HttpStatus.FORBIDDEN.
+     *
+     * @return The expected HttpStatus when a {@link User} with user {@link Role} calls POST endpoint for specified resource.
+     */
     public HttpStatus expectedStatusForPostAsUser() {
         return HttpStatus.FORBIDDEN;
     }
 
+    /**
+     * Override this method by a resource specific implementation to override the default value of HttpStatus.FORBIDDEN.
+     *
+     * @return The expected HttpStatus when a {@link User} with content creator {@link Role} calls POST endpoint for specified resource.
+     */
     public HttpStatus expectedStatusForPostAsContentCreator() {
         return HttpStatus.FORBIDDEN;
     }
 
+    /**
+     * Override this method by a resource specific implementation to override the default value of HttpStatus.FORBIDDEN.
+     *
+     * @return The expected HttpStatus when a {@link User} with moderator {@link Role} calls POST endpoint for specified resource.
+     */
     public HttpStatus expectedStatusForPostAsModerator() {
         return HttpStatus.FORBIDDEN;
     }
@@ -440,26 +546,56 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         validator.validate();
     }
 
+    /**
+     * Override this method by a resource specific implementation to send PUT messages with JSON as default data format.
+     *
+     * @return ResultActions instance which contains the response of the PUT call.
+     */
     public ResultActions defaultJsonTestForPut() throws Exception {
         return updateAsJson(modify(save(create())));
     }
 
+    /**
+     * Override this method by a resource specific implementation to send PUT messages with XML as default data format.
+     *
+     * @return ResultActions instance which contains the response of the PUT call.
+     */
     public ResultActions defaultXmlTestForPut() throws Exception {
         return updateAsXml(modify(save(create())));
     }
 
+    /**
+     * Override this method by a resource specific implementation to override the default value of HttpStatus.ACCEPTED.
+     *
+     * @return The expected HttpStatus when a {@link User} with admin {@link Role} calls PUT endpoint for specified resource.
+     */
     public HttpStatus expectedStatusForPutAsAdmin() {
         return HttpStatus.ACCEPTED;
     }
 
+    /**
+     * Override this method by a resource specific implementation to override the default value of HttpStatus.FORBIDDEN.
+     *
+     * @return The expected HttpStatus when a {@link User} with user {@link Role} calls PUT endpoint for specified resource.
+     */
     public HttpStatus expectedStatusForPutAsUser() {
         return HttpStatus.FORBIDDEN;
     }
 
+    /**
+     * Override this method by a resource specific implementation to override the default value of HttpStatus.FORBIDDEN.
+     *
+     * @return The expected HttpStatus when a {@link User} with content creator {@link Role} calls PUT endpoint for specified resource.
+     */
     public HttpStatus expectedStatusForPutAsContentCreator() {
         return HttpStatus.FORBIDDEN;
     }
 
+    /**
+     * Override this method by a resource specific implementation to override the default value of HttpStatus.FORBIDDEN.
+     *
+     * @return The expected HttpStatus when a {@link User} with moderator {@link Role} calls PUT endpoint for specified resource.
+     */
     public HttpStatus expectedStatusForPutAsModerator() {
         return HttpStatus.FORBIDDEN;
     }
@@ -552,26 +688,54 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         validator.validate();
     }
 
+    /**
+     * Override this method by a resource specific implementation to send DELETE messages with JSON as default data format.
+     *
+     * @return ResultActions instance which contains the response of the DELETE call.
+     */
     public ResultActions defaultJsonTestForDelete() throws Exception {
         return updateAsJson(modify(save(create())));
     }
 
+    /**
+     * Override this method by a resource specific implementation to send DELETE messages with XML as default data format.
+     *
+     * @return ResultActions instance which contains the response of the DELETE call.
+     */
     public ResultActions defaultXmlTestForDelete() throws Exception {
         return updateAsXml(save(create()));
     }
 
+    /**
+     * Override this method by a resource specific implementation to override the default value of HttpStatus.ACCEPTED.
+     *
+     * @return The expected HttpStatus when a {@link User} with admin {@link Role} calls DELETE endpoint for specified resource.
+     */
     public HttpStatus expectedStatusForDeleteAsAdmin() {
         return HttpStatus.ACCEPTED;
     }
 
-    public HttpStatus expectedStatusForDeleteAsUser() {
-        return HttpStatus.FORBIDDEN;
-    }
+    /**
+     * Override this method by a resource specific implementation to override the default value of HttpStatus.FORBIDDEN.
+     *
+     * @return The expected HttpStatus when a {@link User} with user {@link Role} calls DELETE endpoint for specified resource.
+     */
+    public HttpStatus expectedStatusForDeleteAsUser() { return HttpStatus.FORBIDDEN; }
 
+    /**
+     * Override this method by a resource specific implementation to override the default value of HttpStatus.FORBIDDEN.
+     *
+     * @return The expected HttpStatus when a {@link User} with content creator {@link Role} calls DELETE endpoint for specified resource.
+     */
     public HttpStatus expectedStatusForDeleteAsContentCreator() {
         return HttpStatus.FORBIDDEN;
     }
 
+    /**
+     * Override this method by a resource specific implementation to override the default value of HttpStatus.FORBIDDEN.
+     *
+     * @return The expected HttpStatus when a {@link User} with moderator {@link Role} calls DELETE endpoint for specified resource.
+     */
     public HttpStatus expectedStatusForDeleteAsModerator() {
         return HttpStatus.FORBIDDEN;
     }
