@@ -681,7 +681,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
      * @return ResultActions instance which contains the response of the DELETE call.
      */
     public ResultActions defaultJsonTestForDeleteNonExistingResource() throws Exception {
-        return updateAsJson(modify(create()));
+        return deleteAsJson(modify(create()));
     }
 
     /**
@@ -690,7 +690,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
      * @return ResultActions instance which contains the response of the DELETE call.
      */
     public ResultActions defaultXmlTestForDeleteNonExistingResource() throws Exception {
-        return updateAsXml(modify(create()));
+        return deleteAsXml(modify(create()));
     }
 
     /**
