@@ -79,7 +79,7 @@ public class UserRestController extends BaseRestController{
     public ResponseEntity deleteUser(@PathVariable("uid") Integer uid) throws UserNotFoundException {
         service.removeUserById(uid);
 
-        return new ResponseEntity(createDeletedMessage(), HttpStatus.ACCEPTED);
+        return deletedResponse();
     }
 
     @GetMapping("/password")

@@ -38,6 +38,6 @@ public class TagRestController extends BaseRestController {
     public ResponseEntity deleteTag(@PathVariable("tagId") Integer tagId) throws RoleNotFoundException {
         service.removeTagById(tagId);
 
-        return new ResponseEntity(createDeletedMessage(), HttpStatus.ACCEPTED);
+        return deletedResponse();
     }
 }

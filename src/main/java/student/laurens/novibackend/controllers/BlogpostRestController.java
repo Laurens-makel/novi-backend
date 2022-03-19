@@ -53,6 +53,6 @@ public class BlogpostRestController extends BaseRestController {
     public ResponseEntity deleteRole(@PathVariable("blogpostId") Integer blogpostId) throws RoleNotFoundException {
         service.removeBlogpostById(blogpostId);
 
-        return new ResponseEntity(createDeletedMessage(), HttpStatus.ACCEPTED);
+        return deletedResponse();
     }
 }
