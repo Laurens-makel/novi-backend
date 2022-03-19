@@ -3,11 +3,7 @@ package student.laurens.novibackend.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import student.laurens.novibackend.entities.Blogpost;
-import student.laurens.novibackend.entities.Role;
 import student.laurens.novibackend.entities.Tag;
-import student.laurens.novibackend.exceptions.BlogpostNotFoundException;
-import student.laurens.novibackend.exceptions.RoleNotFoundException;
 import student.laurens.novibackend.exceptions.TagNotFoundException;
 import student.laurens.novibackend.repositories.TagRepository;
 
@@ -17,24 +13,24 @@ import java.util.Optional;
 @Service
 @Component
 @Transactional
-public class TagService {
+public class TagService extends BaseService<Tag> {
 
     @Autowired
     private TagRepository repository;
 
-    public Iterable<Tag> listAll() {
+    public Iterable<Tag> getResource() {
         return repository.findAll();
     }
 
-    public void addTag(Tag tag) {
+    public void createResource(Tag tag) {
         repository.save(tag);
     }
 
-    public Tag getTagByTitle(String title) {
+    public Tag getResource(String title) {
         return repository.getTagByTitle(title);
     }
 
-    public void updateTagById(Integer tagId, Tag tag) {
+    public void updateResourceById(Integer tagId, Tag tag) {
         Optional<Tag> found = repository.findById(tagId);
 
         if(!found.isPresent()){
@@ -44,7 +40,7 @@ public class TagService {
         repository.save(tag);
     }
 
-    public void removeTagById(Integer tagId) {
+    public void deleteResourceById(Integer tagId) {
         Optional<Tag> tag = repository.findById(tagId);
 
         if(!tag.isPresent()){

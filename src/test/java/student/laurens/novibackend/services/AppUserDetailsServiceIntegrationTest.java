@@ -76,7 +76,7 @@ public class AppUserDetailsServiceIntegrationTest extends ServiceIntegrationTest
         User john = createTestUser("John", "Doe", "JOHN", "myPass123");
         User alex = createTestUser("Alex", "Doe", "ALEX", "myPass123");
 
-        Iterable<User> users = service.listAll();
+        Iterable<User> users = service.getResource();
         verifyFindAllUsersIsCalledOnce();
 
         assertThat(users).hasSize(3).extracting(User::getUsername).contains(alex.getUsername(), john.getUsername(), bob.getUsername());
@@ -86,7 +86,7 @@ public class AppUserDetailsServiceIntegrationTest extends ServiceIntegrationTest
     public void whenAddingUser_ThenRepositorySaveUserIsCalled() {
         User peter = createTestUser("Peter", "Doe", "PETER", "myPass123");
 
-        service.addUser(peter);
+        service.createResource(peter);
         verifySaveUserIsCalledOnce(peter);
     }
 

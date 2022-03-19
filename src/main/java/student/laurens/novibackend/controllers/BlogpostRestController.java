@@ -1,7 +1,7 @@
 package student.laurens.novibackend.controllers;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.Blogpost;
@@ -26,33 +26,29 @@ import student.laurens.novibackend.services.BlogpostService;
  * @version 1.0, March 2022
  */
 @RestController
-public class BlogpostRestController extends BaseRestController {
+@RequestMapping("/blogposts")
+public class BlogpostRestController extends BaseRestController<Blogpost> {
+
     @Autowired
-    private BlogpostService service;
+    private @Getter BlogpostService service;
 
-    @GetMapping("/blogposts")
+    @GetMapping
     public ResponseEntity<Iterable<Blogpost>> getBlogpost() {
-        return new ResponseEntity<>(service.listAllPublished(), HttpStatus.OK);
+        return get();
     }
 
-    @PostMapping("/blogposts")
+    @PostMapping
     public ResponseEntity<Blogpost> addBlogpost(@RequestBody Blogpost blogpost) {
-        service.addBlogpost(blogpost);
-
-        return new ResponseEntity<>(blogpost, HttpStatus.CREATED);
+        return create(blogpost);
     }
 
-    @PutMapping("/blogposts/{blogpostId}")
+    @PutMapping("/{blogpostId}")
     public ResponseEntity<Blogpost> updateBlogpost(@PathVariable("blogpostId") Integer blogpostId, @RequestBody Blogpost blogpost) {
-        service.updateBlogpostById(blogpostId, blogpost);
-
-        return new ResponseEntity<>(blogpost, HttpStatus.ACCEPTED);
+        return update(blogpostId, blogpost);
     }
 
-    @DeleteMapping("/blogposts/{blogpostId}")
+    @DeleteMapping("/{blogpostId}")
     public ResponseEntity deleteRole(@PathVariable("blogpostId") Integer blogpostId) throws RoleNotFoundException {
-        service.removeBlogpostById(blogpostId);
-
-        return deletedResponse();
+        return delete(blogpostId);
     }
 }

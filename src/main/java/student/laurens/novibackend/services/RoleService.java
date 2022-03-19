@@ -19,20 +19,20 @@ import java.util.Optional;
 @Service
 @Component
 @Transactional
-public class RoleService {
+public class RoleService extends BaseService<Role> {
 
     @Autowired
     private RoleRepository repository;
 
-    public Role getRoleByName(String roleName){
+    public Role getResource(String roleName){
         return repository.getRoleByName(roleName);
     }
 
-    public void addRole(Role role) {
+    public void createResource(Role role) {
         repository.save(role);
     }
 
-    public void updateRoleById(Integer roleId, Role role) throws RoleNotFoundException {
+    public void updateResourceById(Integer roleId, Role role) throws RoleNotFoundException {
         Optional<Role> found = repository.findById(roleId);
 
         if(!found.isPresent()){
@@ -42,7 +42,7 @@ public class RoleService {
         repository.save(role);
     }
 
-    public void removeRoleById (Integer roleId) throws RoleNotFoundException {
+    public void deleteResourceById (Integer roleId) throws RoleNotFoundException {
         Optional<Role> role = repository.findById(roleId);
 
         if(!role.isPresent()){
@@ -52,7 +52,7 @@ public class RoleService {
         repository.delete(role.get());
     }
 
-    public Iterable<Role> listAll(){
+    public Iterable<Role> getResource(){
         return repository.findAll();
     }
 }

@@ -1,5 +1,6 @@
 package student.laurens.novibackend.controllers;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,10 +41,10 @@ import java.security.Principal;
  * @version 1.0, March 2022
  */
 @RestController
-public class UserRestController extends BaseRestController{
+public class UserRestController extends BaseRestController<User>{
 
     @Autowired
-    private AppUserDetailsService service;
+    private @Getter AppUserDetailsService service;
 
     @GetMapping("/user")
     public ResponseEntity<AppUserDetails> getUser(Principal principal) {
@@ -54,32 +55,22 @@ public class UserRestController extends BaseRestController{
 
     @GetMapping("/users")
     public ResponseEntity<Iterable<User>> getUsers() {
-        return new ResponseEntity<>(service.listAll(), HttpStatus.OK);
+        return get();
     }
 
     @PostMapping("/users")
-    public ResponseEntity<AppUserDetails> addUser(@RequestBody User user){
-        service.addUser(user);
-
-        AppUserDetails userDetails = (AppUserDetails) service.loadUserByUsername(user.getUsername());
-
-        return new ResponseEntity<>(userDetails, HttpStatus.CREATED);
+    public ResponseEntity<User> addUser(@RequestBody User user){
+        return create(user);
     }
 
     @PutMapping("/users/{uid}")
-    public ResponseEntity<AppUserDetails> updateUser(@PathVariable("uid") Integer uid, @RequestBody User user) throws UserNotFoundException {
-        service.updateUserById(uid, user);
-
-        AppUserDetails userDetails = (AppUserDetails) service.loadUserByUsername(user.getUsername());
-
-        return new ResponseEntity<>(userDetails, HttpStatus.ACCEPTED);
+    public ResponseEntity<User> updateUser(@PathVariable("uid") Integer uid, @RequestBody User user) throws UserNotFoundException {
+        return update(uid, user);
     }
 
     @DeleteMapping("/users/{uid}")
     public ResponseEntity deleteUser(@PathVariable("uid") Integer uid) throws UserNotFoundException {
-        service.removeUserById(uid);
-
-        return deletedResponse();
+        return delete(uid);
     }
 
     @GetMapping("/password")

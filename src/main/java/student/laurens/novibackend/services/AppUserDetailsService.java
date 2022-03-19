@@ -23,31 +23,31 @@ import java.util.Optional;
 @Service
 @Component
 @Transactional
-public class AppUserDetailsService implements UserDetailsService {
+public class AppUserDetailsService extends BaseService<User> implements UserDetailsService {
 
     @Autowired
     private UserRepository repository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public User getResource(String username) throws UsernameNotFoundException {
         User user = repository.getUserByUsername(username);
 
         if (user == null) {
             throw new UsernameNotFoundException("Could not find user");
         }
 
-        return new AppUserDetails(user);
+        return user;
     }
 
-    public Iterable<User> listAll(){
+    public Iterable<User> getResource(){
         return repository.findAll();
     }
 
-    public void addUser(User user) {
+    public void createResource(User user) {
         repository.save(user);
     }
 
-    public void removeUserById(Integer uid) throws UserNotFoundException {
+    public void deleteResourceById(Integer uid) throws UserNotFoundException {
         Optional<User> user = repository.findById(uid);
 
         if(!user.isPresent()){
@@ -57,7 +57,7 @@ public class AppUserDetailsService implements UserDetailsService {
         repository.delete(user.get());
     }
 
-    public void updateUserById(Integer uid, User user) {
+    public void updateResourceById(Integer uid, User user) {
         Optional<User> current = repository.findById(uid);
 
         // TODO: Check user.getUid() == uid.
@@ -67,5 +67,10 @@ public class AppUserDetailsService implements UserDetailsService {
         }
 
         repository.save(user);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+        return new AppUserDetails(getResource(s));
     }
 }

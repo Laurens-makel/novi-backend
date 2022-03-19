@@ -48,7 +48,7 @@ public class BlogpostServiceIntegrationTest extends ServiceIntegrationTestBase {
     public void whenValidBlogpostTitle_thenBlogpostShouldBeFound() {
         String title = "Example";
 
-        Blogpost found = service.findByTitle(title);
+        Blogpost found = service.getResource(title);
 
         assertThat(found.getTitle()).isEqualTo(title);
         verifyFindByTitleIsCalledOnce(title);
@@ -58,7 +58,7 @@ public class BlogpostServiceIntegrationTest extends ServiceIntegrationTestBase {
     public void whenAddingUser_ThenRepositorySaveUserIsCalled() {
         Blogpost post = createBlogpost("Example", "content");
 
-        service.addBlogpost(post);
+        service.createResource(post);
         verifySaveIsCalledOnce(post);
     }
 

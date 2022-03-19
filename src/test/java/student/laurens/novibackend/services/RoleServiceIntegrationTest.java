@@ -55,7 +55,7 @@ public class RoleServiceIntegrationTest extends ServiceIntegrationTestBase {
     public void whenValidRoleName_thenRoleShouldBeFound() {
         String rolename = "ADMIN";
 
-        Role found = service.getRoleByName(rolename);
+        Role found = service.getResource(rolename);
 
         assertThat(found.getName()).isEqualTo(rolename);
         verifyFindByRoleNameIsCalledOnce(rolename);

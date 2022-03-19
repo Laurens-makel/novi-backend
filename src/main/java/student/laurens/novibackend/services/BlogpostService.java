@@ -19,24 +19,24 @@ import java.util.Optional;
 @Service
 @Component
 @Transactional
-public class BlogpostService {
+public class BlogpostService extends BaseService<Blogpost> {
 
     @Autowired
     private BlogpostRepository repository;
 
-    public Iterable<Blogpost> listAllPublished() {
+    public Iterable<Blogpost> getResource() {
         return repository.findAllPublished();
     }
 
-    public Blogpost findByTitle(String title){
+    public Blogpost getResource(String title){
         return repository.findByTitle(title);
     }
 
-    public void addBlogpost(Blogpost blogpost){
+    public void createResource(Blogpost blogpost){
         repository.save(blogpost);
     }
 
-    public void updateBlogpostById(Integer id, Blogpost blogpost) {
+    public void updateResourceById(Integer id, Blogpost blogpost) {
         Optional<Blogpost> found = repository.findById(id);
 
         if(!found.isPresent()){
@@ -46,7 +46,7 @@ public class BlogpostService {
         repository.save(blogpost);
     }
 
-    public void removeBlogpostById(Integer id ) {
+    public void deleteResourceById(Integer id) {
         Optional<Blogpost> found = repository.findById(id);
 
         if(!found.isPresent()){
