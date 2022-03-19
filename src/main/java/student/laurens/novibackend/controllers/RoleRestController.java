@@ -30,7 +30,7 @@ import student.laurens.novibackend.services.RoleService;
  */
 @RestController
 @RequestMapping("/roles")
-public class RoleRestController extends BaseRestController {
+public class RoleRestController extends BaseRestController<Role> {
 
     @Autowired
     private @Getter RoleService service;

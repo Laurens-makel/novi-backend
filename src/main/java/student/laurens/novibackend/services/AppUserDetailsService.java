@@ -9,12 +9,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import student.laurens.novibackend.entities.AppUserDetails;
 import student.laurens.novibackend.entities.User;
-import student.laurens.novibackend.exceptions.UserNotFoundException;
-import student.laurens.novibackend.repositories.ResourceRepository;
 import student.laurens.novibackend.repositories.UserRepository;
 
 import javax.transaction.Transactional;
-import java.util.Optional;
 
 /**
  * Transactional service that takes care of interactions with {@link UserRepository}.

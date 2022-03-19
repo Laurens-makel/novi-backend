@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.Blogpost;
 import student.laurens.novibackend.exceptions.BlogpostNotFoundException;
-import student.laurens.novibackend.exceptions.RoleNotFoundException;
 import student.laurens.novibackend.services.BlogpostService;
 
 /**
