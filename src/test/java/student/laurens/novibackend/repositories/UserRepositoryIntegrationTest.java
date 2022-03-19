@@ -17,9 +17,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UserRepositoryIntegrationTest extends RepositoryIntegrationTestBase {
 
     @Autowired
-    private TestEntityManager entityManager;
-
-    @Autowired
     private UserRepository repository;
 
     @After
@@ -52,19 +49,6 @@ public class UserRepositoryIntegrationTest extends RepositoryIntegrationTestBase
 
         // then
         assertThat(found).isEqualTo(null);
-    }
-
-    private User createTestUser(String firstname, String lastname, String username, String password){
-        User testUser = new User();
-
-        testUser.setFirstName(firstname);
-        testUser.setLastName(lastname);
-        testUser.setUsername(username);
-        testUser.setPassword(password);
-
-        entityManager.persistAndFlush(testUser);
-
-        return testUser;
     }
 
 }

@@ -22,7 +22,7 @@ public class ResourceNotFoundException extends RuntimeException {
     }
 
     public String getResourceClassName(){
-        return this.resourceClass.getName();
+        return this.resourceClass == null ? this.getClass().getName() : this.resourceClass.getName();
     }
 
 }

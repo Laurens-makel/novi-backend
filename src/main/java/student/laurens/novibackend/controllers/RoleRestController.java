@@ -1,7 +1,7 @@
 package student.laurens.novibackend.controllers;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.Role;
@@ -29,35 +29,30 @@ import student.laurens.novibackend.services.RoleService;
  * @version 1.0, March 2022
  */
 @RestController
-public class RoleRestController extends BaseRestController {
+@RequestMapping("/roles")
+public class RoleRestController extends BaseRestController<Role> {
 
     @Autowired
-    private RoleService service;
+    private @Getter RoleService service;
 
-    @GetMapping("/roles")
+    @GetMapping
     public ResponseEntity<Iterable<Role>> getRoles() {
-        return new ResponseEntity<>(service.listAll(), HttpStatus.OK);
+        return get();
     }
 
-    @PostMapping("/roles")
+    @PostMapping
     public ResponseEntity<Role> addRole(@RequestBody Role role){
-        service.addRole(role);
-
-        return new ResponseEntity<>(service.getRoleByName(role.getName()), HttpStatus.CREATED);
+        return create(role);
     }
 
-    @PutMapping("/roles/{roleId}")
+    @PutMapping("/{roleId}")
     public ResponseEntity<Role> updateRole(@PathVariable("roleId") Integer roleId, @RequestBody Role role){
-        service.updateRoleById(roleId, role);
-
-        return new ResponseEntity<>(service.getRoleByName(role.getName()), HttpStatus.ACCEPTED);
+        return update(roleId, role);
     }
 
-    @DeleteMapping("/roles/{roleId}")
+    @DeleteMapping("/{roleId}")
     public ResponseEntity deleteRole(@PathVariable("roleId") Integer roleId) throws RoleNotFoundException {
-        service.removeRoleById(roleId);
-
-        return new ResponseEntity(createDeletedMessage(), HttpStatus.ACCEPTED);
+        return delete(roleId);
     }
 
 }

@@ -19,6 +19,10 @@ import student.laurens.novibackend.NoviBackendApplication;
 import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.entities.Role;
 import student.laurens.novibackend.entities.User;
+import student.laurens.novibackend.repositories.RoleRepository;
+import student.laurens.novibackend.repositories.UserRepository;
+
+import java.util.Date;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -69,6 +73,12 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Autowired
     protected MockMvc mvc;
 
+    @Autowired
+    protected UserRepository userRepository;
+
+    @Autowired
+    protected RoleRepository roleRepository;
+
 
     /* Request body parsing */
 
@@ -90,6 +100,40 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    protected User createDefaultUser(){
+        return createTestUser("Bob", "Doe", USER, "MyPassword123", "USER");
+    }
+
+    protected User createDefaultAdmin(){
+        return createTestUser("John", "Doe", ADMIN, "MyPassword123", "ADMIN");
+    }
+
+    protected User createDefaultContentCreator(){
+        return createTestUser("Kanye", "West", CONTENT_CREATOR, "MyPassword123", "CONTENT_CREATOR");
+    }
+
+    protected User createDefaultModerator(){
+        return createTestUser("Kanye", "West", MODERATOR, "MyPassword123", "MODERATOR");
+    }
+    protected User createTestUser(String firstname, String lastname, String username, String password, String role){
+        User testUser = new User();
+
+        testUser.setFirstName(firstname);
+        testUser.setLastName(lastname);
+        testUser.setUsername(username);
+        testUser.setPassword(password);
+
+        testUser.getRoles().add(roleRepository.getRoleByName(role));
+
+        return testUser;
+    }
+
+    protected User saveUser(User testUser){
+        userRepository.save(testUser);
+
+        return testUser;
     }
 
     /* Prepare HTTP calls with media types for content type and accept headers. */
@@ -889,5 +933,9 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
 
     private HttpStatus getExpectedStatusForNonExistingResource(final HttpStatus expected){
         return expected.is2xxSuccessful() ? HttpStatus.NOT_FOUND : expected;
+    }
+
+    protected String unique(String text){
+        return text + new Date().getTime();
     }
 }

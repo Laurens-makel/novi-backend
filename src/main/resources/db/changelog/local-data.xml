@@ -5,7 +5,6 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog dbchangelog-4.8.xsd">
 
     <changeSet  id="Fill USERS table"  author="Laurens Mäkel" context="DEV">
-
         <insert tableName="USERS">
             <column name="USERNAME">ADMIN</column>
             <column name="PASSWORD">$2a$10$NxRWDQv3S9gP712lmscWzeewhROdokezkgjfgf8bt59XRRyuFrZsq</column>
@@ -30,6 +29,28 @@
         <insert tableName="USER_ROLES">
             <column name="UID">2</column>
             <column name="ROLE_ID">2</column>
+        </insert>
+    </changeSet>
+
+    <changeSet  id="Fill BLOGPOSTS table"  author="Laurens Mäkel" context="DEV">
+        <insert tableName="BLOGPOSTS">
+            <column name="AUTHOR_UID">1</column>
+            <column name="TITLE">My first blogpost</column>
+            <column name="CONTENT">My first content</column>
+            <column name="PUBLISHED">true</column>
+        </insert>
+    </changeSet>
+
+    <changeSet  id="Fill TAGS table"  author="Laurens Mäkel" context="DEV">
+        <insert tableName="TAGS">
+            <column name="TITLE">Example tag</column>
+        </insert>
+    </changeSet>
+
+    <changeSet  id="Fill BLOGPOSTS_TAGS table"  author="Laurens Mäkel" context="DEV">
+        <insert tableName="BLOGPOSTS_TAGS">
+            <column name="TAG_ID">1</column>
+            <column name="BLOGPOST_ID">1</column>
         </insert>
     </changeSet>
 

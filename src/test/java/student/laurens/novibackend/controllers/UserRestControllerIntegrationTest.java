@@ -2,14 +2,10 @@ package student.laurens.novibackend.controllers;
 
 import org.junit.After;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
-import student.laurens.novibackend.entities.Role;
-import student.laurens.novibackend.repositories.RoleRepository;
 import student.laurens.novibackend.entities.User;
-import student.laurens.novibackend.repositories.UserRepository;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -51,15 +47,9 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
         return "/users/" + (id == null ? 9999 : id);
     }
 
-    @Autowired
-    private UserRepository repository;
-
-    @Autowired
-    private RoleRepository roleRepository;
-
     @After
     public void after(){
-        repository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
@@ -696,41 +686,6 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
         .andExpect(status().isUnauthorized());
     }
 
-    private User createTestUser(String firstname, String lastname, String username, String password, String role){
-        User testUser = new User();
-
-        testUser.setFirstName(firstname);
-        testUser.setLastName(lastname);
-        testUser.setUsername(username);
-        testUser.setPassword(password);
-
-        testUser.getRoles().add(roleRepository.getRoleByName(role));
-
-        return testUser;
-    }
-
-    private User saveUser(User testUser){
-        repository.save(testUser);
-
-        return testUser;
-    }
-
-    private User createDefaultUser(){
-        return createTestUser("Bob", "Doe", USER, "MyPassword123", "USER");
-    }
-
-    private User createDefaultAdmin(){
-        return createTestUser("John", "Doe", ADMIN, "MyPassword123", "ADMIN");
-    }
-
-    private User createDefaultContentCreator(){
-        return createTestUser("Kanye", "West", CONTENT_CREATOR, "MyPassword123", "CONTENT_CREATOR");
-    }
-
-    private User createDefaultModerator(){
-        return createTestUser("Kanye", "West", MODERATOR, "MyPassword123", "MODERATOR");
-    }
-
     @Override
     protected User create() {
         return createDefaultUser();
@@ -752,5 +707,4 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
     public HttpStatus expectedStatusForGetAsModerator() {
         return HttpStatus.OK;
     }
-
 }

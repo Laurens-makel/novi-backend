@@ -53,4 +53,103 @@
                                   referencedTableName="ROLES" referencedColumnNames="ROLE_ID" />
     </changeSet>
 
+
+    <changeSet id="Create BLOGPOSTS table" author="Laurens Mäkel">
+        <createTable tableName="BLOGPOSTS">
+            <column name="BLOGPOST_ID" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="AUTHOR_UID" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TITLE" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CONTENT" type="varchar(max)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PUBLISHED" type="boolean" defaultValueBoolean="false">
+                <constraints  nullable="false"/>
+            </column>
+            <column name="CREATED_AT" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints  nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint  constraintName="Fk_BLOGPOSTS_AUTHOR_UID"
+                                  baseTableName="BLOGPOSTS" baseColumnNames="AUTHOR_UID"
+                                  referencedTableName="USERS" referencedColumnNames="UID" />
+    </changeSet>
+
+    <changeSet id="Create TAGS table" author="Laurens Mäkel">
+        <createTable tableName="TAGS">
+            <column name="TAG_ID"  type="int"  autoIncrement="true">
+                <constraints primaryKey="true"  nullable="false"/>
+            </column>
+            <column name="TITLE"   type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_AT" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="Create BLOGPOSTS_TAGS table" author="Laurens Mäkel">
+        <createTable tableName="BLOGPOSTS_TAGS">
+            <column name="TAG_ID"  type="int">
+                <constraints nullable="false" />
+            </column>
+            <column name="BLOGPOST_ID" type="int">
+                <constraints nullable="false" />
+            </column>
+            <column name="CREATED_AT" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints  nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="BLOGPOSTS_TAGS" columnNames="TAG_ID,BLOGPOST_ID"
+                       constraintName="PK_BLOGPOSTS_TAGS" />
+
+        <addForeignKeyConstraint  constraintName="Fk_BLOGPOSTS_TAGS_BLOGPOST_ID"
+                                  baseTableName="BLOGPOSTS_TAGS" baseColumnNames="BLOGPOST_ID"
+                                  referencedTableName="BLOGPOSTS" referencedColumnNames="BLOGPOST_ID" />
+
+        <addForeignKeyConstraint  constraintName="Fk_BLOGPOSTS_TAGS_TAG_ID"
+                                  baseTableName="BLOGPOSTS_TAGS" baseColumnNames="TAG_ID"
+                                  referencedTableName="TAGS" referencedColumnNames="TAG_ID" />
+    </changeSet>
+
+    <changeSet id="Create COMMENTS table" author="Laurens Mäkel">
+        <createTable tableName="COMMENTS">
+            <column name="COMMENT_ID" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="AUTHOR_UID" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BLOGPOST_ID" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TITLE" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CONTENT" type="varchar(max)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_AT" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint  constraintName="Fk_COMMENTS_AUTHOR_UID"
+                                  baseTableName="COMMENTS" baseColumnNames="AUTHOR_UID"
+                                  referencedTableName="USERS" referencedColumnNames="UID" />
+
+        <addForeignKeyConstraint  constraintName="Fk_COMMENTS_BLOGPOST_ID"
+                                  baseTableName="COMMENTS" baseColumnNames="BLOGPOST_ID"
+                                  referencedTableName="BLOGPOSTS" referencedColumnNames="BLOGPOST_ID" />
+    </changeSet>
+
+
 </databaseChangeLog>

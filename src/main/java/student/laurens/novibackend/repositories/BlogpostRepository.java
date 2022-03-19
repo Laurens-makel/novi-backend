@@ -2,12 +2,11 @@ package student.laurens.novibackend.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import student.laurens.novibackend.entities.Blogpost;
-import student.laurens.novibackend.entities.Role;
+import student.laurens.novibackend.entities.User;
 
 /**
- * Repository Interface that exposes database methods for ROLES table.
+ * Repository Interface that exposes database methods for BLOGPOSTS table.
  *
  * This interface is a subtype of CrudRepository defined by Spring Data JPA so Spring will generate implementation class at runtime.
  * We define the getUserByUsername() method annotated by a JPA query to be used by Spring Security for authentication.
@@ -17,9 +16,11 @@ import student.laurens.novibackend.entities.Role;
  * @author Laurens Mäkel
  * @version 1.0, March 2022
  */
-public interface RoleRepository extends ResourceRepository<Role> {
+public interface BlogpostRepository extends ResourceRepository<Blogpost> {
 
-    @Query("SELECT r FROM Role r WHERE r.name = :roleName")
-    public Role getRoleByName(@Param("roleName") String roleName);
+    @Query("SELECT b FROM Blogpost b WHERE b.published = true")
+    Iterable<Blogpost> findAllPublished();
 
+    @Query("SELECT b FROM Blogpost b WHERE b.title = :title")
+    Blogpost findByTitle(String title);
 }

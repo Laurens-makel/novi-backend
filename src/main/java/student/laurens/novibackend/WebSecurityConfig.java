@@ -50,6 +50,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
+                .antMatchers(HttpMethod.POST,"/blogposts").hasAnyRole("ADMIN", "CONTENT_CREATOR")
+                .antMatchers(HttpMethod.PUT,"/blogposts/{blogpostId}").hasAnyRole("ADMIN", "CONTENT_CREATOR")
+                .antMatchers(HttpMethod.DELETE,"/blogposts/{blogpostId}").hasAnyRole("ADMIN", "CONTENT_CREATOR")
+
                 .antMatchers(HttpMethod.GET,"/users").hasAnyRole("ADMIN", "MODERATOR")
                 .antMatchers(HttpMethod.POST,"/users").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/users/{uid}").hasRole("ADMIN")
@@ -58,6 +62,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/roles").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/roles/{roleId}").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/roles/{roleId}").hasRole("ADMIN")
+
+                .antMatchers(HttpMethod.POST, "/tags").hasAnyRole("ADMIN", "CONTENT_CREATOR")
+                .antMatchers(HttpMethod.DELETE, "/tags/{roleId}").hasAnyRole("ADMIN", "CONTENT_CREATOR")
+                .antMatchers(HttpMethod.PUT, "/tags/{roleId}").hasAnyRole("ADMIN", "CONTENT_CREATOR")
                 .anyRequest().authenticated()
                 .and().httpBasic()
                 .and()

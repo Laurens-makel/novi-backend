@@ -2,14 +2,10 @@ package student.laurens.novibackend.controllers;
 
 import org.junit.After;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
 import student.laurens.novibackend.entities.Role;
-import student.laurens.novibackend.repositories.RoleRepository;
-
-import java.util.Date;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -49,14 +45,11 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
         return "/roles/" + (id == null ? 9999 : id);
     }
 
-    @Autowired
-    private RoleRepository repository;
-
     @After
     public void after(){
-        Role role = repository.getRoleByName("TEST_ROLE");
+        Role role = roleRepository.getRoleByName("TEST_ROLE");
         if(role != null){
-            repository.delete(role);
+            roleRepository.delete(role);
         }
     }
 
@@ -572,7 +565,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
 
     @Override
     protected Role create() {
-        return createRole("SAMPLE" + new Date().getTime());
+        return createRole(unique("SAMPLE"));
     }
 
     private Role createRole(String rolename){
@@ -583,7 +576,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     private Role saveRole(Role role){
-        repository.save(role);
+        roleRepository.save(role);
 
         return role;
     }
@@ -595,7 +588,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
 
     @Override
     protected Role modify(Role resource) {
-        resource.setName("MODIFIED" + new Date().getTime());
+        resource.setName(unique("MODIFIED"));
 
         return resource;
     }
