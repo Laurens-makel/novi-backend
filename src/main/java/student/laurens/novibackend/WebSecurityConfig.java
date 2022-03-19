@@ -52,6 +52,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers(HttpMethod.POST,"/blogposts").hasAnyRole("ADMIN", "CONTENT_CREATOR")
                 .antMatchers(HttpMethod.PUT,"/blogposts/{blogpostId}").hasAnyRole("ADMIN", "CONTENT_CREATOR")
+                .antMatchers(HttpMethod.DELETE,"/blogposts/{blogpostId}").hasAnyRole("ADMIN", "CONTENT_CREATOR")
 
                 .antMatchers(HttpMethod.GET,"/users").hasAnyRole("ADMIN", "MODERATOR")
                 .antMatchers(HttpMethod.POST,"/users").hasRole("ADMIN")

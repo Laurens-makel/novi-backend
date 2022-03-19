@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.Blogpost;
+import student.laurens.novibackend.exceptions.RoleNotFoundException;
 import student.laurens.novibackend.services.BlogpostService;
 
 /**
@@ -25,8 +26,7 @@ import student.laurens.novibackend.services.BlogpostService;
  * @version 1.0, March 2022
  */
 @RestController
-public class BlogpostRestController {
-
+public class BlogpostRestController extends BaseRestController {
     @Autowired
     private BlogpostService service;
 
@@ -44,8 +44,15 @@ public class BlogpostRestController {
 
     @PutMapping("/blogposts/{blogpostId}")
     public ResponseEntity<Blogpost> updateBlogpost(@PathVariable("blogpostId") Integer blogpostId, @RequestBody Blogpost blogpost) {
-        service.updateBlogpost(blogpost);
+        service.updateBlogpostById(blogpostId, blogpost);
 
         return new ResponseEntity<>(blogpost, HttpStatus.ACCEPTED);
+    }
+
+    @DeleteMapping("/blogposts/{blogpostId}")
+    public ResponseEntity deleteRole(@PathVariable("blogpostId") Integer blogpostId) throws RoleNotFoundException {
+        service.removeBlogpostById(blogpostId);
+
+        return new ResponseEntity(createDeletedMessage(), HttpStatus.ACCEPTED);
     }
 }

@@ -3,6 +3,7 @@ package student.laurens.novibackend.controllers;
 import org.junit.After;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
@@ -10,6 +11,8 @@ import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.entities.Blogpost;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.BlogpostRepository;
+
+import java.util.Date;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -287,17 +290,49 @@ public class BlogpostRestControllerIntegrationTest extends ControllerIntegration
 
     @Override
     protected Blogpost create() {
-        return null;
+        return createDefaultBlogpost(createDefaultContentCreator());
     }
 
     @Override
     protected Blogpost save(Blogpost resource) {
-        return null;
+        saveBlogpost(resource);
+
+        return resource;
     }
 
     @Override
     protected Blogpost modify(Blogpost resource) {
-        return null;
+        resource.setTitle("MODIFIED"+ new Date().getTime());
+        return resource;
     }
 
+    @Override
+    public HttpStatus expectedStatusForGetAsUser() {
+        return HttpStatus.OK;
+    }
+
+    @Override
+    public HttpStatus expectedStatusForGetAsContentCreator() {
+        return HttpStatus.OK;
+    }
+
+    @Override
+    public HttpStatus expectedStatusForPostAsContentCreator() {
+        return HttpStatus.CREATED;
+    }
+
+    @Override
+    public HttpStatus expectedStatusForPutAsContentCreator() {
+        return HttpStatus.ACCEPTED;
+    }
+
+    @Override
+    public HttpStatus expectedStatusForDeleteAsContentCreator() {
+        return HttpStatus.ACCEPTED;
+    }
+
+    @Override
+    public HttpStatus expectedStatusForGetAsModerator() {
+        return HttpStatus.OK;
+    }
 }
