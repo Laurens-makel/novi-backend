@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
-import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.entities.Blogpost;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.BlogpostRepository;
@@ -17,6 +16,12 @@ import java.util.Date;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Test class to test allowed actions on {@link BlogpostRestController}.
+ *
+ * @author Laurens Mäkel
+ * @version 1.0, March 2022
+ */
 public class BlogpostRestControllerIntegrationTest extends ControllerIntegrationTestBase<Blogpost> {
 
     @Autowired

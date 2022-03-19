@@ -14,7 +14,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "TAGS")
-public class Tag {
+public class Tag extends AbstractEntity {
 
     @Id
     @Column(name = "TAG_ID")
