@@ -363,6 +363,94 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
                 .accept(MediaType.APPLICATION_JSON));
     }
 
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    public void updateNonExistingRole_AsAdmin_AcceptJson_NotFound() throws Exception {
+        // given
+        Role role = createRole("TEST_ROLE");
+
+        // when
+        updateNonExistingRole(MediaType.APPLICATION_JSON, role)
+
+        // then
+        .andExpect(status().isNotFound())
+        .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
+        .andDo(print());
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    public void updateNonExistingRole_AsAdmin_AcceptXML_NotFound() throws Exception {
+        // given
+        Role role = createRole("TEST_ROLE");
+
+        // when
+        updateNonExistingRole(MediaType.APPLICATION_XML, role)
+
+        // then
+        .andExpect(status().isNotFound())
+        .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE))
+        .andDo(print());
+    }
+
+    @Test
+    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    public void updateNonExistingRole_AsUser_Forbidden() throws Exception {
+        // given
+        Role role = createRole("TEST_ROLE");
+
+        // when
+        updateNonExistingRole(MediaType.APPLICATION_XML, role)
+
+        // then
+        .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    public void updateNonExistingRole_AsContentCreator_Forbidden() throws Exception {
+        // given
+        Role role = createRole("TEST_ROLE");
+
+        // when
+        updateNonExistingRole(MediaType.APPLICATION_XML, role)
+
+        // then
+        .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    public void updateNonExistingRole_AsModerator_Forbidden() throws Exception {
+        // given
+        Role role = createRole("TEST_ROLE");
+
+        // when
+        updateNonExistingRole(MediaType.APPLICATION_XML, role)
+
+        // then
+        .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void updateNonExistingRole_isUnauthorized() throws Exception {
+        // given
+        Role role = createRole("TEST_ROLE");
+
+        // when
+        updateNonExistingRole(MediaType.APPLICATION_XML, role)
+
+        // then
+        .andExpect(status().isUnauthorized());
+    }
+
+    private ResultActions updateNonExistingRole(MediaType acceptMediaType, Role role) throws Exception {
+        return mvc.perform(put("/roles/9999")
+                .content(asJsonString(role))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(acceptMediaType));
+    }
+
     private Role createRole(String rolename){
         Role role = new Role();
         role.setName(rolename);

@@ -49,7 +49,7 @@ public class RoleRestController {
 
     @PutMapping("/roles/{roleId}")
     public ResponseEntity<Role> updateRole(@PathVariable("roleId") Integer roleId, @RequestBody Role role){
-        service.updateRole(role);
+        service.updateRoleById(roleId, role);
 
         return new ResponseEntity<>(service.getRoleByName(role.getName()), HttpStatus.ACCEPTED);
     }

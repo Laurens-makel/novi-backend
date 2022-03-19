@@ -32,7 +32,13 @@ public class RoleService {
         repository.save(role);
     }
 
-    public void updateRole(Role role){
+    public void updateRoleById(Integer roleId, Role role) throws RoleNotFoundException {
+        Optional<Role> found = repository.findById(roleId);
+
+        if(!found.isPresent()){
+            throw new RoleNotFoundException(roleId);
+        }
+
         repository.save(role);
     }
 
