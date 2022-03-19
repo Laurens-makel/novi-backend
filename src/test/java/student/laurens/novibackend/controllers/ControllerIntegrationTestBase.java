@@ -662,7 +662,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
      * @return ResultActions instance which contains the response of the DELETE call.
      */
     public ResultActions defaultJsonTestForDelete() throws Exception {
-        return updateAsJson(modify(save(create())));
+        return deleteAsJson(modify(save(create())));
     }
 
     /**
@@ -671,7 +671,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
      * @return ResultActions instance which contains the response of the DELETE call.
      */
     public ResultActions defaultXmlTestForDelete() throws Exception {
-        return updateAsXml(save(create()));
+        return deleteAsXml(save(create()));
     }
 
     /**
