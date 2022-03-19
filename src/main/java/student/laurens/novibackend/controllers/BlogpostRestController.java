@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.Blogpost;
+import student.laurens.novibackend.exceptions.BlogpostNotFoundException;
 import student.laurens.novibackend.exceptions.RoleNotFoundException;
 import student.laurens.novibackend.services.BlogpostService;
 
@@ -43,12 +44,12 @@ public class BlogpostRestController extends BaseRestController<Blogpost> {
     }
 
     @PutMapping("/{blogpostId}")
-    public ResponseEntity<Blogpost> updateBlogpost(@PathVariable("blogpostId") Integer blogpostId, @RequestBody Blogpost blogpost) {
+    public ResponseEntity<Blogpost> updateBlogpost(@PathVariable("blogpostId") Integer blogpostId, @RequestBody Blogpost blogpost)  throws BlogpostNotFoundException {
         return update(blogpostId, blogpost);
     }
 
     @DeleteMapping("/{blogpostId}")
-    public ResponseEntity deleteRole(@PathVariable("blogpostId") Integer blogpostId) throws RoleNotFoundException {
+    public ResponseEntity deleteRole(@PathVariable("blogpostId") Integer blogpostId) throws BlogpostNotFoundException {
         return delete(blogpostId);
     }
 }

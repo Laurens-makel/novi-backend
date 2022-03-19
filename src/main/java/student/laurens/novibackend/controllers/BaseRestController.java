@@ -3,6 +3,7 @@ package student.laurens.novibackend.controllers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import student.laurens.novibackend.entities.AbstractEntity;
+import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.services.BaseService;
 
 import java.util.HashMap;
@@ -28,7 +29,7 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         return new ResponseEntity<>(getService().getResource(), HttpStatus.OK);
     }
 
-    public ResponseEntity<R> get(String name) {
+    public ResponseEntity<R> get(String name) throws ResourceNotFoundException {
         return new ResponseEntity<>(getService().getResource(name), HttpStatus.OK);
     }
 
@@ -38,13 +39,13 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         return new ResponseEntity<>(resource, HttpStatus.CREATED);
     }
 
-    public ResponseEntity<R> update(Integer resourceId, R resource) {
+    public ResponseEntity<R> update(Integer resourceId, R resource) throws ResourceNotFoundException {
         getService().updateResourceById(resourceId, resource);
 
         return new ResponseEntity<>(resource, HttpStatus.ACCEPTED);
     }
 
-    public ResponseEntity<R> delete(Integer resourceId) {
+    public ResponseEntity<R> delete(Integer resourceId) throws ResourceNotFoundException {
         getService().deleteResourceById(resourceId);
 
         return new ResponseEntity(createDeletedMessage(), HttpStatus.ACCEPTED);
