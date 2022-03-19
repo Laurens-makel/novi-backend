@@ -3,8 +3,10 @@ package student.laurens.novibackend.controllers;
 import org.junit.After;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
+import student.laurens.novibackend.entities.Role;
 import student.laurens.novibackend.repositories.RoleRepository;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.UserRepository;
@@ -727,6 +729,28 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
 
     private User createDefaultModerator(){
         return createTestUser("Kanye", "West", MODERATOR, "MyPassword123", "MODERATOR");
+    }
+
+    @Override
+    protected User create() {
+        return createDefaultUser();
+    }
+
+    @Override
+    protected User save(User resource) {
+        return saveUser(resource);
+    }
+
+    @Override
+    protected User modify(User resource) {
+        resource.setUsername("MODIFIED");
+
+        return resource;
+    }
+
+    @Override
+    public HttpStatus expectedStatusForGetAsModerator() {
+        return HttpStatus.OK;
     }
 
 }

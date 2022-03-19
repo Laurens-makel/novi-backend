@@ -3,10 +3,13 @@ package student.laurens.novibackend.controllers;
 import org.junit.After;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
 import student.laurens.novibackend.entities.Role;
 import student.laurens.novibackend.repositories.RoleRepository;
+
+import java.util.Date;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -567,6 +570,11 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
         .andExpect(status().isUnauthorized());
     }
 
+    @Override
+    protected Role create() {
+        return createRole("SAMPLE" + new Date().getTime());
+    }
+
     private Role createRole(String rolename){
         Role role = new Role();
         role.setName(rolename);
@@ -580,4 +588,30 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
         return role;
     }
 
+    @Override
+    protected Role save(Role resource) {
+        return saveRole(resource);
+    }
+
+    @Override
+    protected Role modify(Role resource) {
+        resource.setName("MODIFIED" + new Date().getTime());
+
+        return resource;
+    }
+
+    @Override
+    public HttpStatus expectedStatusForGetAsUser() {
+        return HttpStatus.OK;
+    }
+
+    @Override
+    public HttpStatus expectedStatusForGetAsContentCreator() {
+        return HttpStatus.OK;
+    }
+
+    @Override
+    public HttpStatus expectedStatusForGetAsModerator() {
+        return HttpStatus.OK;
+    }
 }
