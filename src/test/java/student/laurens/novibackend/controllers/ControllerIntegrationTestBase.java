@@ -472,7 +472,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForPostAsUser();
         ResultActions mvc = defaultXmlTestForPost();
 
-        validateXmlReponse(mvc, expectedStatus);
+        validateXmlUtf8Reponse(mvc, expectedStatus);
     }
 
 
@@ -482,7 +482,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForPostAsContentCreator();
         ResultActions mvc = defaultXmlTestForPost();
 
-        validateXmlReponse(mvc, expectedStatus);
+        validateXmlUtf8Reponse(mvc, expectedStatus);
     }
 
     @Test
@@ -500,7 +500,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForPostAsModerator();
         ResultActions mvc = defaultXmlTestForPost();
 
-        validateXmlReponse(mvc, expectedStatus);
+        validateXmlUtf8Reponse(mvc, expectedStatus);
     }
 
     @Test
@@ -527,7 +527,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForPostAsAdmin();
         ResultActions mvc = defaultXmlTestForPost();
 
-        validateXmlReponse(mvc, expectedStatus);
+        validateXmlUtf8Reponse(mvc, expectedStatus);
     }
 
     /**
@@ -599,7 +599,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForPutAsUser();
         ResultActions mvc = defaultXmlTestForPut();
 
-        validateXmlReponse(mvc, expectedStatus);
+        validateXmlUtf8Reponse(mvc, expectedStatus);
     }
 
     @Test
@@ -617,7 +617,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForPutAsContentCreator();
         ResultActions mvc = defaultXmlTestForPut();
 
-        validateXmlReponse(mvc, expectedStatus);
+        validateXmlUtf8Reponse(mvc, expectedStatus);
     }
 
     @Test
@@ -635,7 +635,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForPutAsModerator();
         ResultActions mvc = defaultXmlTestForPut();
 
-        validateXmlReponse(mvc, expectedStatus);
+        validateXmlUtf8Reponse(mvc, expectedStatus);
     }
 
     @Test
@@ -653,7 +653,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForPutAsAdmin();
         ResultActions mvc = defaultXmlTestForPut();
 
-        validateXmlReponse(mvc, expectedStatus);
+        validateXmlUtf8Reponse(mvc, expectedStatus);
     }
 
     /**
@@ -672,6 +672,25 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
      */
     public ResultActions defaultXmlTestForDelete() throws Exception {
         return updateAsXml(save(create()));
+    }
+
+    /**
+     * Override this method by a resource specific implementation to send DELETE messages with JSON as default data format.
+     * This DELETE call will be sent to a resource which does not exist.
+     *
+     * @return ResultActions instance which contains the response of the DELETE call.
+     */
+    public ResultActions defaultJsonTestForDeleteNonExistingResource() throws Exception {
+        return updateAsJson(modify(create()));
+    }
+
+    /**
+     * Override this method by a resource specific implementation to send DELETE messages with XML as default data format.
+     *
+     * @return ResultActions instance which contains the response of the DELETE call.
+     */
+    public ResultActions defaultXmlTestForDeleteNonExistingResource() throws Exception {
+        return updateAsXml(modify(create()));
     }
 
     /**
@@ -723,6 +742,24 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForDeleteAsUser();
         ResultActions mvc = defaultXmlTestForDelete();
 
+        validateXmlUtf8Reponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = USER)
+    public void deleteNonExistingResourceJsonAsUser() throws Exception {
+        HttpStatus expectedStatus = getExpectedStatusForNonExistingResource(expectedStatusForDeleteAsUser());
+        ResultActions mvc = defaultJsonTestForDeleteNonExistingResource();
+
+        validateJsonReponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = USER)
+    public void deleteNonExistingResourceXmlAsUser() throws Exception {
+        HttpStatus expectedStatus = getExpectedStatusForNonExistingResource(expectedStatusForDeleteAsUser());
+        ResultActions mvc = defaultXmlTestForDeleteNonExistingResource();
+
         validateXmlReponse(mvc, expectedStatus);
     }
 
@@ -740,6 +777,24 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     public void deleteXmlAsContentCreator() throws Exception {
         HttpStatus expectedStatus = expectedStatusForDeleteAsContentCreator();
         ResultActions mvc = defaultXmlTestForDelete();
+
+        validateXmlUtf8Reponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    public void deleteNonExistingResourceJsonAsContentCreator() throws Exception {
+        HttpStatus expectedStatus = getExpectedStatusForNonExistingResource(expectedStatusForDeleteAsContentCreator());
+        ResultActions mvc = defaultJsonTestForDeleteNonExistingResource();
+
+        validateJsonReponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    public void deleteNonExistingResourceXmlAsContentCreator() throws Exception {
+        HttpStatus expectedStatus = getExpectedStatusForNonExistingResource(expectedStatusForDeleteAsContentCreator());
+        ResultActions mvc = defaultXmlTestForDeleteNonExistingResource();
 
         validateXmlReponse(mvc, expectedStatus);
     }
@@ -759,6 +814,24 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForDeleteAsModerator();
         ResultActions mvc = defaultXmlTestForDelete();
 
+        validateXmlUtf8Reponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    public void deleteNonExistingResourceJsonAsModerator() throws Exception {
+        HttpStatus expectedStatus = getExpectedStatusForNonExistingResource(expectedStatusForDeleteAsModerator());
+        ResultActions mvc = defaultJsonTestForDeleteNonExistingResource();
+
+        validateJsonReponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    public void deleteNonExistingResourceXmlAsModerator() throws Exception {
+        HttpStatus expectedStatus = getExpectedStatusForNonExistingResource(expectedStatusForDeleteAsModerator());
+        ResultActions mvc = defaultXmlTestForDeleteNonExistingResource();
+
         validateXmlReponse(mvc, expectedStatus);
     }
 
@@ -777,7 +850,29 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForDeleteAsAdmin();
         ResultActions mvc = defaultXmlTestForDelete();
 
+        validateXmlUtf8Reponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    public void deleteNonExistingResourceJsonAsAdmin() throws Exception {
+        HttpStatus expectedStatus = getExpectedStatusForNonExistingResource(expectedStatusForDeleteAsAdmin());
+        ResultActions mvc = defaultJsonTestForDeleteNonExistingResource();
+
+        validateJsonReponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    public void deleteNonExistingResourceXmlAsAdmin() throws Exception {
+        HttpStatus expectedStatus = getExpectedStatusForNonExistingResource(expectedStatusForDeleteAsAdmin());
+        ResultActions mvc = defaultXmlTestForDeleteNonExistingResource();
+
         validateXmlReponse(mvc, expectedStatus);
+    }
+
+    private void validateXmlUtf8Reponse(ResultActions mvc, HttpStatus expectedStatus) throws Exception {
+        validateContentTypeReponse(mvc, expectedStatus, DEFAULT_XML_ACCEPT_UTF8_VALUE);
     }
 
     private void validateJsonReponse(ResultActions mvc, HttpStatus expectedStatus) throws Exception {
@@ -785,10 +880,14 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     }
 
     private void validateXmlReponse(ResultActions mvc, HttpStatus expectedStatus) throws Exception {
-        validateContentTypeReponse(mvc, expectedStatus, DEFAULT_XML_ACCEPT_UTF8_VALUE);
+        validateContentTypeReponse(mvc, expectedStatus, DEFAULT_XML_ACCEPT_VALUE);
     }
 
     private void validateContentTypeReponse(ResultActions mvc, HttpStatus expectedStatus, String contentType) throws Exception {
         new ResponseValidator(mvc, expectedStatus, contentType).validate();
+    }
+
+    private HttpStatus getExpectedStatusForNonExistingResource(HttpStatus expected){
+        return expected.is2xxSuccessful() ? HttpStatus.NOT_FOUND : expected;
     }
 }
