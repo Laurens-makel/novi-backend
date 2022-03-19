@@ -463,9 +463,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForPostAsUser();
         ResultActions mvc = defaultJsonTestForPost();
 
-        ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_JSON_ACCEPT_VALUE);
-
-        validator.validate();
+        validateJsonReponse(mvc, expectedStatus);
     }
 
     @Test
@@ -474,9 +472,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForPostAsUser();
         ResultActions mvc = defaultXmlTestForPost();
 
-        ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_XML_ACCEPT_UTF8_VALUE);
-
-        validator.validate();
+        validateXmlReponse(mvc, expectedStatus);
     }
 
 
@@ -486,9 +482,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForPostAsContentCreator();
         ResultActions mvc = defaultXmlTestForPost();
 
-        ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_XML_ACCEPT_UTF8_VALUE);
-
-        validator.validate();
+        validateXmlReponse(mvc, expectedStatus);
     }
 
     @Test
@@ -497,9 +491,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForPostAsContentCreator();
         ResultActions mvc = defaultJsonTestForPost();
 
-        ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_JSON_ACCEPT_VALUE);
-
-        validator.validate();
+        validateJsonReponse(mvc, expectedStatus);
     }
 
     @Test
@@ -508,9 +500,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForPostAsModerator();
         ResultActions mvc = defaultXmlTestForPost();
 
-        ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_XML_ACCEPT_UTF8_VALUE);
-
-        validator.validate();
+        validateXmlReponse(mvc, expectedStatus);
     }
 
     @Test
@@ -519,9 +509,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForPostAsModerator();
         ResultActions mvc = defaultJsonTestForPost();
 
-        ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_JSON_ACCEPT_VALUE);
-
-        validator.validate();
+        validateJsonReponse(mvc, expectedStatus);
     }
 
     @Test
@@ -530,9 +518,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForPostAsAdmin();
         ResultActions mvc = defaultJsonTestForPost();
 
-        ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_JSON_ACCEPT_VALUE);
-
-        validator.validate();
+        validateJsonReponse(mvc, expectedStatus);
     }
 
     @Test
@@ -541,9 +527,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForPostAsAdmin();
         ResultActions mvc = defaultXmlTestForPost();
 
-        ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_XML_ACCEPT_UTF8_VALUE);
-
-        validator.validate();
+        validateXmlReponse(mvc, expectedStatus);
     }
 
     /**
@@ -606,9 +590,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForPutAsUser();
         ResultActions mvc = defaultJsonTestForPut();
 
-        ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_JSON_ACCEPT_VALUE);
-
-        validator.validate();
+        validateJsonReponse(mvc, expectedStatus);
     }
 
     @Test
@@ -617,9 +599,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForPutAsUser();
         ResultActions mvc = defaultXmlTestForPut();
 
-        ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_XML_ACCEPT_UTF8_VALUE);
-
-        validator.validate();
+        validateXmlReponse(mvc, expectedStatus);
     }
 
     @Test
@@ -628,9 +608,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForPutAsContentCreator();
         ResultActions mvc = defaultJsonTestForPut();
 
-        ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_JSON_ACCEPT_VALUE);
-
-        validator.validate();
+        validateJsonReponse(mvc, expectedStatus);
     }
 
     @Test
@@ -639,9 +617,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForPutAsContentCreator();
         ResultActions mvc = defaultXmlTestForPut();
 
-        ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_XML_ACCEPT_UTF8_VALUE);
-
-        validator.validate();
+        validateXmlReponse(mvc, expectedStatus);
     }
 
     @Test
@@ -650,9 +626,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForPutAsModerator();
         ResultActions mvc = defaultJsonTestForPut();
 
-        ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_JSON_ACCEPT_VALUE);
-
-        validator.validate();
+        validateJsonReponse(mvc, expectedStatus);
     }
 
     @Test
@@ -661,9 +635,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForPutAsModerator();
         ResultActions mvc = defaultXmlTestForPut();
 
-        ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_XML_ACCEPT_UTF8_VALUE);
-
-        validator.validate();
+        validateXmlReponse(mvc, expectedStatus);
     }
 
     @Test
@@ -672,9 +644,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForPutAsAdmin();
         ResultActions mvc = defaultJsonTestForPut();
 
-        ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_JSON_ACCEPT_VALUE);
-
-        validator.validate();
+        validateJsonReponse(mvc, expectedStatus);
     }
 
     @Test
@@ -683,9 +653,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForPutAsAdmin();
         ResultActions mvc = defaultXmlTestForPut();
 
-        ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_XML_ACCEPT_UTF8_VALUE);
-
-        validator.validate();
+        validateXmlReponse(mvc, expectedStatus);
     }
 
     /**
@@ -746,9 +714,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForDeleteAsUser();
         ResultActions mvc = defaultJsonTestForDelete();
 
-        ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_JSON_ACCEPT_VALUE);
-
-        validator.validate();
+        validateJsonReponse(mvc, expectedStatus);
     }
 
     @Test
@@ -757,9 +723,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForDeleteAsUser();
         ResultActions mvc = defaultXmlTestForDelete();
 
-        ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_XML_ACCEPT_UTF8_VALUE);
-
-        validator.validate();
+        validateXmlReponse(mvc, expectedStatus);
     }
 
     @Test
@@ -768,9 +732,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForDeleteAsContentCreator();
         ResultActions mvc = defaultJsonTestForDelete();
 
-        ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_JSON_ACCEPT_VALUE);
-
-        validator.validate();
+        validateJsonReponse(mvc, expectedStatus);
     }
 
     @Test
@@ -779,9 +741,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForDeleteAsContentCreator();
         ResultActions mvc = defaultXmlTestForDelete();
 
-        ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_XML_ACCEPT_UTF8_VALUE);
-
-        validator.validate();
+        validateXmlReponse(mvc, expectedStatus);
     }
 
     @Test
@@ -790,9 +750,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForDeleteAsModerator();
         ResultActions mvc = defaultJsonTestForDelete();
 
-        ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_JSON_ACCEPT_VALUE);
-
-        validator.validate();
+        validateJsonReponse(mvc, expectedStatus);
     }
 
     @Test
@@ -801,9 +759,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForDeleteAsModerator();
         ResultActions mvc = defaultXmlTestForDelete();
 
-        ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_XML_ACCEPT_UTF8_VALUE);
-
-        validator.validate();
+        validateXmlReponse(mvc, expectedStatus);
     }
 
     @Test
@@ -812,9 +768,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForDeleteAsAdmin();
         ResultActions mvc = defaultJsonTestForDelete();
 
-        ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_JSON_ACCEPT_VALUE);
-
-        validator.validate();
+        validateJsonReponse(mvc, expectedStatus);
     }
 
     @Test
@@ -823,8 +777,18 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         HttpStatus expectedStatus = expectedStatusForDeleteAsAdmin();
         ResultActions mvc = defaultXmlTestForDelete();
 
-        ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_XML_ACCEPT_UTF8_VALUE);
+        validateXmlReponse(mvc, expectedStatus);
+    }
 
-        validator.validate();
+    private void validateJsonReponse(ResultActions mvc, HttpStatus expectedStatus) throws Exception {
+        validateContentTypeReponse(mvc, expectedStatus, DEFAULT_JSON_ACCEPT_VALUE);
+    }
+
+    private void validateXmlReponse(ResultActions mvc, HttpStatus expectedStatus) throws Exception {
+        validateContentTypeReponse(mvc, expectedStatus, DEFAULT_XML_ACCEPT_UTF8_VALUE);
+    }
+
+    private void validateContentTypeReponse(ResultActions mvc, HttpStatus expectedStatus, String contentType) throws Exception {
+        new ResponseValidator(mvc, expectedStatus, contentType).validate();
     }
 }
