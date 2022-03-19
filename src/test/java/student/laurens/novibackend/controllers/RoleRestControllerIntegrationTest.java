@@ -2,8 +2,6 @@ package student.laurens.novibackend.controllers;
 
 import org.junit.After;
 import org.junit.Test;
-import org.springframework.http.MediaType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
