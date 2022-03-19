@@ -7,6 +7,12 @@ import student.laurens.novibackend.entities.Role;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Test class to test actions on {@link RoleRepository}.
+ *
+ * @author Laurens Mäkel
+ * @version 1.0, March 2022
+ */
 public class RoleRepositoryIntegrationTest extends RepositoryIntegrationTestBase {
 
     @Autowired

@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * Default exception when a resource could not by find by the system, used by RestExceptionHandler to format these
+ * Default exception when a resource could not by find by the system, used by {@link RestExceptionHandler} to format these
  * to a format (JSON or XML is supported) the consumer specified by the <code>Accept</code> header
  *
  * @author Laurens Mäkel

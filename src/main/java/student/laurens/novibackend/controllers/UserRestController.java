@@ -13,7 +13,7 @@ import student.laurens.novibackend.services.AppUserDetailsService;
 import java.security.Principal;
 
 /**
- * Rest Controller that exposes CRUD methods for users.
+ * Rest Controller that exposes CRUD methods for {@link User}.
  *
  * Admins
  * <ul>

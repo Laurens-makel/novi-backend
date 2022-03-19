@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Test class to test allowed actions on UserRestController.
+ * Test class to test allowed actions on {@link UserRestController}.
  *
  * @author Laurens Mäkel
  * @version 1.0, March 2022

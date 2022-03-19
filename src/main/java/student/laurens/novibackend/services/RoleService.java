@@ -11,7 +11,7 @@ import javax.transaction.Transactional;
 import java.util.Optional;
 
 /**
- * Transactional service that takes care of interactions with RoleRepository.
+ * Transactional service that takes care of interactions with {@link RoleRepository}.
  *
  * @author Laurens Mäkel
  * @version 1.0, March 2022

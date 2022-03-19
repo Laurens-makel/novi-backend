@@ -9,7 +9,7 @@ import student.laurens.novibackend.exceptions.RoleNotFoundException;
 import student.laurens.novibackend.services.RoleService;
 
 /**
- * Rest Controller that exposes CRUD methods for roles.
+ * Rest Controller that exposes CRUD methods for {@link Role}.
  *
  * Admins
  * <ul>
