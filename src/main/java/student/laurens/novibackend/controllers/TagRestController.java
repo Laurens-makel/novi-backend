@@ -9,27 +9,28 @@ import student.laurens.novibackend.exceptions.RoleNotFoundException;
 import student.laurens.novibackend.services.TagService;
 
 @RestController
+@RequestMapping("/tags")
 public class TagRestController extends BaseRestController<Tag> {
 
     @Autowired
     private @Getter TagService service;
 
-    @GetMapping("/tags")
+    @GetMapping
     public ResponseEntity<Iterable<Tag>> getTags() {
         return get();
     }
 
-    @PostMapping("/tags")
+    @PostMapping
     public ResponseEntity<Tag> addTag(@RequestBody Tag tag){
         return create(tag);
     }
 
-    @PutMapping("/tags/{tagId}")
+    @PutMapping("/{tagId}")
     public ResponseEntity<Tag> updateTag(@PathVariable("tagId") Integer tagId, @RequestBody Tag tag){
         return update(tagId, tag);
     }
 
-    @DeleteMapping("/tags/{tagId}")
+    @DeleteMapping("/{tagId}")
     public ResponseEntity deleteTag(@PathVariable("tagId") Integer tagId) throws RoleNotFoundException {
         return delete(tagId);
     }

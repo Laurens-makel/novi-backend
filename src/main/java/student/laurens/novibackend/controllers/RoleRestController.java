@@ -29,27 +29,28 @@ import student.laurens.novibackend.services.RoleService;
  * @version 1.0, March 2022
  */
 @RestController
+@RequestMapping("/roles")
 public class RoleRestController extends BaseRestController {
 
     @Autowired
     private @Getter RoleService service;
 
-    @GetMapping("/roles")
+    @GetMapping
     public ResponseEntity<Iterable<Role>> getRoles() {
         return get();
     }
 
-    @PostMapping("/roles")
+    @PostMapping
     public ResponseEntity<Role> addRole(@RequestBody Role role){
         return create(role);
     }
 
-    @PutMapping("/roles/{roleId}")
+    @PutMapping("/{roleId}")
     public ResponseEntity<Role> updateRole(@PathVariable("roleId") Integer roleId, @RequestBody Role role){
         return update(roleId, role);
     }
 
-    @DeleteMapping("/roles/{roleId}")
+    @DeleteMapping("/{roleId}")
     public ResponseEntity deleteRole(@PathVariable("roleId") Integer roleId) throws RoleNotFoundException {
         return delete(roleId);
     }
