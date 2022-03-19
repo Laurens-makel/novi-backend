@@ -7,8 +7,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
 import student.laurens.novibackend.entities.Role;
 
-import java.util.Date;
-
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -567,7 +565,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
 
     @Override
     protected Role create() {
-        return createRole("SAMPLE" + new Date().getTime());
+        return createRole(unique("SAMPLE"));
     }
 
     private Role createRole(String rolename){
@@ -590,7 +588,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
 
     @Override
     protected Role modify(Role resource) {
-        resource.setName("MODIFIED" + new Date().getTime());
+        resource.setName(unique("MODIFIED"));
 
         return resource;
     }

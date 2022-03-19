@@ -22,6 +22,8 @@ import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.RoleRepository;
 import student.laurens.novibackend.repositories.UserRepository;
 
+import java.util.Date;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -931,5 +933,9 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
 
     private HttpStatus getExpectedStatusForNonExistingResource(final HttpStatus expected){
         return expected.is2xxSuccessful() ? HttpStatus.NOT_FOUND : expected;
+    }
+
+    protected String unique(String text){
+        return text + new Date().getTime();
     }
 }

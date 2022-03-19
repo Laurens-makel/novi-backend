@@ -5,8 +5,6 @@ import org.springframework.http.HttpStatus;
 import student.laurens.novibackend.entities.Tag;
 import student.laurens.novibackend.repositories.TagRepository;
 
-import java.util.Date;
-
 public class TagsRestControllerIntegrationTest extends ControllerIntegrationTestBase<Tag>  {
 
     @Autowired
@@ -42,7 +40,7 @@ public class TagsRestControllerIntegrationTest extends ControllerIntegrationTest
     @Override
     protected Tag create() {
         Tag tag = new Tag();
-        tag.setTitle("Example"+ new Date().getTime());
+        tag.setTitle(unique("Example"));
 
         return tag;
     }
@@ -55,7 +53,7 @@ public class TagsRestControllerIntegrationTest extends ControllerIntegrationTest
 
     @Override
     protected Tag modify(Tag resource) {
-        resource.setTitle("Modified"+ new Date().getTime());
+        resource.setTitle(unique("Modified"));
         return resource;
     }
 
