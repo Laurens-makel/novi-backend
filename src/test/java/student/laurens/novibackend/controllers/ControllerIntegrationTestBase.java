@@ -106,14 +106,14 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
      *
      * @return URL to call.
      */
-    abstract protected String getUrlForGet(R resource);
+    abstract protected String getUrlForGet(final R resource);
 
     /**
      * Implement this method by a resource specific implementation to return the uri pattern for updating a specific instance of the resource.
      *
      * @return URL to call.
      */
-    abstract protected String getUrlForPut(R resource);
+    abstract protected String getUrlForPut(final R resource);
 
     /**
      * Implement this method by a resource specific implementation to return the uri pattern for creating a new instance of the resource.
@@ -127,17 +127,17 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
      *
      * @return URL to call.
      */
-    abstract protected String getUrlForDelete(R resource);
+    abstract protected String getUrlForDelete(final R resource);
 
-    protected ResultActions deleteAsJson(R resource) throws Exception {
+    protected ResultActions deleteAsJson(final R resource) throws Exception {
         return executeDelete(resource, DEFAULT_JSON_ACCEPT);
     }
 
-    protected ResultActions deleteAsXml(R resource) throws Exception {
+    protected ResultActions deleteAsXml(final R resource) throws Exception {
         return executeDelete(resource, DEFAULT_XML_ACCEPT);
     }
 
-    protected ResultActions executeDelete(R resource, MediaType accept) throws Exception {
+    protected ResultActions executeDelete(final R resource, final MediaType accept) throws Exception {
         return deleteResource(getUrlForDelete(resource), accept);
     }
 
@@ -149,19 +149,19 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         return executeGet(DEFAULT_XML_ACCEPT);
     }
 
-    protected ResultActions executeGet(MediaType accept) throws Exception {
+    protected ResultActions executeGet(final MediaType accept) throws Exception {
         return getResource(getUrlForGet(), accept);
     }
 
-    protected ResultActions getAsJson(R resource) throws Exception {
+    protected ResultActions getAsJson(final R resource) throws Exception {
         return executeGet(resource, DEFAULT_JSON_ACCEPT);
     }
 
-    protected ResultActions getAsXml(R resource) throws Exception {
+    protected ResultActions getAsXml(final R resource) throws Exception {
         return executeGet(resource, DEFAULT_XML_ACCEPT);
     }
 
-    protected ResultActions executeGet(R resource, MediaType accept) throws Exception {
+    protected ResultActions executeGet(final R resource, final MediaType accept) throws Exception {
         return getResource(getUrlForGet(resource), accept);
     }
 
@@ -173,63 +173,63 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         return executePost(resource, DEFAULT_XML_CONTENT_TYPE, DEFAULT_XML_ACCEPT);
     }
 
-    protected ResultActions executePost(R resource, MediaType contentType, MediaType accept) throws Exception {
+    protected ResultActions executePost(final R resource, final MediaType contentType, final MediaType accept) throws Exception {
         return postResource(getUrlForPost(), resource, accept, contentType);
     }
 
-    protected ResultActions updateAsJson(R resource) throws Exception {
+    protected ResultActions updateAsJson(final R resource) throws Exception {
         return executePut(resource, DEFAULT_JSON_CONTENT_TYPE, DEFAULT_JSON_ACCEPT);
     }
 
-    protected ResultActions updateAsXml(R resource) throws Exception {
+    protected ResultActions updateAsXml(final R resource) throws Exception {
         return executePut(resource, DEFAULT_XML_CONTENT_TYPE, DEFAULT_XML_ACCEPT);
     }
 
-    protected ResultActions executePut(R resource, MediaType contentType, MediaType accept) throws Exception {
+    protected ResultActions executePut(final R resource, final MediaType contentType, final MediaType accept) throws Exception {
         return putResource(getUrlForPut(resource), resource, accept, contentType);
     }
 
     /* Execute HTTP calls */
 
-    protected ResultActions putResource(String url, R resource, MediaType accept, MediaType contentType) throws Exception {
+    protected ResultActions putResource(final String url, final R resource, final MediaType accept, final MediaType contentType) throws Exception {
         return mvc.perform(put(url)
                 .content(asString(contentType, resource))
                 .contentType(contentType)
                 .accept(accept));
     }
 
-    protected ResultActions postResource(String url, R resource, MediaType accept, MediaType contentType) throws Exception {
+    protected ResultActions postResource(final String url, R resource, final MediaType accept, final MediaType contentType) throws Exception {
         return mvc.perform(post(url)
                 .content(asString(contentType, resource))
                 .contentType(contentType)
                 .accept(accept));
     }
 
-    protected ResultActions getResource(String url, MediaType accept) throws Exception {
+    protected ResultActions getResource(final String url, final MediaType accept) throws Exception {
         return mvc.perform(get(url)
                 .accept(accept));
     }
 
-    protected ResultActions deleteResource(String url, MediaType accept) throws Exception {
+    protected ResultActions deleteResource(final String url, final MediaType accept) throws Exception {
         return mvc.perform(delete(url)
                 .accept(accept));
     }
 
     /* Expects on response */
 
-    public ResultActions expectXmlResponse(ResultActions mvc) throws Exception {
+    public ResultActions expectXmlResponse(final ResultActions mvc) throws Exception {
         return expectContentTypeResponse(mvc, DEFAULT_XML_ACCEPT_VALUE);
     }
 
-    public ResultActions expectXmlUtf8Response(ResultActions mvc) throws Exception {
+    public ResultActions expectXmlUtf8Response(final ResultActions mvc) throws Exception {
         return expectContentTypeResponse(mvc, DEFAULT_XML_ACCEPT_UTF8_VALUE);
     }
 
-    public ResultActions expectJsonResponse(ResultActions mvc) throws Exception {
+    public ResultActions expectJsonResponse(final ResultActions mvc) throws Exception {
         return expectContentTypeResponse(mvc, DEFAULT_JSON_ACCEPT_VALUE);
     }
 
-    private ResultActions expectContentTypeResponse(ResultActions mvc, String contentType) throws Exception {
+    private ResultActions expectContentTypeResponse(final ResultActions mvc, final String contentType) throws Exception {
         return mvc.andExpect(header().string(HttpHeaders.CONTENT_TYPE, contentType));
     }
 
@@ -247,14 +247,14 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
      *
      * @return Sample instance of resource.
      */
-    abstract protected R save(R resource);
+    abstract protected R save(final R resource);
 
     /**
      * Implement this method by a resource specific implementation to modify a sample instances of the resource.
      *
      * @return Sample instance of resource.
      */
-    abstract protected R modify(R resource);
+    abstract protected R modify(final R resource);
 
     /**
      * Override this method by a resource specific implementation to send GET messages with JSON as default data format.
@@ -871,23 +871,23 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         validateXmlResponse(mvc, expectedStatus);
     }
 
-    private void validateXmlUtf8Response(ResultActions mvc, HttpStatus expectedStatus) throws Exception {
+    private void validateXmlUtf8Response(final ResultActions mvc, final HttpStatus expectedStatus) throws Exception {
         validateContentTypeResponse(mvc, expectedStatus, DEFAULT_XML_ACCEPT_UTF8_VALUE);
     }
 
-    private void validateJsonResponse(ResultActions mvc, HttpStatus expectedStatus) throws Exception {
+    private void validateJsonResponse(final ResultActions mvc, final HttpStatus expectedStatus) throws Exception {
         validateContentTypeResponse(mvc, expectedStatus, DEFAULT_JSON_ACCEPT_VALUE);
     }
 
-    private void validateXmlResponse(ResultActions mvc, HttpStatus expectedStatus) throws Exception {
+    private void validateXmlResponse(final ResultActions mvc, final HttpStatus expectedStatus) throws Exception {
         validateContentTypeResponse(mvc, expectedStatus, DEFAULT_XML_ACCEPT_VALUE);
     }
 
-    private void validateContentTypeResponse(ResultActions mvc, HttpStatus expectedStatus, String contentType) throws Exception {
+    private void validateContentTypeResponse(final ResultActions mvc, final HttpStatus expectedStatus, final String contentType) throws Exception {
         new ResponseValidator(mvc, expectedStatus, contentType).validate();
     }
 
-    private HttpStatus getExpectedStatusForNonExistingResource(HttpStatus expected){
+    private HttpStatus getExpectedStatusForNonExistingResource(final HttpStatus expected){
         return expected.is2xxSuccessful() ? HttpStatus.NOT_FOUND : expected;
     }
 }
