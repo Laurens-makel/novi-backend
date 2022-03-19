@@ -183,15 +183,19 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     /* Expects on response */
 
     public ResultActions expectXmlResponse(ResultActions mvc) throws Exception {
-        return mvc.andExpect(header().string(HttpHeaders.CONTENT_TYPE, DEFAULT_XML_ACCEPT_VALUE));
+        return expectContentTypeResponse(mvc, DEFAULT_XML_ACCEPT_VALUE);
     }
 
     public ResultActions expectXmlUtf8Response(ResultActions mvc) throws Exception {
-        return mvc.andExpect(header().string(HttpHeaders.CONTENT_TYPE, DEFAULT_XML_ACCEPT_UTF8_VALUE));
+        return expectContentTypeResponse(mvc, DEFAULT_XML_ACCEPT_UTF8_VALUE);
     }
 
     public ResultActions expectJsonResponse(ResultActions mvc) throws Exception {
-        return mvc.andExpect(header().string(HttpHeaders.CONTENT_TYPE, DEFAULT_JSON_ACCEPT_VALUE));
+        return expectContentTypeResponse(mvc, DEFAULT_JSON_ACCEPT_VALUE);
+    }
+
+    private ResultActions expectContentTypeResponse(ResultActions mvc, String contentType) throws Exception {
+        return mvc.andExpect(header().string(HttpHeaders.CONTENT_TYPE, contentType));
     }
 
 }
