@@ -35,11 +35,11 @@ public class BlogpostService extends BaseService<Blogpost> {
     }
 
     @Override
-    public boolean isMethodProtected(HttpMethod method) {
+    public boolean isMethodProtected(final HttpMethod method) {
         return Blogpost.isMethodProtected(method);
     }
 
-    public Blogpost getResource(String title){
+    public Blogpost getResource(final String title){
         return repository.findByTitle(title);
     }
 

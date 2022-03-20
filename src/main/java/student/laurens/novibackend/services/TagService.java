@@ -2,7 +2,6 @@ package student.laurens.novibackend.services;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import student.laurens.novibackend.entities.Tag;
@@ -18,7 +17,7 @@ public class TagService extends BaseService<Tag> {
     @Autowired
     private @Getter TagRepository repository;
 
-    public Tag getResource(String title) {
+    public Tag getResource(final String title) {
         return repository.getTagByTitle(title);
     }
 

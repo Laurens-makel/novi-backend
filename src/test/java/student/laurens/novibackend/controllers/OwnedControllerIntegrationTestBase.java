@@ -9,6 +9,20 @@ import student.laurens.novibackend.entities.User;
 
 public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwnedEntity> extends ControllerIntegrationTestBase<R> {
 
+    public HttpStatus expectedStatusForPutAsAdminResourceOwned() { return HttpStatus.ACCEPTED;}
+    public HttpStatus expectedStatusForPutAsAdminResourceNotOwned() { return HttpStatus.ACCEPTED;}
+    public HttpStatus expectedStatusForDeleteAsAdminResourceOwned() { return HttpStatus.ACCEPTED;}
+    public HttpStatus expectedStatusForDeleteAsAdminResourceNotOwned() { return HttpStatus.ACCEPTED;}
+    public HttpStatus expectedStatusForPutAsContentCreatorResourceOwned() { return HttpStatus.ACCEPTED;}
+    public HttpStatus expectedStatusForPutAsContentCreatorResourceNotOwned() { return HttpStatus.FORBIDDEN;}
+    public HttpStatus expectedStatusForDeleteAsContentCreatorResourceOwned() {
+        return HttpStatus.ACCEPTED;
+    }
+    public HttpStatus expectedStatusForDeleteAsContentCreatorResourceNotOwned() { return HttpStatus.FORBIDDEN;}
+    public HttpStatus expectedStatusForPutAsModeratorResourceOwned() { return HttpStatus.FORBIDDEN;}
+    public HttpStatus expectedStatusForPutAsModeratorResourceNotOwned() { return HttpStatus.FORBIDDEN;}
+    public HttpStatus expectedStatusForDeleteAsModeratorResourceOwned() { return HttpStatus.FORBIDDEN; }
+    public HttpStatus expectedStatusForDeleteAsModeratorResourceNotOwned() { return HttpStatus.FORBIDDEN;}
 
     /**
      * Implement this method by a resource specific implementation to create sample owned instances of the resource.
@@ -69,9 +83,6 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         validateXmlUtf8Response(mvc, expectedStatus);
     }
 
-    public HttpStatus expectedStatusForPutAsAdminResourceOwned() { return HttpStatus.ACCEPTED;}
-    public HttpStatus expectedStatusForPutAsAdminResourceNotOwned() { return HttpStatus.ACCEPTED;}
-
     /**
      * Override this method by a resource specific implementation to send DELETE messages with JSON as default data format.
      *
@@ -112,8 +123,6 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         validateXmlUtf8Response(mvc, expectedStatus);
     }
 
-    public HttpStatus expectedStatusForDeleteAsAdminResourceOwned() { return HttpStatus.ACCEPTED;}
-
     @Test
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void deleteJsonAsAdminResourceNotOwned() throws Exception {
@@ -136,14 +145,12 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         validateXmlUtf8Response(mvc, expectedStatus);
     }
 
-    public HttpStatus expectedStatusForDeleteAsAdminResourceNotOwned() { return HttpStatus.ACCEPTED;}
-
     /**
      * Override this method by a resource specific implementation to send DELETE messages with JSON as default data format.
      *
      * @return ResultActions instance which contains the response of the DELETE call.
      */
-    public ResultActions defaultJsonTestForDelete(boolean isOwned, User user) throws Exception {
+    public ResultActions defaultJsonTestForDelete(final boolean isOwned, final User user) throws Exception {
         return deleteAsJson(modify(save( isOwned ? createOwned(user) : createNotOwned() )));
     }
 
@@ -152,16 +159,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
      *
      * @return ResultActions instance which contains the response of the DELETE call.
      */
-    public ResultActions defaultXmlTestForDelete(boolean isOwned, User user) throws Exception {
+    public ResultActions defaultXmlTestForDelete(final boolean isOwned, final User user) throws Exception {
         return deleteAsXml(modify(save( isOwned ? createOwned(user) : createNotOwned() )));
     }
-
-    public HttpStatus expectedStatusForPutAsContentCreatorResourceOwned() { return HttpStatus.ACCEPTED;}
-    public HttpStatus expectedStatusForPutAsContentCreatorResourceNotOwned() { return HttpStatus.FORBIDDEN;}
-    public HttpStatus expectedStatusForDeleteAsContentCreatorResourceOwned() {
-        return HttpStatus.ACCEPTED;
-    }
-    public HttpStatus expectedStatusForDeleteAsContentCreatorResourceNotOwned() { return HttpStatus.FORBIDDEN;}
 
     @Test
     @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
@@ -251,11 +251,6 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
 
         validateXmlUtf8Response(mvc, expectedStatus);
     }
-
-    public HttpStatus expectedStatusForPutAsModeratorResourceOwned() { return HttpStatus.FORBIDDEN;}
-    public HttpStatus expectedStatusForPutAsModeratorResourceNotOwned() { return HttpStatus.FORBIDDEN;}
-    public HttpStatus expectedStatusForDeleteAsModeratorResourceOwned() { return HttpStatus.FORBIDDEN; }
-    public HttpStatus expectedStatusForDeleteAsModeratorResourceNotOwned() { return HttpStatus.FORBIDDEN;}
 
     @Test
     @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )

@@ -24,7 +24,7 @@ public class RoleService extends BaseService<Role> {
     @Autowired
     private @Getter RoleRepository repository;
 
-    public Role getResource(String roleName){
+    public Role getResource(final String roleName){
         return repository.getRoleByName(roleName);
     }
 

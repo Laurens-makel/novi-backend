@@ -46,23 +46,23 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         return new ResponseEntity<>(getService().getResource(), HttpStatus.OK);
     }
 
-    public ResponseEntity<R> get(String name) throws ResourceNotFoundException {
+    public ResponseEntity<R> get(final String name) throws ResourceNotFoundException {
         return new ResponseEntity<>(getService().getResource(name), HttpStatus.OK);
     }
 
-    public ResponseEntity<R> get(Integer resourceId) throws ResourceNotFoundException {
+    public ResponseEntity<R> get(final Integer resourceId) throws ResourceNotFoundException {
         validateOwnershipOfResource(resourceId, HttpMethod.GET);
 
         return new ResponseEntity<>(getService().getResourceById(resourceId), HttpStatus.OK);
     }
 
-    public ResponseEntity<R> create(R resource) {
+    public ResponseEntity<R> create(final R resource) {
         getService().createResource(resource);
 
         return new ResponseEntity<>(resource, HttpStatus.CREATED);
     }
 
-    public ResponseEntity<R> update(Integer resourceId, R resource) throws ResourceNotFoundException, ResourceNotOwnedException {
+    public ResponseEntity<R> update(final Integer resourceId, final R resource) throws ResourceNotFoundException, ResourceNotOwnedException {
         validateOwnershipOfResource(resourceId, HttpMethod.PUT);
 
         getService().updateResourceById(resourceId, resource);
@@ -70,7 +70,7 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         return new ResponseEntity<>(resource, HttpStatus.ACCEPTED);
     }
 
-    public ResponseEntity<R> delete(Integer resourceId) throws ResourceNotFoundException, ResourceNotOwnedException {
+    public ResponseEntity<R> delete(final Integer resourceId) throws ResourceNotFoundException, ResourceNotOwnedException {
         validateOwnershipOfResource(resourceId, HttpMethod.DELETE);
 
         getService().deleteResourceById(resourceId);
@@ -78,7 +78,7 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         return new ResponseEntity(createDeletedMessage(), HttpStatus.ACCEPTED);
     }
 
-    private void validateOwnershipOfResource(Integer resourceId, HttpMethod method) throws ResourceNotOwnedException {
+    private void validateOwnershipOfResource(final Integer resourceId, final HttpMethod method) throws ResourceNotOwnedException {
         Class<R> resourceClass = getService().getResourceClass();
 
         if(AbstractOwnedEntity.class.isAssignableFrom(resourceClass) && getService().isMethodProtected(method)){
