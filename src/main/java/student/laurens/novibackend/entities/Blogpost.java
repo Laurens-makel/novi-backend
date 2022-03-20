@@ -16,16 +16,15 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "BLOGPOSTS")
-public class Blogpost extends AbstractEntity {
+public class Blogpost extends AbstractOwnedEntity {
 
     @Id
     @Column(name = "BLOGPOST_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private @Getter Integer id;
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "AUTHOR_UID", referencedColumnName = "UID")
+    @ManyToOne( cascade = CascadeType.MERGE,fetch = FetchType.LAZY )
+    @JoinColumn( name = "UID", nullable = false)
     private @Getter @Setter User author;
 
     @Column(name = "TITLE", nullable = false)
@@ -48,4 +47,8 @@ public class Blogpost extends AbstractEntity {
     )
     private @Getter Set<Tag> tags = new HashSet<>();
 
+    @Override
+    public Integer getOwnerUid() {
+        return getAuthor().getUid();
+    }
 }

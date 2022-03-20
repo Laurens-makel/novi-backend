@@ -87,4 +87,7 @@ public class TagsRestControllerIntegrationTest extends ControllerIntegrationTest
         return HttpStatus.ACCEPTED;
     }
 
+    @Override
+    public HttpStatus expectedStatusForDeleteAsContentCreatorResourceNotExists() { return HttpStatus.NOT_FOUND;}
+
 }

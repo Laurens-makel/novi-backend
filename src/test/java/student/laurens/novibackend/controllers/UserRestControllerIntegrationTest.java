@@ -367,6 +367,7 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void deleteUser_AsAdmin_JSON_Ok() throws Exception {
         // given
+        saveUser(createDefaultAdmin());
         User user = saveUser(createTestUser("Jan", "Smit", "SMIT", "MyPassword123", "USER"));
 
         // when
@@ -382,6 +383,7 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void deleteUser_AsAdmin_XML_Ok() throws Exception {
         // given
+        saveUser(createDefaultAdmin());
         User user = saveUser(createTestUser("Jan", "Smit", "SMIT2", "MyPassword123", "USER"));
 
         // when
@@ -449,6 +451,7 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void deleteNonExistingUser_AsAdmin_AcceptJSON_NotFound() throws Exception {
         // when
+        saveUser(createDefaultAdmin());
         ResultActions mvc = deleteAsJson(createTestUser("Jan", "Smit", "SMIT", "MyPassword123", "USER"))
 
         // then
@@ -462,6 +465,7 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void deleteNonExistingUser_AsAdmin_AcceptXML_NotFound() throws Exception {
         // when
+        saveUser(createDefaultAdmin());
         ResultActions mvc = deleteAsXml(createTestUser("Jan", "Smit", "SMIT", "MyPassword123", "USER"))
 
         // then
@@ -514,6 +518,7 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void updateUser_AsAdmin_JSON_Ok() throws Exception {
         // given
+        saveUser(createDefaultAdmin());
         User user = saveUser(createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER"));
 
         user.setUsername("UPDATED_USERNAME");
@@ -531,6 +536,7 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void updateUser_AsAdmin_XML_Ok() throws Exception {
         // given
+        saveUser(createDefaultAdmin());
         User user = saveUser(createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER"));
 
         user.setUsername("UPDATED_USERNAME");
@@ -607,6 +613,7 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void updateNonExistingUser_AsAdmin_AcceptJSON_NotFound() throws Exception {
         // given
+        saveUser(createDefaultAdmin());
         User user = createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER");
 
         // when
@@ -623,6 +630,7 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void updateNonExistingUser_AsAdmin_AcceptXML_NotFound() throws Exception {
         // given
+        saveUser(createDefaultAdmin());
         User user = createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER");
 
         // when
@@ -688,7 +696,7 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
 
     @Override
     protected User create() {
-        return createDefaultUser();
+        return modify(createDefaultUser());
     }
 
     @Override
@@ -698,7 +706,7 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
 
     @Override
     protected User modify(User resource) {
-        resource.setUsername("MODIFIED");
+        resource.setUsername(unique("MODIFIED"));
 
         return resource;
     }

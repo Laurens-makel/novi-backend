@@ -2,6 +2,7 @@ package student.laurens.novibackend.services;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import student.laurens.novibackend.entities.Blogpost;
@@ -26,6 +27,16 @@ public class BlogpostService extends BaseService<Blogpost> {
     @Override
     public Iterable<Blogpost> getResource() {
         return repository.findAllPublished();
+    }
+
+    @Override
+    public Class<Blogpost> getResourceClass() {
+        return Blogpost.class;
+    }
+
+    @Override
+    public boolean isMethodProtected(HttpMethod method) {
+        return Blogpost.isMethodProtected(method);
     }
 
     public Blogpost getResource(String title){

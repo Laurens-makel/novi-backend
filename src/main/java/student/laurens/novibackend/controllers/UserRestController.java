@@ -65,12 +65,24 @@ public class UserRestController extends BaseRestController<User>{
 
     @PutMapping("/users/{uid}")
     public ResponseEntity<User> updateUser(@PathVariable("uid") Integer uid, @RequestBody User user) throws UserNotFoundException {
-        return update(uid, user);
+        User consumer = getConsumer();
+
+        if(consumer != null && (consumer.getUid() == uid || consumer.hasRole("ADMIN")) ){
+            return update(uid, user);
+        } else {
+            return forbidden();
+        }
     }
 
     @DeleteMapping("/users/{uid}")
     public ResponseEntity deleteUser(@PathVariable("uid") Integer uid) throws UserNotFoundException {
-        return delete(uid);
+        User consumer = getConsumer();
+
+        if(consumer != null && (consumer.getUid() == uid || consumer.hasRole("ADMIN")) ){
+            return delete(uid);
+        } else {
+            return forbidden();
+        }
     }
 
     @GetMapping("/password")

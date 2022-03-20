@@ -1,6 +1,7 @@
 package student.laurens.novibackend.services;
 
 import org.springframework.core.GenericTypeResolver;
+import org.springframework.http.HttpMethod;
 import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.repositories.ResourceRepository;
@@ -17,6 +18,16 @@ public abstract class BaseService<R extends AbstractEntity> {
     abstract protected ResourceRepository getRepository();
 
     abstract public R getResource(String string);
+
+    public R getResourceById(Integer resourceId) {
+        Optional<R> found = getRepository().findById(resourceId);
+
+        if(!found.isPresent()){
+            throw new ResourceNotFoundException(resourceType, resourceId);
+        }
+
+        return found.get();
+    }
 
     public Iterable<R> getResource(){
         return getRepository().findAll();
@@ -45,5 +56,17 @@ public abstract class BaseService<R extends AbstractEntity> {
 
         getRepository().delete(resource.get());
     };
+
+
+    /**
+     * Override this method by a resource specific implementation to determine which Http methods are protected
+     *
+     * @return boolean indicating if method is allowed by users which are not the owner of the resource.
+     */
+    public boolean isMethodProtected(HttpMethod method){
+        return false;
+    };
+
+    abstract public Class<R> getResourceClass();
 
 }

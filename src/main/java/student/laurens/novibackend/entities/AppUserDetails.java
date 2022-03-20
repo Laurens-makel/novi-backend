@@ -45,6 +45,8 @@ public class AppUserDetails extends AbstractEntity implements UserDetails  {
         return user.getUsername();
     }
 
+    public Integer getUid(){ return user.getUid(); }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -65,4 +67,8 @@ public class AppUserDetails extends AbstractEntity implements UserDetails  {
         return true;
     }
 
+    @Override
+    public Integer getId() {
+        return getUid();
+    }
 }

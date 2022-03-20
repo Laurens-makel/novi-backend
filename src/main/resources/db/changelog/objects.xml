@@ -59,7 +59,7 @@
             <column name="BLOGPOST_ID" type="int" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="AUTHOR_UID" type="int">
+            <column name="UID" type="int">
                 <constraints nullable="false"/>
             </column>
             <column name="TITLE" type="varchar(255)">
@@ -77,7 +77,7 @@
         </createTable>
 
         <addForeignKeyConstraint  constraintName="Fk_BLOGPOSTS_AUTHOR_UID"
-                                  baseTableName="BLOGPOSTS" baseColumnNames="AUTHOR_UID"
+                                  baseTableName="BLOGPOSTS" baseColumnNames="UID"
                                   referencedTableName="USERS" referencedColumnNames="UID" />
     </changeSet>
 

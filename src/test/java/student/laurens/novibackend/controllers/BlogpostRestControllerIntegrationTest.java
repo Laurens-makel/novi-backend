@@ -1,8 +1,10 @@
 package student.laurens.novibackend.controllers;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -33,10 +35,16 @@ public class BlogpostRestControllerIntegrationTest extends ControllerIntegration
         userRepository.deleteAll();
     }
 
+    @Before
+    public void before(){
+        repository.deleteAll();
+        userRepository.deleteAll();
+    }
+
     @Test
     public void getBlogposts_isUnauthorized() throws Exception {
         // given
-        saveBlogpost(createDefaultBlogpost(createDefaultAdmin()));
+        saveBlogpost(createDefaultBlogpost(saveUser(createDefaultAdmin())));
 
         // when
        getBlogposts()
@@ -49,7 +57,7 @@ public class BlogpostRestControllerIntegrationTest extends ControllerIntegration
     @WithMockUser(value = USER, roles = {USER_ROLE} )
     public void getBlogposts_AsUser_Ok() throws Exception {
         // given
-        saveBlogpost(createDefaultBlogpost(createDefaultAdmin()));
+        saveBlogpost(createDefaultBlogpost(saveUser(createDefaultAdmin())));
 
         // when
         getBlogposts()
@@ -62,7 +70,7 @@ public class BlogpostRestControllerIntegrationTest extends ControllerIntegration
     @WithMockUser(value = ADMIN_ROLE, roles = {ADMIN_ROLE} )
     public void getBlogposts_AsAdmin_Ok() throws Exception {
         // given
-        saveBlogpost(createDefaultBlogpost(createDefaultAdmin()));
+        saveBlogpost(createDefaultBlogpost(saveUser(createDefaultAdmin())));
 
         // when
         getBlogposts()
@@ -75,7 +83,7 @@ public class BlogpostRestControllerIntegrationTest extends ControllerIntegration
     @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
     public void getBlogposts_AsContentCreator_Ok() throws Exception {
         // given
-        saveBlogpost(createDefaultBlogpost(createDefaultAdmin()));
+        saveBlogpost(createDefaultBlogpost(saveUser(createDefaultAdmin())));
 
         // when
         getBlogposts()
@@ -88,7 +96,7 @@ public class BlogpostRestControllerIntegrationTest extends ControllerIntegration
     @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
     public void getBlogposts_AsModerator_Ok() throws Exception {
         // given
-        saveBlogpost(createDefaultBlogpost(createDefaultContentCreator()));
+        saveBlogpost(createDefaultBlogpost(saveUser(createDefaultContentCreator())));
 
         // when
         getBlogposts()
@@ -100,10 +108,10 @@ public class BlogpostRestControllerIntegrationTest extends ControllerIntegration
     @Test
     public void postBlogpost_isUnauthorized() throws Exception {
         // given
-        saveBlogpost(createDefaultBlogpost(createDefaultAdmin()));
+        saveBlogpost(createDefaultBlogpost(saveUser(createDefaultAdmin())));
 
         // when
-        postBlogpost()
+        postBlogpost(saveUser(createDefaultUser()))
 
         // then
         .andExpect(status().isUnauthorized());
@@ -112,11 +120,8 @@ public class BlogpostRestControllerIntegrationTest extends ControllerIntegration
     @Test
     @WithMockUser(value = USER, roles = {USER_ROLE} )
     public void postBlogpost_AsUser_Forbidden() throws Exception {
-        // given
-        saveBlogpost(createDefaultBlogpost(createDefaultAdmin()));
-
         // when
-        postBlogpost()
+        postBlogpost(saveUser(createDefaultUser()))
 
         // then
         .andExpect(status().isForbidden());
@@ -124,25 +129,19 @@ public class BlogpostRestControllerIntegrationTest extends ControllerIntegration
 
     @Test
     @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
-    public void postBlogpost_AsModer_Forbidden() throws Exception {
-        // given
-        saveBlogpost(createDefaultBlogpost(createDefaultAdmin()));
-
+    public void postBlogpost_AsModerator_Forbidden() throws Exception {
         // when
-        postBlogpost()
+        postBlogpost(saveUser(createDefaultModerator()))
 
-                // then
-                .andExpect(status().isForbidden());
+        // then
+        .andExpect(status().isForbidden());
     }
 
     @Test
     @WithMockUser(value = ADMIN_ROLE, roles = {ADMIN_ROLE} )
     public void postBlogpost_AsAdmin_Ok() throws Exception {
-        // given
-        saveBlogpost(createDefaultBlogpost(createDefaultAdmin()));
-
         // when
-        postBlogpost()
+        postBlogpost(saveUser(createDefaultAdmin()))
 
         // then
         .andExpect(status().isCreated());
@@ -151,11 +150,8 @@ public class BlogpostRestControllerIntegrationTest extends ControllerIntegration
     @Test
     @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
     public void postBlogpost_AsContentCreator_Ok() throws Exception {
-        // given
-        saveBlogpost(createDefaultBlogpost(createDefaultAdmin()));
-
         // when
-        postBlogpost()
+        postBlogpost(saveUser(createUniqueContentCreator()))
 
         // then
         .andExpect(status().isCreated());
@@ -164,7 +160,7 @@ public class BlogpostRestControllerIntegrationTest extends ControllerIntegration
     @Test
     public void updateBlogpost_isUnauthorized() throws Exception {
         // given
-        Blogpost post = saveBlogpost(createDefaultBlogpost(createDefaultAdmin()));
+        Blogpost post = saveBlogpost(createDefaultBlogpost(saveUser(createDefaultAdmin())));
         post.setTitle("UPDATED");
 
         // when
@@ -178,7 +174,7 @@ public class BlogpostRestControllerIntegrationTest extends ControllerIntegration
     @WithMockUser(value = USER, roles = {USER_ROLE} )
     public void updateBlogpost_AsUser_Forbidden() throws Exception {
         // given
-        Blogpost post = saveBlogpost(createDefaultBlogpost(createDefaultAdmin()));
+        Blogpost post = saveBlogpost(createDefaultBlogpost(saveUser(createDefaultAdmin())));
         post.setTitle("UPDATED");
 
         // when
@@ -192,7 +188,7 @@ public class BlogpostRestControllerIntegrationTest extends ControllerIntegration
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void updateBlogpost_AsAdmin_Ok() throws Exception {
         // given
-        Blogpost post = saveBlogpost(createDefaultBlogpost(createDefaultAdmin()));
+        Blogpost post = saveBlogpost(createDefaultBlogpost(saveUser(createDefaultAdmin())));
         post.setTitle("UPDATED");
 
         // when
@@ -204,9 +200,10 @@ public class BlogpostRestControllerIntegrationTest extends ControllerIntegration
 
     @Test
     @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
-    public void updateBlogpost_AsContentCreator_Ok() throws Exception {
+    public void updateBlogpost_AsContentCreator_OwnResource_Ok() throws Exception {
         // given
-        Blogpost post = saveBlogpost(createDefaultBlogpost(createDefaultAdmin()));
+        User user = saveUser(createDefaultContentCreator());
+        Blogpost post = saveBlogpost(createDefaultBlogpost(user));
         post.setTitle("UPDATED");
 
         // when
@@ -217,10 +214,25 @@ public class BlogpostRestControllerIntegrationTest extends ControllerIntegration
     }
 
     @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    public void updateBlogpost_AsContentCreator_OtherResource_Forbidden() throws Exception {
+        // given
+        saveUser(createDefaultContentCreator());
+        Blogpost post = saveBlogpost(createDefaultBlogpost(saveUser(createDefaultAdmin())));
+        post.setTitle("UPDATED");
+
+        // when
+        updateBlogpost(post)
+
+        // then
+        .andExpect(status().isForbidden());
+    }
+
+    @Test
     @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
     public void updateBlogpost_AsModerator_Forbidden() throws Exception {
         // given
-        Blogpost post = saveBlogpost(createDefaultBlogpost(createDefaultAdmin()));
+        Blogpost post = saveBlogpost(createDefaultBlogpost(saveUser(createDefaultAdmin())));
         post.setTitle("UPDATED");
 
         // when
@@ -235,9 +247,9 @@ public class BlogpostRestControllerIntegrationTest extends ControllerIntegration
                 .contentType(MediaType.APPLICATION_JSON));
     }
 
-    private ResultActions postBlogpost() throws Exception {
+    private ResultActions postBlogpost(User author) throws Exception {
         return mvc.perform(post("/blogposts")
-            .content(asJsonString(createDefaultBlogpost(createDefaultContentCreator())))
+            .content(asJsonString(createDefaultBlogpost(author)))
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON));
     }
@@ -295,7 +307,7 @@ public class BlogpostRestControllerIntegrationTest extends ControllerIntegration
 
     @Override
     protected Blogpost create() {
-        return createDefaultBlogpost(createDefaultContentCreator());
+        return createDefaultBlogpost(saveUser(createUniqueContentCreator()));
     }
 
     @Override
@@ -328,16 +340,22 @@ public class BlogpostRestControllerIntegrationTest extends ControllerIntegration
 
     @Override
     public HttpStatus expectedStatusForPutAsContentCreator() {
-        return HttpStatus.ACCEPTED;
+        return HttpStatus.FORBIDDEN;
     }
 
     @Override
     public HttpStatus expectedStatusForDeleteAsContentCreator() {
-        return HttpStatus.ACCEPTED;
+        return HttpStatus.FORBIDDEN;
     }
 
     @Override
     public HttpStatus expectedStatusForGetAsModerator() {
         return HttpStatus.OK;
     }
+
+    @Override
+    public HttpStatus expectedStatusForDeleteAsContentCreatorResourceNotExists() { return HttpStatus.NOT_FOUND;}
+
+    // TODO: Make new class that extends base class for AbstractOwnedEntity with extra features and tests defined
+
 }

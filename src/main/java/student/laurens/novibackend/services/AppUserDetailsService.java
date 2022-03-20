@@ -39,6 +39,11 @@ public class AppUserDetailsService extends BaseService<User> implements UserDeta
     }
 
     @Override
+    public Class<User> getResourceClass() {
+        return User.class;
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         return new AppUserDetails(getResource(s));
     }

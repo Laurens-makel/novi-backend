@@ -11,18 +11,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @version 1.0, March 2022
  */
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
-public class ResourceNotFoundException extends RuntimeException {
-    protected Class resourceClass;
-    protected Object identifier;
+public class ResourceNotFoundException extends ResourceException {
 
     public ResourceNotFoundException(final Class resourceClass, final Integer identifier) {
-        super("Unable to find resource with provided ID ["+identifier+"]");
-        this.resourceClass = resourceClass;
-        this.identifier = identifier;
-    }
-
-    public String getResourceClassName(){
-        return this.resourceClass == null ? this.getClass().getName() : this.resourceClass.getName();
+        super("Unable to find resource with provided ID ["+identifier+"]", resourceClass, identifier, HttpStatus.NOT_FOUND);
     }
 
 }
