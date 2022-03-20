@@ -1035,19 +1035,19 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         validateXmlResponse(mvc, expectedStatus);
     }
 
-    private void validateXmlUtf8Response(final ResultActions mvc, final HttpStatus expectedStatus) throws Exception {
+    protected void validateXmlUtf8Response(final ResultActions mvc, final HttpStatus expectedStatus) throws Exception {
         validateContentTypeResponse(mvc, expectedStatus, DEFAULT_XML_ACCEPT_UTF8_VALUE);
     }
 
-    private void validateJsonResponse(final ResultActions mvc, final HttpStatus expectedStatus) throws Exception {
+    protected void validateJsonResponse(final ResultActions mvc, final HttpStatus expectedStatus) throws Exception {
         validateContentTypeResponse(mvc, expectedStatus, DEFAULT_JSON_ACCEPT_VALUE);
     }
 
-    private void validateXmlResponse(final ResultActions mvc, final HttpStatus expectedStatus) throws Exception {
+    protected void validateXmlResponse(final ResultActions mvc, final HttpStatus expectedStatus) throws Exception {
         validateContentTypeResponse(mvc, expectedStatus, DEFAULT_XML_ACCEPT_VALUE);
     }
 
-    private void validateContentTypeResponse(final ResultActions mvc, final HttpStatus expectedStatus, final String contentType) throws Exception {
+    protected void validateContentTypeResponse(final ResultActions mvc, final HttpStatus expectedStatus, final String contentType) throws Exception {
         new ResponseValidator(mvc, expectedStatus, contentType).validate();
     }
 

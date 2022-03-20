@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Laurens Mäkel
  * @version 1.0, March 2022
  */
-public class BlogpostRestControllerIntegrationTest extends ControllerIntegrationTestBase<Blogpost> {
+public class BlogpostRestControllerIntegrationTest extends OwnedControllerIntegrationTestBase<Blogpost> {
 
     @Autowired
     private BlogpostRepository repository;
@@ -355,6 +355,16 @@ public class BlogpostRestControllerIntegrationTest extends ControllerIntegration
 
     @Override
     public HttpStatus expectedStatusForDeleteAsContentCreatorResourceNotExists() { return HttpStatus.NOT_FOUND;}
+
+    @Override
+    protected Blogpost createOwned(User owner) {
+        return createDefaultBlogpost(owner);
+    }
+
+    @Override
+    protected Blogpost createNotOwned() {
+        return createDefaultBlogpost(saveUser(createUniqueContentCreator()));
+    }
 
     // TODO: Make new class that extends base class for AbstractOwnedEntity with extra features and tests defined
 
