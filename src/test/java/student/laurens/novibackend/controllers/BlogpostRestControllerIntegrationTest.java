@@ -249,22 +249,6 @@ public class BlogpostRestControllerIntegrationTest extends ControllerIntegration
                 .accept(MediaType.APPLICATION_JSON));
     }
 
-    private Blogpost createDefaultBlogpost(User author){
-        Blogpost blogpost = new Blogpost();
-
-        blogpost.setTitle("Example blogpost");
-        blogpost.setContent("Lorem ipsum");
-        blogpost.setAuthor(author);
-
-        return blogpost;
-    }
-
-    private Blogpost saveBlogpost(Blogpost blogpost){
-        repository.save(blogpost);
-
-        return blogpost;
-    }
-
     @Override
     protected String getUrlForGet() {
         return "/blogposts";

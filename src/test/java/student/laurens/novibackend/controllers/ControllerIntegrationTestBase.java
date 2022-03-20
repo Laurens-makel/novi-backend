@@ -17,8 +17,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import student.laurens.novibackend.NoviBackendApplication;
 import student.laurens.novibackend.entities.AbstractEntity;
+import student.laurens.novibackend.entities.Blogpost;
 import student.laurens.novibackend.entities.Role;
 import student.laurens.novibackend.entities.User;
+import student.laurens.novibackend.repositories.BlogpostRepository;
 import student.laurens.novibackend.repositories.RoleRepository;
 import student.laurens.novibackend.repositories.UserRepository;
 
@@ -79,6 +81,9 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Autowired
     protected RoleRepository roleRepository;
 
+    @Autowired
+    protected BlogpostRepository blogpostRepository;
+
 
     /* Request body parsing */
 
@@ -133,7 +138,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     protected User saveUser(User testUser){
         userRepository.save(testUser);
 
-        return testUser;
+        return userRepository.getUserByUsername(testUser.getUsername());
     }
 
     /* Prepare HTTP calls with media types for content type and accept headers. */
@@ -937,5 +942,22 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
 
     protected String unique(String text){
         return text + new Date().getTime();
+    }
+
+
+    protected Blogpost createDefaultBlogpost(User author){
+        Blogpost blogpost = new Blogpost();
+
+        blogpost.setTitle("Example blogpost");
+        blogpost.setContent("Lorem ipsum");
+        blogpost.setAuthor(author);
+
+        return blogpost;
+    }
+
+    protected Blogpost saveBlogpost(Blogpost post){
+        blogpostRepository.save(post);
+
+        return post;
     }
 }

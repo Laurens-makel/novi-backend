@@ -33,7 +33,7 @@ public abstract class BaseService<R extends AbstractEntity> {
             throw new ResourceNotFoundException(resourceType, resourceId);
         }
 
-        getRepository().delete(found.get());
+        getRepository().save(found.get());
     }
 
     public void deleteResourceById(Integer resourceId){
