@@ -2,12 +2,14 @@ package student.laurens.novibackend.controllers;
 
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
 import student.laurens.novibackend.entities.AbstractOwnedEntity;
 import student.laurens.novibackend.entities.User;
 
 public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwnedEntity> extends ControllerIntegrationTestBase<R> {
+
 
     /**
      * Implement this method by a resource specific implementation to create sample owned instances of the resource.
@@ -22,6 +24,15 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
      * @return Sample instance of resource.
      */
     abstract protected R createNotOwned();
+
+    abstract protected HttpStatus expectedStatusForGetAsAdminResourceOwned();
+    abstract protected HttpStatus expectedStatusForGetAsAdminResourceNotOwned();
+    abstract protected HttpStatus expectedStatusForGetAsModeratorResourceOwned();
+    abstract protected HttpStatus expectedStatusForGetAsModeratorResourceNotOwned();
+    abstract protected HttpStatus expectedStatusForGetAsContentCreatorResourceOwned();
+    abstract protected HttpStatus expectedStatusForGetAsContentCreatorResourceNotOwned();
+    abstract protected HttpStatus expectedStatusForGetAsUserResourceOwned();
+    abstract protected HttpStatus expectedStatusForGetAsUserResourceNotOwned();
 
     abstract protected HttpStatus expectedStatusForPutAsAdminResourceOwned();
     abstract protected HttpStatus expectedStatusForPutAsAdminResourceNotOwned();
@@ -42,6 +53,24 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     abstract protected HttpStatus expectedStatusForPutAsUserResourceNotOwned();
     abstract protected HttpStatus expectedStatusForDeleteAsUserResourceOwned();
     abstract protected HttpStatus expectedStatusForDeleteAsUserResourceNotOwned();
+
+    /**
+     * Override this method by a resource specific implementation to send DELETE messages with JSON as default data format.
+     *
+     * @return ResultActions instance which contains the response of the DELETE call.
+     */
+    public ResultActions defaultJsonTestForGet(boolean isOwned, User user) throws Exception {
+        return getAsJson(save( isOwned ? createOwned(user) : createNotOwned() ));
+    }
+
+    /**
+     * Override this method by a resource specific implementation to send DELETE messages with JSON as default data format.
+     *
+     * @return ResultActions instance which contains the response of the DELETE call.
+     */
+    public ResultActions defaultXmlTestForGet(boolean isOwned, User user) throws Exception {
+        return getAsXml(save( isOwned ? createOwned(user) : createNotOwned() ));
+    }
 
     /**
      * Override this method by a resource specific implementation to send DELETE messages with JSON as default data format.
@@ -77,6 +106,182 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
      */
     public ResultActions defaultXmlTestForDelete(final boolean isOwned, final User user) throws Exception {
         return deleteAsXml(modify(save( isOwned ? createOwned(user) : createNotOwned() )));
+    }
+
+    @Test
+    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    public void getXmlAsUserResourceNotOwned() throws Exception {
+        User user = saveUser(createDefaultUser());
+
+        HttpStatus expectedStatus = expectedStatusForGetAsUserResourceNotOwned();
+        ResultActions mvc = defaultXmlTestForGet(false, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    public void getJsonAsUserResourceNotOwned() throws Exception {
+        User user = saveUser(createDefaultUser());
+
+        HttpStatus expectedStatus = expectedStatusForGetAsUserResourceNotOwned();
+        ResultActions mvc = defaultJsonTestForGet(false, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    public void getXmlAsUserResourceOwned() throws Exception {
+        User user = saveUser(createDefaultUser());
+
+        HttpStatus expectedStatus = expectedStatusForGetAsUserResourceOwned();
+        ResultActions mvc = defaultXmlTestForGet(true, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    public void getJsonAsUserResourceOwned() throws Exception {
+        User user = saveUser(createDefaultUser());
+
+        HttpStatus expectedStatus = expectedStatusForGetAsUserResourceOwned();
+        ResultActions mvc = defaultJsonTestForGet(true, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    public void getXmlAsContentCreatorResourceNotOwned() throws Exception {
+        User user = saveUser(createDefaultContentCreator());
+
+        HttpStatus expectedStatus = expectedStatusForGetAsContentCreatorResourceNotOwned();
+        ResultActions mvc = defaultXmlTestForGet(false, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    public void getJsonAsContentCreatorResourceNotOwned() throws Exception {
+        User user = saveUser(createDefaultContentCreator());
+
+        HttpStatus expectedStatus = expectedStatusForGetAsContentCreatorResourceNotOwned();
+        ResultActions mvc = defaultJsonTestForGet(false, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    public void getXmlAsContentCreatorResourceOwned() throws Exception {
+        User user = saveUser(createDefaultContentCreator());
+
+        HttpStatus expectedStatus = expectedStatusForGetAsContentCreatorResourceOwned();
+        ResultActions mvc = defaultXmlTestForGet(true, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    public void getJsonAsContentCreatorResourceOwned() throws Exception {
+        User user = saveUser(createDefaultContentCreator());
+
+        HttpStatus expectedStatus = expectedStatusForGetAsContentCreatorResourceOwned();
+        ResultActions mvc = defaultJsonTestForGet(true, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    public void getXmlAsModeratorResourceNotOwned() throws Exception {
+        User user = saveUser(createDefaultModerator());
+
+        HttpStatus expectedStatus = expectedStatusForGetAsModeratorResourceNotOwned();
+        ResultActions mvc = defaultXmlTestForGet(false, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    public void getJsonAsModeratorResourceNotOwned() throws Exception {
+        User user = saveUser(createDefaultModerator());
+
+        HttpStatus expectedStatus = expectedStatusForGetAsModeratorResourceNotOwned();
+        ResultActions mvc = defaultJsonTestForGet(false, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    public void getXmlAsModeratorResourceOwned() throws Exception {
+        User user = saveUser(createDefaultModerator());
+
+        HttpStatus expectedStatus = expectedStatusForGetAsModeratorResourceOwned();
+        ResultActions mvc = defaultXmlTestForGet(true, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    public void getJsonAsModeratorResourceOwned() throws Exception {
+        User user = saveUser(createDefaultModerator());
+
+        HttpStatus expectedStatus = expectedStatusForGetAsModeratorResourceOwned();
+        ResultActions mvc = defaultJsonTestForGet(true, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    public void getXmlAsAdminResourceNotOwned() throws Exception {
+        User user = saveUser(createDefaultAdmin());
+
+        HttpStatus expectedStatus = expectedStatusForGetAsAdminResourceNotOwned();
+        ResultActions mvc = defaultXmlTestForGet(false, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    public void getJsonAsAdminResourceNotOwned() throws Exception {
+        User user = saveUser(createDefaultAdmin());
+
+        HttpStatus expectedStatus = expectedStatusForGetAsAdminResourceNotOwned();
+        ResultActions mvc = defaultJsonTestForGet(false, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    public void getXmlAsAdminResourceOwned() throws Exception {
+        User user = saveUser(createDefaultAdmin());
+
+        HttpStatus expectedStatus = expectedStatusForGetAsAdminResourceOwned();
+        ResultActions mvc = defaultXmlTestForGet(true, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    public void getJsonAsAdminResourceOwned() throws Exception {
+        User user = saveUser(createDefaultAdmin());
+
+        HttpStatus expectedStatus = expectedStatusForGetAsAdminResourceOwned();
+        ResultActions mvc = defaultJsonTestForGet(true, user);
+
+        validateJsonResponse(mvc, expectedStatus);
     }
 
     @Test

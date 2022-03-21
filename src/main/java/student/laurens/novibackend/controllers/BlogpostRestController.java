@@ -32,8 +32,13 @@ public class BlogpostRestController extends BaseRestController<Blogpost> {
     @Autowired
     private @Getter BlogpostService service;
 
+    @GetMapping("/{blogpostId}")
+    public ResponseEntity<Blogpost> getBlogpost(@PathVariable("blogpostId") Integer blogpostId) {
+        return get(blogpostId);
+    }
+
     @GetMapping
-    public ResponseEntity<Iterable<Blogpost>> getBlogpost() {
+    public ResponseEntity<Iterable<Blogpost>> getBlogposts() {
         return get();
     }
 

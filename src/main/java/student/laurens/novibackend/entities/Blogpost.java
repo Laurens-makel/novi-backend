@@ -23,7 +23,7 @@ public class Blogpost extends AbstractOwnedEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private @Getter Integer id;
 
-    @ManyToOne( cascade = CascadeType.MERGE,fetch = FetchType.LAZY )
+    @ManyToOne( cascade = CascadeType.MERGE )
     @JoinColumn( name = "UID", nullable = false)
     private @Getter @Setter User author;
 

@@ -90,6 +90,22 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     @Override
     protected HttpStatus expectedStatusForGetAsAdmin() { return HttpStatus.OK;  }
 
+    @Override
+    protected HttpStatus expectedStatusForGetAsAdminResourceOwned() { return HttpStatus.OK; }
+    @Override
+    protected HttpStatus expectedStatusForGetAsAdminResourceNotOwned() { return HttpStatus.OK; }
+    @Override
+    protected HttpStatus expectedStatusForGetAsModeratorResourceOwned() { return HttpStatus.OK; }
+    @Override
+    protected HttpStatus expectedStatusForGetAsModeratorResourceNotOwned() { return HttpStatus.OK; }
+    @Override
+    protected HttpStatus expectedStatusForGetAsContentCreatorResourceOwned() { return HttpStatus.OK; }
+    @Override
+    protected HttpStatus expectedStatusForGetAsContentCreatorResourceNotOwned() { return HttpStatus.OK; }
+    @Override
+    protected HttpStatus expectedStatusForGetAsUserResourceOwned() { return HttpStatus.OK; }
+    @Override
+    protected HttpStatus expectedStatusForGetAsUserResourceNotOwned() { return HttpStatus.OK; }
 
     @Override
     protected HttpStatus expectedStatusForPostAsUser() { return HttpStatus.FORBIDDEN;}
