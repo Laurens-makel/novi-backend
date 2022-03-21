@@ -46,11 +46,6 @@ public class AppUserDetailsService extends BaseService<User> implements UserDeta
     }
 
     @Override
-    public boolean isMethodProtected(final HttpMethod method) {
-        return User.isMethodProtected(method);
-    }
-
-    @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         return new AppUserDetails(getResource(s));
     }

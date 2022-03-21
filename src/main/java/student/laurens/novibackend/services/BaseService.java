@@ -57,16 +57,6 @@ public abstract class BaseService<R extends AbstractEntity> {
         getRepository().delete(resource.get());
     };
 
-
-    /**
-     * Override this method by a resource specific implementation to determine which Http methods are protected
-     *
-     * @return boolean indicating if method is allowed by users which are not the owner of the resource.
-     */
-    public boolean isMethodProtected(final HttpMethod method){
-        return false;
-    };
-
     abstract public Class<R> getResourceClass();
 
 }

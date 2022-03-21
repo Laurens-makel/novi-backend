@@ -15,28 +15,4 @@ public abstract class AbstractOwnedEntity extends AbstractEntity {
 
     abstract public Integer getOwnerUid();
 
-    public static boolean isMethodProtected(HttpMethod method){
-        if(method.equals(HttpMethod.GET)){
-            return isGetProtected();
-        }
-        if(method.equals(HttpMethod.PUT)){
-            return isPutProtected();
-        }
-        if(method.equals(HttpMethod.DELETE)){
-            return isDeleteProtected();
-        }
-        return false;
-    }
-
-    protected static boolean isGetProtected(){
-        return false;
-    }
-
-    protected static boolean isPutProtected(){
-        return true;
-    }
-
-    protected static boolean isDeleteProtected(){
-        return true;
-    }
 }

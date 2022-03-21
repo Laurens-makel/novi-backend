@@ -81,7 +81,7 @@ public abstract class BaseRestController<R extends AbstractEntity> {
     private void validateOwnershipOfResource(final Integer resourceId, final HttpMethod method) throws ResourceNotOwnedException {
         Class<R> resourceClass = getService().getResourceClass();
 
-        if(AbstractOwnedEntity.class.isAssignableFrom(resourceClass) && getService().isMethodProtected(method)){
+        if(AbstractOwnedEntity.class.isAssignableFrom(resourceClass) && isMethodProtected(method)){
             log.info("Checking if allowed to ["+method+"] AbstractOwnedEntity ["+resourceClass+"] with identifier ["+resourceId+"]");
             User consumer = getConsumer();
             AbstractOwnedEntity ownedResource = (AbstractOwnedEntity) getService().getResourceById(resourceId);
@@ -109,6 +109,31 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         }
 
         return null;
+    }
+
+    protected boolean isMethodProtected(HttpMethod method){
+        if(method.equals(HttpMethod.GET)){
+            return isGetProtected();
+        }
+        if(method.equals(HttpMethod.PUT)){
+            return isPutProtected();
+        }
+        if(method.equals(HttpMethod.DELETE)){
+            return isDeleteProtected();
+        }
+        return false;
+    }
+
+    protected boolean isGetProtected(){
+        return false;
+    }
+
+    protected boolean isPutProtected(){
+        return true;
+    }
+
+    protected boolean isDeleteProtected(){
+        return true;
     }
 
 }
