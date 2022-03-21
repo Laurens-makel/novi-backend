@@ -14,5 +14,7 @@ public class UserNotFoundException extends ResourceNotFoundException {
     public UserNotFoundException(final Integer identifier) {
         super(User.class, identifier);
     }
-
+    public UserNotFoundException(final String username) {
+        super(User.class, username);
+    }
 }

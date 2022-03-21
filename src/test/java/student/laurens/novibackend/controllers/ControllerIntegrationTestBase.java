@@ -2,12 +2,17 @@ package student.laurens.novibackend.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -41,6 +46,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-integration-test.properties")
 public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
+
+    protected Logger log = LoggerFactory.getLogger(ControllerIntegrationTestBase.class);
 
     protected final String USER = "DefaultUser";
     protected final String USER_ROLE = "USER";
@@ -78,68 +85,25 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Autowired
     protected UserRepository userRepository;
 
+    @After
+    public void base_after(){
+        log.debug("Deleting all users from repository.");
+
+        userRepository.deleteAll();
+    }
+
+    @Before
+    public void base_before(){
+        log.debug("Deleting all users from repository.");
+
+        userRepository.deleteAll();
+    }
+
     @Autowired
     protected RoleRepository roleRepository;
 
     @Autowired
     protected BlogpostRepository blogpostRepository;
-
-
-    /* Request body parsing */
-
-    public static String asString(final MediaType contentType, final Object obj){
-        return contentType.equals(MediaType.APPLICATION_JSON) ? asJsonString(obj) : asXmlString(obj);
-    }
-
-    public static String asJsonString(final Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static String asXmlString(final Object obj) {
-        try {
-            return new XmlMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    protected User createDefaultUser(){
-        return createTestUser("Bob", "Doe", USER, "MyPassword123", "USER");
-    }
-
-    protected User createDefaultAdmin(){
-        return createTestUser("John", "Doe", ADMIN, "MyPassword123", "ADMIN");
-    }
-
-    protected User createDefaultContentCreator(){
-        return createTestUser("Kanye", "West", CONTENT_CREATOR, "MyPassword123", "CONTENT_CREATOR");
-    }
-
-    protected User createDefaultModerator(){
-        return createTestUser("Kanye", "West", MODERATOR, "MyPassword123", "MODERATOR");
-    }
-    protected User createTestUser(String firstname, String lastname, String username, String password, String role){
-        User testUser = new User();
-
-        testUser.setFirstName(firstname);
-        testUser.setLastName(lastname);
-        testUser.setUsername(username);
-        testUser.setPassword(password);
-
-        testUser.getRoles().add(roleRepository.getRoleByName(role));
-
-        return testUser;
-    }
-
-    protected User saveUser(User testUser){
-        userRepository.save(testUser);
-
-        return userRepository.getUserByUsername(testUser.getUsername());
-    }
 
     /* Prepare HTTP calls with media types for content type and accept headers. */
 
@@ -177,6 +141,311 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
      * @return URL to call.
      */
     abstract protected String getUrlForDelete(final R resource);
+
+    /* Default testing */
+
+    /**
+     * Implement this method by a resource specific implementation to create sample instances of the resource.
+     *
+     * @return Sample instance of resource.
+     */
+    abstract protected R create();
+
+    /**
+     * Implement this method by a resource specific implementation to save into the repository a sample instances of the resource.
+     *
+     * @return Sample instance of resource.
+     */
+    abstract protected R save(final R resource);
+
+    /**
+     * Implement this method by a resource specific implementation to modify a sample instances of the resource.
+     *
+     * @return Sample instance of resource.
+     */
+    abstract protected R modify(final R resource);
+
+
+    /**
+     * Implement this method and provide a value for this specific test case.
+     *
+     * @return The expected HttpStatus when a {@link User} with admin {@link Role} calls GET endpoint for specified resource.
+     */
+    abstract protected HttpStatus expectedStatusForGetAsAdmin();
+
+    /**
+     * Implement this method and provide a value for this specific test case.
+     *
+     * @return The expected HttpStatus when a {@link User} with user {@link Role} calls GET endpoint for specified resource.
+     */
+    abstract protected HttpStatus expectedStatusForGetAsUser();
+
+    /**
+     * Implement this method and provide a value for this specific test case.
+     *
+     * @return The expected HttpStatus when a {@link User} with content creator {@link Role} calls GET endpoint for specified resource.
+     */
+    abstract protected HttpStatus expectedStatusForGetAsContentCreator();
+
+    /**
+     * Implement this method and provide a value for this specific test case.
+     *
+     * @return The expected HttpStatus when a {@link User} with moderator {@link Role} calls GET endpoint for specified resource.
+     */
+    abstract protected HttpStatus expectedStatusForGetAsModerator();
+
+    /**
+     * Implement this method and provide a value for this specific test case.
+     *
+     * @return The expected HttpStatus when a {@link User} with admin {@link Role} calls POST endpoint for specified resource.
+     */
+    abstract protected HttpStatus expectedStatusForPostAsAdmin();
+
+    /**
+     * Implement this method and provide a value for this specific test case.
+     *
+     * @return The expected HttpStatus when a {@link User} with user {@link Role} calls POST endpoint for specified resource.
+     */
+    abstract protected HttpStatus expectedStatusForPostAsUser();
+
+    /**
+     * Implement this method and provide a value for this specific test case.
+     *
+     * @return The expected HttpStatus when a {@link User} with content creator {@link Role} calls POST endpoint for specified resource.
+     */
+    abstract protected HttpStatus expectedStatusForPostAsContentCreator();
+
+    /**
+     * Implement this method and provide a value for this specific test case.
+     *
+     * @return The expected HttpStatus when a {@link User} with moderator {@link Role} calls POST endpoint for specified resource.
+     */
+    abstract protected HttpStatus expectedStatusForPostAsModerator();
+
+    /**
+     * Implement this method and provide a value for this specific test case.
+     *
+     * @return The expected HttpStatus when a {@link User} with admin {@link Role} calls PUT endpoint for specified resource.
+     */
+    abstract protected HttpStatus expectedStatusForPutAsAdmin();
+
+    /**
+     * Implement this method and provide a value for this specific test case.
+     *
+     * @return The expected HttpStatus when a {@link User} with user {@link Role} calls PUT endpoint for specified resource.
+     */
+    abstract protected HttpStatus expectedStatusForPutAsUser();
+
+    /**
+     * Implement this method and provide a value for this specific test case.
+     *
+     * @return The expected HttpStatus when a {@link User} with content creator {@link Role} calls PUT endpoint for specified resource.
+     */
+    abstract protected HttpStatus expectedStatusForPutAsContentCreator();
+
+    /**
+     * Implement this method and provide a value for this specific test case.
+     *
+     * @return The expected HttpStatus when a {@link User} with moderator {@link Role} calls PUT endpoint for specified resource.
+     */
+    abstract protected HttpStatus expectedStatusForPutAsModerator();
+
+    abstract protected HttpStatus expectedStatusForPutAsContentCreatorResourceNotExists();
+    abstract protected HttpStatus expectedStatusForPutAsAdminResourceNotExists();
+    abstract protected HttpStatus expectedStatusForPutAsUserResourceNotExists();
+    abstract protected HttpStatus expectedStatusForPutAsModeratorResourceNotExists();
+
+    /**
+     * Implement this method and provide a value for this specific test case.
+     *
+     * @return The expected HttpStatus when a {@link User} with admin {@link Role} calls DELETE endpoint for specified resource.
+     */
+    abstract protected HttpStatus expectedStatusForDeleteAsAdmin();
+
+    /**
+     * Implement this method and provide a value for this specific test case.
+     *
+     * @return The expected HttpStatus when a {@link User} with user {@link Role} calls DELETE endpoint for specified resource.
+     */
+    abstract protected HttpStatus expectedStatusForDeleteAsUser();
+
+    /**
+     * Implement this method and provide a value for this specific test case.
+     *
+     * @return The expected HttpStatus when a {@link User} with content creator {@link Role} calls DELETE endpoint for specified resource.
+     */
+    abstract protected HttpStatus expectedStatusForDeleteAsContentCreator();
+
+    /**
+     * Implement this method and provide a value for this specific test case.
+     *
+     * @return The expected HttpStatus when a {@link User} with moderator {@link Role} calls DELETE endpoint for specified resource.
+     */
+    abstract protected HttpStatus expectedStatusForDeleteAsModerator();
+
+    abstract protected HttpStatus expectedStatusForDeleteAsModeratorResourceNotExists();
+    abstract protected HttpStatus expectedStatusForDeleteAsUserResourceNotExists();
+    abstract protected HttpStatus expectedStatusForDeleteAsContentCreatorResourceNotExists();
+    abstract protected HttpStatus expectedStatusForDeleteAsAdminResourceNotExists();
+
+
+    /**
+     * Override this method by a resource specific implementation to send GET messages with JSON as default data format.
+     *
+     * @return ResultActions instance which contains the response of the GET call.
+     */
+    public ResultActions defaultJsonTestForGet() throws Exception {
+        return getAsJson();
+    }
+
+    /**
+     * Override this method by a resource specific implementation to send GET messages with XML as default data format.
+     *
+     * @return ResultActions instance which contains the response of the GET call.
+     */
+    public ResultActions defaultXmlTestForGet() throws Exception {
+        return getAsXml();
+    }
+
+
+    /**
+     * Override this method by a resource specific implementation to send POST messages with JSON as default data format.
+     *
+     * @return ResultActions instance which contains the response of the POST call.
+     */
+    public ResultActions defaultJsonTestForPost() throws Exception {
+        return postAsJson(create());
+    }
+
+    /**
+     * Override this method by a resource specific implementation to send POST messages with XML as default data format.
+     *
+     * @return ResultActions instance which contains the response of the POST call.
+     */
+    public ResultActions defaultXmlTestForPost() throws Exception {
+        return postAsXml(create());
+    }
+
+
+    /**
+     * Override this method by a resource specific implementation to send PUT messages with JSON as default data format.
+     *
+     * @return ResultActions instance which contains the response of the PUT call.
+     */
+    public ResultActions defaultJsonTestForPut() throws Exception {
+        return updateAsJson(modify(save(create())));
+    }
+
+    /**
+     * Override this method by a resource specific implementation to send PUT messages with XML as default data format.
+     *
+     * @return ResultActions instance which contains the response of the PUT call.
+     */
+    public ResultActions defaultXmlTestForPut() throws Exception {
+        return updateAsXml(modify(save(create())));
+    }
+
+    /**
+     * Override this method by a resource specific implementation to send DELETE messages with JSON as default data format.
+     *
+     * @return ResultActions instance which contains the response of the DELETE call.
+     */
+    public ResultActions defaultJsonTestForDelete() throws Exception {
+        return deleteAsJson(modify(save(create())));
+    }
+
+    /**
+     * Override this method by a resource specific implementation to send DELETE messages with XML as default data format.
+     *
+     * @return ResultActions instance which contains the response of the DELETE call.
+     */
+    public ResultActions defaultXmlTestForDelete() throws Exception {
+        return deleteAsXml(save(create()));
+    }
+
+    /**
+     * Override this method by a resource specific implementation to send DELETE messages with JSON as default data format.
+     * This DELETE call will be sent to a resource which does not exist.
+     *
+     * @return ResultActions instance which contains the response of the DELETE call.
+     */
+    public ResultActions defaultJsonTestForDeleteNonExistingResource() throws Exception {
+        return deleteAsJson(modify(create()));
+    }
+
+    /**
+     * Override this method by a resource specific implementation to send DELETE messages with XML as default data format.
+     *
+     * @return ResultActions instance which contains the response of the DELETE call.
+     */
+    public ResultActions defaultXmlTestForDeleteNonExistingResource() throws Exception {
+        return deleteAsXml(modify(create()));
+    }
+
+    /* Request body parsing */
+
+    public String asString(final MediaType contentType, final Object obj){
+        log.info("Parsing request body to String for contentType ["+contentType+"]");
+
+        return contentType.equals(MediaType.APPLICATION_JSON) ? asJsonString(obj) : asXmlString(obj);
+    }
+
+    public String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String asXmlString(final Object obj) {
+        try {
+            return new XmlMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected User createDefaultUser(){
+        return createTestUser("Bob", "Doe", USER, "MyPassword123", "USER");
+    }
+
+    protected User createDefaultAdmin(){
+        return createTestUser("John", "Doe", ADMIN, "MyPassword123", "ADMIN");
+    }
+
+    protected User createDefaultContentCreator(){
+        return createTestUser("Kanye", "West", CONTENT_CREATOR, "MyPassword123", "CONTENT_CREATOR");
+    }
+
+    protected User createUniqueContentCreator(){
+        return createTestUser("Kanye", "West", unique(CONTENT_CREATOR), "MyPassword123", "CONTENT_CREATOR");
+    }
+
+    protected User createDefaultModerator(){
+        return createTestUser("Kanye", "West", MODERATOR, "MyPassword123", "MODERATOR");
+    }
+
+    protected User createTestUser(String firstname, String lastname, String username, String password, String role){
+        User testUser = new User();
+
+        testUser.setFirstName(firstname);
+        testUser.setLastName(lastname);
+        testUser.setUsername(username);
+        testUser.setPassword(password);
+
+        testUser.getRoles().add(roleRepository.getRoleByName(role));
+
+        return testUser;
+    }
+
+    protected User saveUser(User testUser){
+        log.debug("Saving testUser ["+testUser.getUsername()+"] to repository.");
+
+        userRepository.save(testUser);
+
+        return userRepository.getUserByUsername(testUser.getUsername());
+    }
 
     protected ResultActions deleteAsJson(final R resource) throws Exception {
         return executeDelete(resource, DEFAULT_JSON_ACCEPT);
@@ -282,82 +551,26 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         return mvc.andExpect(header().string(HttpHeaders.CONTENT_TYPE, contentType));
     }
 
-    /* Default testing */
-
-    /**
-     * Implement this method by a resource specific implementation to create sample instances of the resource.
-     *
-     * @return Sample instance of resource.
-     */
-    abstract protected R create();
-
-    /**
-     * Implement this method by a resource specific implementation to save into the repository a sample instances of the resource.
-     *
-     * @return Sample instance of resource.
-     */
-    abstract protected R save(final R resource);
-
-    /**
-     * Implement this method by a resource specific implementation to modify a sample instances of the resource.
-     *
-     * @return Sample instance of resource.
-     */
-    abstract protected R modify(final R resource);
-
-    /**
-     * Override this method by a resource specific implementation to send GET messages with JSON as default data format.
-     *
-     * @return ResultActions instance which contains the response of the GET call.
-     */
-    public ResultActions defaultJsonTestForGet() throws Exception {
-        return getAsJson();
+    protected void validateXmlUtf8Response(final ResultActions mvc, final HttpStatus expectedStatus) throws Exception {
+        validateContentTypeResponse(mvc, expectedStatus, DEFAULT_XML_ACCEPT_UTF8_VALUE);
     }
 
-    /**
-     * Override this method by a resource specific implementation to send GET messages with XML as default data format.
-     *
-     * @return ResultActions instance which contains the response of the GET call.
-     */
-    public ResultActions defaultXmlTestForGet() throws Exception {
-        return getAsXml();
+    protected void validateJsonResponse(final ResultActions mvc, final HttpStatus expectedStatus) throws Exception {
+        validateContentTypeResponse(mvc, expectedStatus, DEFAULT_JSON_ACCEPT_VALUE);
     }
 
-    /**
-     * Override this method by a resource specific implementation to override the default value of HttpStatus.FORBIDDEN.
-     *
-     * @return The expected HttpStatus when a {@link User} with admin {@link Role} calls GET endpoint for specified resource.
-     */
-    public HttpStatus expectedStatusForGetAsAdmin() {
-        return HttpStatus.OK;
+    protected void validateXmlResponse(final ResultActions mvc, final HttpStatus expectedStatus) throws Exception {
+        validateContentTypeResponse(mvc, expectedStatus, DEFAULT_XML_ACCEPT_VALUE);
     }
 
-    /**
-     * Override this method by a resource specific implementation to override the default value of HttpStatus.FORBIDDEN.
-     *
-     * @return The expected HttpStatus when a {@link User} with user {@link Role} calls GET endpoint for specified resource.
-     */
-    public HttpStatus expectedStatusForGetAsUser() {
-        return HttpStatus.FORBIDDEN;
+    protected void validateContentTypeResponse(final ResultActions mvc, final HttpStatus expectedStatus, final String contentType) throws Exception {
+        new ResponseValidator(mvc, expectedStatus, contentType).validate();
     }
 
-    /**
-     * Override this method by a resource specific implementation to override the default value of HttpStatus.FORBIDDEN.
-     *
-     * @return The expected HttpStatus when a {@link User} with content creator {@link Role} calls GET endpoint for specified resource.
-     */
-    public HttpStatus expectedStatusForGetAsContentCreator() {
-        return HttpStatus.FORBIDDEN;
+    protected String unique(String text){
+        return text + new Date().getTime();
     }
 
-    /**
-     * Override this method by a resource specific implementation to override the default value of HttpStatus.FORBIDDEN.
-     *
-     * @return The expected HttpStatus when a {@link User} with moderator {@link Role} calls GET endpoint for specified resource.
-     */
-    public HttpStatus expectedStatusForGetAsModerator() {
-        return HttpStatus.FORBIDDEN;
-    }
 
     @Test
     public void getIsUnAuthorized() throws Exception {
@@ -367,6 +580,8 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = USER)
     public void getJsonAsUser() throws Exception {
+        saveUser(createDefaultUser());
+
         HttpStatus expectedStatus = expectedStatusForGetAsUser();
         ResultActions mvc = defaultJsonTestForGet();
 
@@ -378,6 +593,8 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = USER)
     public void getXmlAsUser() throws Exception {
+        saveUser(createDefaultUser());
+
         HttpStatus expectedStatus = expectedStatusForGetAsUser();
         ResultActions mvc = defaultXmlTestForGet();
 
@@ -389,6 +606,8 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
     public void getJsonAsContentCreator() throws Exception {
+        saveUser(createDefaultContentCreator());
+
         HttpStatus expectedStatus = expectedStatusForGetAsContentCreator();
         ResultActions mvc = defaultJsonTestForGet();
 
@@ -400,6 +619,8 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
     public void getXmlAsContentCreator() throws Exception {
+        saveUser(createDefaultContentCreator());
+
         HttpStatus expectedStatus = expectedStatusForGetAsContentCreator();
         ResultActions mvc = defaultXmlTestForGet();
 
@@ -411,6 +632,8 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
     public void getJsonAsModerator() throws Exception {
+        saveUser(createDefaultModerator());
+
         HttpStatus expectedStatus = expectedStatusForGetAsModerator();
         ResultActions mvc = defaultJsonTestForGet();
 
@@ -422,6 +645,8 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
     public void getXmlAsModerator() throws Exception {
+        saveUser(createDefaultModerator());
+
         HttpStatus expectedStatus = expectedStatusForGetAsModerator();
         ResultActions mvc = defaultXmlTestForGet();
 
@@ -433,6 +658,8 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void getJsonAsAdmin() throws Exception {
+        saveUser(createDefaultAdmin());
+
         HttpStatus expectedStatus = expectedStatusForGetAsAdmin();
         ResultActions mvc = defaultJsonTestForGet();
 
@@ -444,6 +671,8 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void getXmlAsAdmin() throws Exception {
+        saveUser(createDefaultAdmin());
+
         HttpStatus expectedStatus = expectedStatusForGetAsAdmin();
         ResultActions mvc = defaultXmlTestForGet();
 
@@ -452,63 +681,11 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
         validator.validate();
     }
 
-    /**
-     * Override this method by a resource specific implementation to send POST messages with JSON as default data format.
-     *
-     * @return ResultActions instance which contains the response of the POST call.
-     */
-    public ResultActions defaultJsonTestForPost() throws Exception {
-        return postAsJson(create());
-    }
-
-    /**
-     * Override this method by a resource specific implementation to send POST messages with XML as default data format.
-     *
-     * @return ResultActions instance which contains the response of the POST call.
-     */
-    public ResultActions defaultXmlTestForPost() throws Exception {
-        return postAsXml(create());
-    }
-
-    /**
-     * Override this method by a resource specific implementation to override the default value of HttpStatus.CREATED.
-     *
-     * @return The expected HttpStatus when a {@link User} with admin {@link Role} calls POST endpoint for specified resource.
-     */
-    public HttpStatus expectedStatusForPostAsAdmin() {
-        return HttpStatus.CREATED;
-    }
-
-    /**
-     * Override this method by a resource specific implementation to override the default value of HttpStatus.FORBIDDEN.
-     *
-     * @return The expected HttpStatus when a {@link User} with user {@link Role} calls POST endpoint for specified resource.
-     */
-    public HttpStatus expectedStatusForPostAsUser() {
-        return HttpStatus.FORBIDDEN;
-    }
-
-    /**
-     * Override this method by a resource specific implementation to override the default value of HttpStatus.FORBIDDEN.
-     *
-     * @return The expected HttpStatus when a {@link User} with content creator {@link Role} calls POST endpoint for specified resource.
-     */
-    public HttpStatus expectedStatusForPostAsContentCreator() {
-        return HttpStatus.FORBIDDEN;
-    }
-
-    /**
-     * Override this method by a resource specific implementation to override the default value of HttpStatus.FORBIDDEN.
-     *
-     * @return The expected HttpStatus when a {@link User} with moderator {@link Role} calls POST endpoint for specified resource.
-     */
-    public HttpStatus expectedStatusForPostAsModerator() {
-        return HttpStatus.FORBIDDEN;
-    }
-
     @Test
     @WithMockUser(value = USER)
     public void postJsonAsUser() throws Exception {
+        saveUser(createDefaultUser());
+
         HttpStatus expectedStatus = expectedStatusForPostAsUser();
         ResultActions mvc = defaultJsonTestForPost();
 
@@ -518,6 +695,8 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = USER)
     public void postXmlAsUser() throws Exception {
+        saveUser(createDefaultUser());
+
         HttpStatus expectedStatus = expectedStatusForPostAsUser();
         ResultActions mvc = defaultXmlTestForPost();
 
@@ -528,6 +707,8 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
     public void postXmlAsContentCreator() throws Exception {
+        saveUser(createDefaultContentCreator());
+
         HttpStatus expectedStatus = expectedStatusForPostAsContentCreator();
         ResultActions mvc = defaultXmlTestForPost();
 
@@ -537,6 +718,8 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
     public void postJsonAsContentCreator() throws Exception {
+        saveUser(createDefaultContentCreator());
+
         HttpStatus expectedStatus = expectedStatusForPostAsContentCreator();
         ResultActions mvc = defaultJsonTestForPost();
 
@@ -546,6 +729,8 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
     public void postXmlAsModerator() throws Exception {
+        saveUser(createDefaultModerator());
+
         HttpStatus expectedStatus = expectedStatusForPostAsModerator();
         ResultActions mvc = defaultXmlTestForPost();
 
@@ -555,6 +740,8 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
     public void postJsonAsModerator() throws Exception {
+        saveUser(createDefaultModerator());
+
         HttpStatus expectedStatus = expectedStatusForPostAsModerator();
         ResultActions mvc = defaultJsonTestForPost();
 
@@ -564,6 +751,8 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void postJsonAsAdmin() throws Exception {
+        saveUser(createDefaultAdmin());
+
         HttpStatus expectedStatus = expectedStatusForPostAsAdmin();
         ResultActions mvc = defaultJsonTestForPost();
 
@@ -573,69 +762,19 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void postXmlAsAdmin() throws Exception {
+        saveUser(createDefaultAdmin());
+
         HttpStatus expectedStatus = expectedStatusForPostAsAdmin();
         ResultActions mvc = defaultXmlTestForPost();
 
         validateXmlUtf8Response(mvc, expectedStatus);
     }
 
-    /**
-     * Override this method by a resource specific implementation to send PUT messages with JSON as default data format.
-     *
-     * @return ResultActions instance which contains the response of the PUT call.
-     */
-    public ResultActions defaultJsonTestForPut() throws Exception {
-        return updateAsJson(modify(save(create())));
-    }
-
-    /**
-     * Override this method by a resource specific implementation to send PUT messages with XML as default data format.
-     *
-     * @return ResultActions instance which contains the response of the PUT call.
-     */
-    public ResultActions defaultXmlTestForPut() throws Exception {
-        return updateAsXml(modify(save(create())));
-    }
-
-    /**
-     * Override this method by a resource specific implementation to override the default value of HttpStatus.ACCEPTED.
-     *
-     * @return The expected HttpStatus when a {@link User} with admin {@link Role} calls PUT endpoint for specified resource.
-     */
-    public HttpStatus expectedStatusForPutAsAdmin() {
-        return HttpStatus.ACCEPTED;
-    }
-
-    /**
-     * Override this method by a resource specific implementation to override the default value of HttpStatus.FORBIDDEN.
-     *
-     * @return The expected HttpStatus when a {@link User} with user {@link Role} calls PUT endpoint for specified resource.
-     */
-    public HttpStatus expectedStatusForPutAsUser() {
-        return HttpStatus.FORBIDDEN;
-    }
-
-    /**
-     * Override this method by a resource specific implementation to override the default value of HttpStatus.FORBIDDEN.
-     *
-     * @return The expected HttpStatus when a {@link User} with content creator {@link Role} calls PUT endpoint for specified resource.
-     */
-    public HttpStatus expectedStatusForPutAsContentCreator() {
-        return HttpStatus.FORBIDDEN;
-    }
-
-    /**
-     * Override this method by a resource specific implementation to override the default value of HttpStatus.FORBIDDEN.
-     *
-     * @return The expected HttpStatus when a {@link User} with moderator {@link Role} calls PUT endpoint for specified resource.
-     */
-    public HttpStatus expectedStatusForPutAsModerator() {
-        return HttpStatus.FORBIDDEN;
-    }
-
     @Test
     @WithMockUser(value = USER)
     public void putJsonAsUser() throws Exception {
+        saveUser(createDefaultUser());
+
         HttpStatus expectedStatus = expectedStatusForPutAsUser();
         ResultActions mvc = defaultJsonTestForPut();
 
@@ -645,6 +784,8 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = USER)
     public void putXmlAsUser() throws Exception {
+        saveUser(createDefaultUser());
+
         HttpStatus expectedStatus = expectedStatusForPutAsUser();
         ResultActions mvc = defaultXmlTestForPut();
 
@@ -654,6 +795,8 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
     public void putJsonAsContentCreator() throws Exception {
+        saveUser(createDefaultContentCreator());
+
         HttpStatus expectedStatus = expectedStatusForPutAsContentCreator();
         ResultActions mvc = defaultJsonTestForPut();
 
@@ -663,6 +806,8 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
     public void putXmlAsContentCreator() throws Exception {
+        saveUser(createDefaultContentCreator());
+
         HttpStatus expectedStatus = expectedStatusForPutAsContentCreator();
         ResultActions mvc = defaultXmlTestForPut();
 
@@ -672,6 +817,8 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
     public void putJsonAsModerator() throws Exception {
+        saveUser(createDefaultModerator());
+
         HttpStatus expectedStatus = expectedStatusForPutAsModerator();
         ResultActions mvc = defaultJsonTestForPut();
 
@@ -681,6 +828,8 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
     public void putXmlAsModerator() throws Exception {
+        saveUser(createDefaultModerator());
+
         HttpStatus expectedStatus = expectedStatusForPutAsModerator();
         ResultActions mvc = defaultXmlTestForPut();
 
@@ -690,6 +839,8 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void putJsonAsAdmin() throws Exception {
+        saveUser(createDefaultAdmin());
+
         HttpStatus expectedStatus = expectedStatusForPutAsAdmin();
         ResultActions mvc = defaultJsonTestForPut();
 
@@ -699,86 +850,19 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void putXmlAsAdmin() throws Exception {
+        saveUser(createDefaultAdmin());
+
         HttpStatus expectedStatus = expectedStatusForPutAsAdmin();
         ResultActions mvc = defaultXmlTestForPut();
 
         validateXmlUtf8Response(mvc, expectedStatus);
     }
 
-    /**
-     * Override this method by a resource specific implementation to send DELETE messages with JSON as default data format.
-     *
-     * @return ResultActions instance which contains the response of the DELETE call.
-     */
-    public ResultActions defaultJsonTestForDelete() throws Exception {
-        return deleteAsJson(modify(save(create())));
-    }
-
-    /**
-     * Override this method by a resource specific implementation to send DELETE messages with XML as default data format.
-     *
-     * @return ResultActions instance which contains the response of the DELETE call.
-     */
-    public ResultActions defaultXmlTestForDelete() throws Exception {
-        return deleteAsXml(save(create()));
-    }
-
-    /**
-     * Override this method by a resource specific implementation to send DELETE messages with JSON as default data format.
-     * This DELETE call will be sent to a resource which does not exist.
-     *
-     * @return ResultActions instance which contains the response of the DELETE call.
-     */
-    public ResultActions defaultJsonTestForDeleteNonExistingResource() throws Exception {
-        return deleteAsJson(modify(create()));
-    }
-
-    /**
-     * Override this method by a resource specific implementation to send DELETE messages with XML as default data format.
-     *
-     * @return ResultActions instance which contains the response of the DELETE call.
-     */
-    public ResultActions defaultXmlTestForDeleteNonExistingResource() throws Exception {
-        return deleteAsXml(modify(create()));
-    }
-
-    /**
-     * Override this method by a resource specific implementation to override the default value of HttpStatus.ACCEPTED.
-     *
-     * @return The expected HttpStatus when a {@link User} with admin {@link Role} calls DELETE endpoint for specified resource.
-     */
-    public HttpStatus expectedStatusForDeleteAsAdmin() {
-        return HttpStatus.ACCEPTED;
-    }
-
-    /**
-     * Override this method by a resource specific implementation to override the default value of HttpStatus.FORBIDDEN.
-     *
-     * @return The expected HttpStatus when a {@link User} with user {@link Role} calls DELETE endpoint for specified resource.
-     */
-    public HttpStatus expectedStatusForDeleteAsUser() { return HttpStatus.FORBIDDEN; }
-
-    /**
-     * Override this method by a resource specific implementation to override the default value of HttpStatus.FORBIDDEN.
-     *
-     * @return The expected HttpStatus when a {@link User} with content creator {@link Role} calls DELETE endpoint for specified resource.
-     */
-    public HttpStatus expectedStatusForDeleteAsContentCreator() {
-        return HttpStatus.FORBIDDEN;
-    }
-
-    /**
-     * Override this method by a resource specific implementation to override the default value of HttpStatus.FORBIDDEN.
-     *
-     * @return The expected HttpStatus when a {@link User} with moderator {@link Role} calls DELETE endpoint for specified resource.
-     */
-    public HttpStatus expectedStatusForDeleteAsModerator() {
-        return HttpStatus.FORBIDDEN;
-    }
-
     @Test
     @WithMockUser(value = USER)
     public void deleteJsonAsUser() throws Exception {
+        saveUser(createDefaultUser());
+
         HttpStatus expectedStatus = expectedStatusForDeleteAsUser();
         ResultActions mvc = defaultJsonTestForDelete();
 
@@ -788,6 +872,8 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = USER)
     public void deleteXmlAsUser() throws Exception {
+        saveUser(createDefaultUser());
+
         HttpStatus expectedStatus = expectedStatusForDeleteAsUser();
         ResultActions mvc = defaultXmlTestForDelete();
 
@@ -797,7 +883,9 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = USER)
     public void deleteNonExistingResourceJsonAsUser() throws Exception {
-        HttpStatus expectedStatus = getExpectedStatusForNonExistingResource(expectedStatusForDeleteAsUser());
+        saveUser(createDefaultUser());
+
+        HttpStatus expectedStatus = expectedStatusForDeleteAsUserResourceNotExists();
         ResultActions mvc = defaultJsonTestForDeleteNonExistingResource();
 
         validateJsonResponse(mvc, expectedStatus);
@@ -806,7 +894,9 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = USER)
     public void deleteNonExistingResourceXmlAsUser() throws Exception {
-        HttpStatus expectedStatus = getExpectedStatusForNonExistingResource(expectedStatusForDeleteAsUser());
+        saveUser(createDefaultUser());
+
+        HttpStatus expectedStatus = expectedStatusForDeleteAsUserResourceNotExists();
         ResultActions mvc = defaultXmlTestForDeleteNonExistingResource();
 
         validateXmlResponse(mvc, expectedStatus);
@@ -815,6 +905,8 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
     public void deleteJsonAsContentCreator() throws Exception {
+        saveUser(createDefaultContentCreator());
+
         HttpStatus expectedStatus = expectedStatusForDeleteAsContentCreator();
         ResultActions mvc = defaultJsonTestForDelete();
 
@@ -824,6 +916,8 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
     public void deleteXmlAsContentCreator() throws Exception {
+        saveUser(createDefaultContentCreator());
+
         HttpStatus expectedStatus = expectedStatusForDeleteAsContentCreator();
         ResultActions mvc = defaultXmlTestForDelete();
 
@@ -833,7 +927,9 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
     public void deleteNonExistingResourceJsonAsContentCreator() throws Exception {
-        HttpStatus expectedStatus = getExpectedStatusForNonExistingResource(expectedStatusForDeleteAsContentCreator());
+        saveUser(createDefaultContentCreator());
+
+        HttpStatus expectedStatus = expectedStatusForDeleteAsContentCreatorResourceNotExists();
         ResultActions mvc = defaultJsonTestForDeleteNonExistingResource();
 
         validateJsonResponse(mvc, expectedStatus);
@@ -842,7 +938,9 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
     public void deleteNonExistingResourceXmlAsContentCreator() throws Exception {
-        HttpStatus expectedStatus = getExpectedStatusForNonExistingResource(expectedStatusForDeleteAsContentCreator());
+        saveUser(createDefaultContentCreator());
+
+        HttpStatus expectedStatus = expectedStatusForDeleteAsContentCreatorResourceNotExists();
         ResultActions mvc = defaultXmlTestForDeleteNonExistingResource();
 
         validateXmlResponse(mvc, expectedStatus);
@@ -851,6 +949,8 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
     public void deleteJsonAsModerator() throws Exception {
+        saveUser(createDefaultModerator());
+
         HttpStatus expectedStatus = expectedStatusForDeleteAsModerator();
         ResultActions mvc = defaultJsonTestForDelete();
 
@@ -860,6 +960,8 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
     public void deleteXmlAsModerator() throws Exception {
+        saveUser(createDefaultModerator());
+
         HttpStatus expectedStatus = expectedStatusForDeleteAsModerator();
         ResultActions mvc = defaultXmlTestForDelete();
 
@@ -869,7 +971,9 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
     public void deleteNonExistingResourceJsonAsModerator() throws Exception {
-        HttpStatus expectedStatus = getExpectedStatusForNonExistingResource(expectedStatusForDeleteAsModerator());
+        saveUser(createDefaultModerator());
+
+        HttpStatus expectedStatus = expectedStatusForDeleteAsModeratorResourceNotExists();
         ResultActions mvc = defaultJsonTestForDeleteNonExistingResource();
 
         validateJsonResponse(mvc, expectedStatus);
@@ -878,7 +982,9 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
     public void deleteNonExistingResourceXmlAsModerator() throws Exception {
-        HttpStatus expectedStatus = getExpectedStatusForNonExistingResource(expectedStatusForDeleteAsModerator());
+        saveUser(createDefaultModerator());
+
+        HttpStatus expectedStatus = expectedStatusForDeleteAsModeratorResourceNotExists();
         ResultActions mvc = defaultXmlTestForDeleteNonExistingResource();
 
         validateXmlResponse(mvc, expectedStatus);
@@ -887,6 +993,8 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void deleteJsonAsAdmin() throws Exception {
+        saveUser(createDefaultAdmin());
+
         HttpStatus expectedStatus = expectedStatusForDeleteAsAdmin();
         ResultActions mvc = defaultJsonTestForDelete();
 
@@ -896,6 +1004,8 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void deleteXmlAsAdmin() throws Exception {
+        saveUser(createDefaultAdmin());
+
         HttpStatus expectedStatus = expectedStatusForDeleteAsAdmin();
         ResultActions mvc = defaultXmlTestForDelete();
 
@@ -905,7 +1015,9 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void deleteNonExistingResourceJsonAsAdmin() throws Exception {
-        HttpStatus expectedStatus = getExpectedStatusForNonExistingResource(expectedStatusForDeleteAsAdmin());
+        saveUser(createDefaultAdmin());
+
+        HttpStatus expectedStatus = expectedStatusForDeleteAsAdminResourceNotExists();
         ResultActions mvc = defaultJsonTestForDeleteNonExistingResource();
 
         validateJsonResponse(mvc, expectedStatus);
@@ -914,37 +1026,13 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> {
     @Test
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void deleteNonExistingResourceXmlAsAdmin() throws Exception {
-        HttpStatus expectedStatus = getExpectedStatusForNonExistingResource(expectedStatusForDeleteAsAdmin());
+        saveUser(createDefaultAdmin());
+
+        HttpStatus expectedStatus = expectedStatusForDeleteAsAdminResourceNotExists();
         ResultActions mvc = defaultXmlTestForDeleteNonExistingResource();
 
         validateXmlResponse(mvc, expectedStatus);
     }
-
-    private void validateXmlUtf8Response(final ResultActions mvc, final HttpStatus expectedStatus) throws Exception {
-        validateContentTypeResponse(mvc, expectedStatus, DEFAULT_XML_ACCEPT_UTF8_VALUE);
-    }
-
-    private void validateJsonResponse(final ResultActions mvc, final HttpStatus expectedStatus) throws Exception {
-        validateContentTypeResponse(mvc, expectedStatus, DEFAULT_JSON_ACCEPT_VALUE);
-    }
-
-    private void validateXmlResponse(final ResultActions mvc, final HttpStatus expectedStatus) throws Exception {
-        validateContentTypeResponse(mvc, expectedStatus, DEFAULT_XML_ACCEPT_VALUE);
-    }
-
-    private void validateContentTypeResponse(final ResultActions mvc, final HttpStatus expectedStatus, final String contentType) throws Exception {
-        new ResponseValidator(mvc, expectedStatus, contentType).validate();
-    }
-
-    private HttpStatus getExpectedStatusForNonExistingResource(final HttpStatus expected){
-        return expected.is2xxSuccessful() ? HttpStatus.NOT_FOUND : expected;
-    }
-
-    protected String unique(String text){
-        return text + new Date().getTime();
-    }
-
-
     protected Blogpost createDefaultBlogpost(User author){
         Blogpost blogpost = new Blogpost();
 

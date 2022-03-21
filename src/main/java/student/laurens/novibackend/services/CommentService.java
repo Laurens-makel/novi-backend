@@ -21,4 +21,7 @@ public class CommentService extends BaseService<Comment> {
     public Comment getResource(String string) {
         return null;
     }
+
+    @Override
+    public Class<Comment> getResourceClass() { return Comment.class; }
 }
