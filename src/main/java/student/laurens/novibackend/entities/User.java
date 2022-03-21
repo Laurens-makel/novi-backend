@@ -18,7 +18,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "USERS")
-public class User extends AbstractEntity {
+public class User extends AbstractOwnedEntity {
 
     @Id
     @Column(name = "UID")
@@ -49,6 +49,19 @@ public class User extends AbstractEntity {
     )
     private @Getter Set<Role> roles = new HashSet<>();
 
+    public boolean hasRole(String name){
+        return getRoles().stream().anyMatch( (role -> role.getName().equalsIgnoreCase(name)));
+    }
+
+    @Override
+    public Integer getId() {
+        return getUid();
+    }
+
+    @Override
+    public Integer getOwnerUid() {
+        return getUid();
+    }
 }
 
 

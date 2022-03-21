@@ -16,27 +16,37 @@ public abstract class BaseService<R extends AbstractEntity> {
 
     abstract protected ResourceRepository getRepository();
 
-    abstract public R getResource(String string);
+    abstract public R getResource(final String string);
 
-    public Iterable<R> getResource(){
-        return getRepository().findAll();
-    }
-
-    public void createResource(R resource){
-        getRepository().save(resource);
-    };
-
-    public void updateResourceById(Integer resourceId, R resource){
+    public R getResourceById(final Integer resourceId) {
         Optional<R> found = getRepository().findById(resourceId);
 
         if(!found.isPresent()){
             throw new ResourceNotFoundException(resourceType, resourceId);
         }
 
-        getRepository().delete(found.get());
+        return found.get();
     }
 
-    public void deleteResourceById(Integer resourceId){
+    public Iterable<R> getResource(){
+        return getRepository().findAll();
+    }
+
+    public void createResource(final R resource){
+        getRepository().save(resource);
+    };
+
+    public void updateResourceById(final Integer resourceId, R resource){
+        Optional<R> found = getRepository().findById(resourceId);
+
+        if(!found.isPresent()){
+            throw new ResourceNotFoundException(resourceType, resourceId);
+        }
+
+        getRepository().save(resource);
+    }
+
+    public void deleteResourceById(final Integer resourceId){
         Optional<R> resource = getRepository().findById(resourceId);
 
         if(!resource.isPresent()){
@@ -45,5 +55,7 @@ public abstract class BaseService<R extends AbstractEntity> {
 
         getRepository().delete(resource.get());
     };
+
+    abstract public Class<R> getResourceClass();
 
 }

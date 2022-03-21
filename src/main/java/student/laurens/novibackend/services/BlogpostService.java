@@ -28,7 +28,12 @@ public class BlogpostService extends BaseService<Blogpost> {
         return repository.findAllPublished();
     }
 
-    public Blogpost getResource(String title){
+    @Override
+    public Class<Blogpost> getResourceClass() {
+        return Blogpost.class;
+    }
+
+    public Blogpost getResource(final String title){
         return repository.findByTitle(title);
     }
 

@@ -2,6 +2,7 @@ package student.laurens.novibackend.services;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import student.laurens.novibackend.entities.Role;
@@ -23,8 +24,13 @@ public class RoleService extends BaseService<Role> {
     @Autowired
     private @Getter RoleRepository repository;
 
-    public Role getResource(String roleName){
+    public Role getResource(final String roleName){
         return repository.getRoleByName(roleName);
+    }
+
+    @Override
+    public Class<Role> getResourceClass() {
+        return Role.class;
     }
 
 }

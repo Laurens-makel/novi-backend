@@ -16,7 +16,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Laurens Mäkel
  * @version 1.0, March 2022
  */
-public class UserRestControllerIntegrationTest extends ControllerIntegrationTestBase<User> {
+public class UserRestControllerIntegrationTest extends OwnedControllerIntegrationTestBase<User> {
+
+    @After
+    public void after(){
+        userRepository.deleteAll();
+    }
 
     @Override
     protected String getUrlForGet() {
@@ -47,10 +52,162 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
         return "/users/" + (id == null ? 9999 : id);
     }
 
-    @After
-    public void after(){
-        userRepository.deleteAll();
+    @Override
+    protected User createOwned(User owner) {
+        return owner;
     }
+
+    @Override
+    protected User createNotOwned() {
+        return createUniqueContentCreator();
+    }
+
+    @Override
+    protected User create() {
+        return modify(createDefaultUser());
+    }
+
+    @Override
+    protected User save(User resource) {
+        return saveUser(resource);
+    }
+
+    @Override
+    protected User modify(User resource) {
+        resource.setUsername(unique("MODIFIED"));
+
+        return resource;
+    }
+
+    @Override
+    protected HttpStatus expectedStatusForGetAsUser() { return HttpStatus.FORBIDDEN; }
+    @Override
+    protected HttpStatus expectedStatusForGetAsContentCreator() { return HttpStatus.FORBIDDEN; }
+    @Override
+    protected HttpStatus expectedStatusForGetAsModerator() {
+        return HttpStatus.OK;
+    }
+    @Override
+    protected HttpStatus expectedStatusForGetAsAdmin() { return HttpStatus.OK;  }
+
+    @Override
+    protected HttpStatus expectedStatusForGetAsAdminResourceOwned() { return HttpStatus.OK; }
+    @Override
+    protected HttpStatus expectedStatusForGetAsAdminResourceNotOwned() { return HttpStatus.OK; }
+    @Override
+    protected HttpStatus expectedStatusForGetAsModeratorResourceOwned() { return HttpStatus.OK; }
+    @Override
+    protected HttpStatus expectedStatusForGetAsModeratorResourceNotOwned() { return HttpStatus.OK; }
+    @Override
+    protected HttpStatus expectedStatusForGetAsContentCreatorResourceOwned() { return HttpStatus.OK; }
+    @Override
+    protected HttpStatus expectedStatusForGetAsContentCreatorResourceNotOwned() { return HttpStatus.OK; }
+    @Override
+    protected HttpStatus expectedStatusForGetAsUserResourceOwned() { return HttpStatus.OK; }
+    @Override
+    protected HttpStatus expectedStatusForGetAsUserResourceNotOwned() { return HttpStatus.OK; }
+
+    @Override
+    protected HttpStatus expectedStatusForPostAsUser() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForPostAsContentCreator() {
+        return HttpStatus.FORBIDDEN;
+    }
+    @Override
+    protected HttpStatus expectedStatusForPostAsModerator() {
+        return HttpStatus.FORBIDDEN;
+    }
+    @Override
+    protected HttpStatus expectedStatusForPostAsAdmin() { return HttpStatus.CREATED;}
+
+
+    @Override
+    protected HttpStatus expectedStatusForPutAsAdmin() {
+        return HttpStatus.ACCEPTED;
+    }
+    @Override
+    protected HttpStatus expectedStatusForPutAsUser() {
+        return HttpStatus.FORBIDDEN;
+    }
+    @Override
+    protected HttpStatus expectedStatusForPutAsContentCreator() {
+        return HttpStatus.FORBIDDEN;
+    }
+    @Override
+    protected HttpStatus expectedStatusForPutAsModerator() {
+        return HttpStatus.FORBIDDEN;
+    }
+
+
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsAdmin() {
+        return HttpStatus.ACCEPTED;
+    }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsUser() { return HttpStatus.FORBIDDEN; }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsContentCreator() { return HttpStatus.FORBIDDEN; }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsModerator() {
+        return HttpStatus.FORBIDDEN;
+    }
+
+
+    @Override
+    protected HttpStatus expectedStatusForPutAsContentCreatorResourceNotExists() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForPutAsAdminResourceNotExists() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForPutAsUserResourceNotExists() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForPutAsModeratorResourceNotExists() { return HttpStatus.FORBIDDEN;}
+
+
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsModeratorResourceNotExists() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsUserResourceNotExists() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsContentCreatorResourceNotExists() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsAdminResourceNotExists() { return HttpStatus.NOT_FOUND;}
+
+
+    @Override
+    protected HttpStatus expectedStatusForPutAsContentCreatorResourceOwned(){ return HttpStatus.ACCEPTED; }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsContentCreatorResourceOwned(){ return HttpStatus.FORBIDDEN; }
+    @Override
+    protected HttpStatus expectedStatusForPutAsAdminResourceOwned() { return HttpStatus.ACCEPTED;}
+    @Override
+    protected HttpStatus expectedStatusForPutAsAdminResourceNotOwned() { return HttpStatus.ACCEPTED;}
+
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsAdminResourceOwned() { return HttpStatus.ACCEPTED;}
+    @Override
+    protected HttpStatus expectedStatusForPutAsModeratorResourceOwned(){ return HttpStatus.ACCEPTED; }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsAdminResourceNotOwned() { return HttpStatus.ACCEPTED;}
+    @Override
+    protected HttpStatus expectedStatusForPutAsContentCreatorResourceNotOwned() { return HttpStatus.FORBIDDEN;}
+
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsContentCreatorResourceNotOwned() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForPutAsModeratorResourceNotOwned() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsModeratorResourceOwned() { return HttpStatus.FORBIDDEN; }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsModeratorResourceNotOwned() { return HttpStatus.FORBIDDEN;}
+
+    @Override
+    protected HttpStatus expectedStatusForPutAsUserResourceOwned(){ return HttpStatus.ACCEPTED; }
+    @Override
+    protected HttpStatus expectedStatusForPutAsUserResourceNotOwned() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsUserResourceOwned() { return HttpStatus.FORBIDDEN; }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsUserResourceNotOwned() { return HttpStatus.FORBIDDEN;}
 
     @Test
     public void postUser_isUnauthorized() throws Exception {
@@ -367,6 +524,7 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void deleteUser_AsAdmin_JSON_Ok() throws Exception {
         // given
+        saveUser(createDefaultAdmin());
         User user = saveUser(createTestUser("Jan", "Smit", "SMIT", "MyPassword123", "USER"));
 
         // when
@@ -382,6 +540,7 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void deleteUser_AsAdmin_XML_Ok() throws Exception {
         // given
+        saveUser(createDefaultAdmin());
         User user = saveUser(createTestUser("Jan", "Smit", "SMIT2", "MyPassword123", "USER"));
 
         // when
@@ -449,6 +608,7 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void deleteNonExistingUser_AsAdmin_AcceptJSON_NotFound() throws Exception {
         // when
+        saveUser(createDefaultAdmin());
         ResultActions mvc = deleteAsJson(createTestUser("Jan", "Smit", "SMIT", "MyPassword123", "USER"))
 
         // then
@@ -462,6 +622,7 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void deleteNonExistingUser_AsAdmin_AcceptXML_NotFound() throws Exception {
         // when
+        saveUser(createDefaultAdmin());
         ResultActions mvc = deleteAsXml(createTestUser("Jan", "Smit", "SMIT", "MyPassword123", "USER"))
 
         // then
@@ -514,6 +675,7 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void updateUser_AsAdmin_JSON_Ok() throws Exception {
         // given
+        saveUser(createDefaultAdmin());
         User user = saveUser(createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER"));
 
         user.setUsername("UPDATED_USERNAME");
@@ -531,6 +693,7 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void updateUser_AsAdmin_XML_Ok() throws Exception {
         // given
+        saveUser(createDefaultAdmin());
         User user = saveUser(createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER"));
 
         user.setUsername("UPDATED_USERNAME");
@@ -546,9 +709,9 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
 
     @Test
     @WithMockUser(value = USER, roles = {USER_ROLE} )
-    public void updateUser_AsUser_Forbidden() throws Exception {
+    public void updateOwnUser_AsUser_isAccepted() throws Exception {
         // given
-        User user = saveUser(createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER"));
+        User user = saveUser(createDefaultUser());
 
         user.setUsername("UPDATED_USERNAME");
 
@@ -556,14 +719,14 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
         updateAsJson(user)
 
         // then
-        .andExpect(status().isForbidden());
+        .andExpect(status().isAccepted());
     }
 
     @Test
     @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
-    public void updateUser_AsContentCreator_Forbidden() throws Exception {
+    public void updateOwnUser_AsContentCreator_isAccepted() throws Exception {
         // given
-        User user = saveUser(createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER"));
+        User user = saveUser(createDefaultContentCreator());
 
         user.setUsername("UPDATED_USERNAME");
 
@@ -571,14 +734,14 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
         updateAsJson(user)
 
         // then
-        .andExpect(status().isForbidden());
+        .andExpect(status().isAccepted());
     }
 
     @Test
     @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
-    public void updateUser_AsModerator_Forbidden() throws Exception {
+    public void updateOwnUser_AsModerator_IsAccepted() throws Exception {
         // given
-        User user = saveUser(createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER"));
+        User user = saveUser(createDefaultModerator());
 
         user.setUsername("UPDATED_USERNAME");
 
@@ -586,7 +749,7 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
         updateAsJson(user)
 
         // then
-        .andExpect(status().isForbidden());
+        .andExpect(status().isAccepted());
     }
 
     @Test
@@ -607,6 +770,7 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void updateNonExistingUser_AsAdmin_AcceptJSON_NotFound() throws Exception {
         // given
+        saveUser(createDefaultAdmin());
         User user = createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER");
 
         // when
@@ -623,6 +787,7 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void updateNonExistingUser_AsAdmin_AcceptXML_NotFound() throws Exception {
         // given
+        saveUser(createDefaultAdmin());
         User user = createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER");
 
         // when
@@ -637,41 +802,44 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
 
     @Test
     @WithMockUser(value = USER, roles = {USER_ROLE} )
-    public void updateNonExistingUser_AsUser_Forbidden() throws Exception {
+    public void updateNonExistingUser_AsUser_NotFound() throws Exception {
         // given
+        saveUser(createDefaultUser());
         User user = createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER");
 
         // when
         updateAsJson(user)
 
         // then
-        .andExpect(status().isForbidden());
+        .andExpect(status().isNotFound());
     }
 
     @Test
     @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
-    public void updateNonExistingUser_AsContentCreator_Forbidden() throws Exception {
+    public void updateNonExistingUser_AsContentCreator_isNotFound() throws Exception {
         // given
+        saveUser(createUniqueContentCreator());
         User user = createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER");
 
         // when
         updateAsJson(user)
 
         // then
-        .andExpect(status().isForbidden());
+        .andExpect(status().isNotFound());
     }
 
     @Test
     @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
-    public void updateNonExistingUser_AsModerator_Forbidden() throws Exception {
+    public void updateNonExistingUser_AsModerator_isNotFound() throws Exception {
         // given
+        saveUser(createDefaultModerator());
         User user = createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER");
 
         // when
         updateAsJson(user)
 
         // then
-        .andExpect(status().isForbidden());
+        .andExpect(status().isNotFound());
     }
 
     @Test
@@ -686,25 +854,4 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
         .andExpect(status().isUnauthorized());
     }
 
-    @Override
-    protected User create() {
-        return createDefaultUser();
-    }
-
-    @Override
-    protected User save(User resource) {
-        return saveUser(resource);
-    }
-
-    @Override
-    protected User modify(User resource) {
-        resource.setUsername("MODIFIED");
-
-        return resource;
-    }
-
-    @Override
-    public HttpStatus expectedStatusForGetAsModerator() {
-        return HttpStatus.OK;
-    }
 }

@@ -19,8 +19,8 @@ import java.util.Map;
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     final private String DEFAULT_CONTENT_TYPE = MediaType.APPLICATION_JSON_VALUE;
 
-    @ExceptionHandler({ ResourceNotFoundException.class })
-    protected ResponseEntity<Object> handleNotFound(final ResourceNotFoundException ex, final WebRequest request) {
+    @ExceptionHandler({ ResourceException.class })
+    protected ResponseEntity<Object> handleResourceException(final ResourceException ex, final WebRequest request) {
         final String accept = parseAcceptHeader(request);
 
         final HttpHeaders responseHeaders = new HttpHeaders();
@@ -29,15 +29,15 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         try {
             final String response = translateError(createError(ex, request), accept);
 
-            return handleExceptionInternal(ex, response, responseHeaders, HttpStatus.NOT_FOUND, request);
+            return handleExceptionInternal(ex, response, responseHeaders, ex.getHttpStatus(), request);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
 
-        return handleExceptionInternal(ex, ex.getMessage(), responseHeaders, HttpStatus.NOT_FOUND, request);
+        return handleExceptionInternal(ex, ex.getMessage(), responseHeaders, ex.getHttpStatus(), request);
     }
 
-    private Map<String, String> createError(final ResourceNotFoundException exception, final WebRequest request) {
+    private Map<String, String> createError(final ResourceException exception, final WebRequest request) {
         final Map<String, String> error = new HashMap<>();
 
         error.put("exception", exception.getClass().getName().split("[.]")[4]);

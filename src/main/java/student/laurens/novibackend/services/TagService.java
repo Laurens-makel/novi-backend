@@ -17,8 +17,13 @@ public class TagService extends BaseService<Tag> {
     @Autowired
     private @Getter TagRepository repository;
 
-    public Tag getResource(String title) {
+    public Tag getResource(final String title) {
         return repository.getTagByTitle(title);
+    }
+
+    @Override
+    public Class<Tag> getResourceClass() {
+        return Tag.class;
     }
 
 }
