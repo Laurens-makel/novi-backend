@@ -1,7 +1,6 @@
 package student.laurens.novibackend.services;
 
 import org.springframework.core.GenericTypeResolver;
-import org.springframework.http.HttpMethod;
 import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.repositories.ResourceRepository;
@@ -44,7 +43,7 @@ public abstract class BaseService<R extends AbstractEntity> {
             throw new ResourceNotFoundException(resourceType, resourceId);
         }
 
-        getRepository().delete(found.get());
+        getRepository().save(resource);
     }
 
     public void deleteResourceById(final Integer resourceId){
