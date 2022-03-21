@@ -18,7 +18,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "USERS")
-public class User extends AbstractEntity {
+public class User extends AbstractOwnedEntity {
 
     @Id
     @Column(name = "UID")
@@ -55,6 +55,11 @@ public class User extends AbstractEntity {
 
     @Override
     public Integer getId() {
+        return getUid();
+    }
+
+    @Override
+    public Integer getOwnerUid() {
         return getUid();
     }
 }

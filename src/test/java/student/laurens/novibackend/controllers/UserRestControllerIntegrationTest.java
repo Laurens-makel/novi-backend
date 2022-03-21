@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Laurens Mäkel
  * @version 1.0, March 2022
  */
-public class UserRestControllerIntegrationTest extends ControllerIntegrationTestBase<User> {
+public class UserRestControllerIntegrationTest extends OwnedControllerIntegrationTestBase<User> {
 
     @Override
     protected String getUrlForGet() {
@@ -46,6 +46,18 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
 
         return "/users/" + (id == null ? 9999 : id);
     }
+
+    @Override
+    public HttpStatus expectedStatusForPutAsUserResourceOwned(){ return HttpStatus.ACCEPTED; }
+
+    @Override
+    public HttpStatus expectedStatusForPutAsModeratorResourceOwned(){ return HttpStatus.ACCEPTED; }
+
+    @Override
+    public HttpStatus expectedStatusForPutAsContentCreatorResourceOwned(){ return HttpStatus.ACCEPTED; }
+
+    @Override
+    public HttpStatus expectedStatusForDeleteAsContentCreatorResourceOwned(){ return HttpStatus.FORBIDDEN; }
 
     @After
     public void after(){
@@ -714,5 +726,15 @@ public class UserRestControllerIntegrationTest extends ControllerIntegrationTest
     @Override
     public HttpStatus expectedStatusForGetAsModerator() {
         return HttpStatus.OK;
+    }
+
+    @Override
+    protected User createOwned(User owner) {
+        return owner;
+    }
+
+    @Override
+    protected User createNotOwned() {
+        return createUniqueContentCreator();
     }
 }
