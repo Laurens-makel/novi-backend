@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlType;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,6 +17,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "BLOGPOSTS")
+@XmlType(namespace = "https://www.example.org/blogpost")
 public class Blogpost extends AbstractEntity {
 
     @Id

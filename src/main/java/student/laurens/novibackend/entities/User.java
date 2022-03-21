@@ -7,6 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Entity class for USERS table.
@@ -18,6 +19,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "USERS")
+@XmlType(namespace = "https://www.example.org/user")
 public class User extends AbstractEntity {
 
     @Id
