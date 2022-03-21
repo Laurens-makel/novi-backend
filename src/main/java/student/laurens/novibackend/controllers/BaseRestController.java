@@ -93,10 +93,6 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         }
     }
 
-    protected ResponseEntity forbidden(){
-        return new ResponseEntity(createMessage("Resource forbidden"), HttpStatus.FORBIDDEN);
-    }
-
     protected User getConsumer(){
         try {
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
