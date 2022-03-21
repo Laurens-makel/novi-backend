@@ -12,6 +12,7 @@ public abstract class OwnedWithParentControllerIntegrationTestBase<R extends Abs
 
     abstract protected ResourceRepository<R> getRepository();
     abstract protected ResourceRepository<P> getParentRepository();
+
     @After
     public void base_after(){
         log.debug("Deleting all users from repository.");
@@ -37,12 +38,10 @@ public abstract class OwnedWithParentControllerIntegrationTestBase<R extends Abs
      */
     abstract protected P createParent();
 
-    /**
-     * Implement this method by a resource specific implementation to save into the repository a sample instances of the parent resource.
-     *
-     * @return Sample instance of parent resource.
-     */
-    abstract protected P saveParent(final P parentResource);
+    protected P saveParent(final P parentResource){
+        getParentRepository().save(parentResource);
+        return parentResource;
+    }
 
     /**
      * Implement this method by a resource specific implementation to modify a sample instances of the parent resource.

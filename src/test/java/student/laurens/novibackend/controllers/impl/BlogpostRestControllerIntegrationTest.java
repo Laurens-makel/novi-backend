@@ -81,11 +81,6 @@ public class BlogpostRestControllerIntegrationTest extends OwnedControllerIntegr
     }
 
     @Override
-    protected Blogpost create() {
-        return createDefaultBlogpost(saveUser(createUniqueContentCreator()));
-    }
-
-    @Override
     protected Blogpost save(Blogpost resource) {
         saveBlogpost(resource);
 

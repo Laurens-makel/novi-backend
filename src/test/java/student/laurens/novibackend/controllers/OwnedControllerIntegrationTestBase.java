@@ -24,6 +24,11 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
      */
     abstract protected R createNotOwned();
 
+    @Override
+    protected R create(){
+        return createNotOwned();
+    }
+
     abstract protected HttpStatus expectedStatusForGetAsAdminResourceOwned();
     abstract protected HttpStatus expectedStatusForGetAsAdminResourceNotOwned();
     abstract protected HttpStatus expectedStatusForGetAsModeratorResourceOwned();

@@ -65,11 +65,6 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Override
-    protected User create() {
-        return modify(createDefaultUser());
-    }
-
-    @Override
     protected User save(User resource) {
         return saveUser(resource);
     }

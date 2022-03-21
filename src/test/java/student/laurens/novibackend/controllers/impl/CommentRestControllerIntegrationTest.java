@@ -84,11 +84,6 @@ public class CommentRestControllerIntegrationTest extends OwnedWithParentControl
 
     @Override
     protected Comment createNotOwned() {
-        return create();
-    }
-
-    @Override
-    protected Comment create() {
         Blogpost post = saveBlogpost(createParent());
         User author = saveUser(createUniqueContentCreator());
 
