@@ -564,9 +564,9 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
 
     @Test
     @WithMockUser(value = USER, roles = {USER_ROLE} )
-    public void updateUser_AsUser_Forbidden() throws Exception {
+    public void updateOwnUser_AsUser_isAccepted() throws Exception {
         // given
-        User user = saveUser(createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER"));
+        User user = saveUser(createDefaultUser());
 
         user.setUsername("UPDATED_USERNAME");
 
@@ -574,14 +574,14 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
         updateAsJson(user)
 
         // then
-        .andExpect(status().isForbidden());
+        .andExpect(status().isAccepted());
     }
 
     @Test
     @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
-    public void updateUser_AsContentCreator_Forbidden() throws Exception {
+    public void updateOwnUser_AsContentCreator_isAccepted() throws Exception {
         // given
-        User user = saveUser(createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER"));
+        User user = saveUser(createDefaultContentCreator());
 
         user.setUsername("UPDATED_USERNAME");
 
@@ -589,14 +589,14 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
         updateAsJson(user)
 
         // then
-        .andExpect(status().isForbidden());
+        .andExpect(status().isAccepted());
     }
 
     @Test
     @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
-    public void updateUser_AsModerator_Forbidden() throws Exception {
+    public void updateOwnUser_AsModerator_IsAccepted() throws Exception {
         // given
-        User user = saveUser(createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER"));
+        User user = saveUser(createDefaultModerator());
 
         user.setUsername("UPDATED_USERNAME");
 
@@ -604,7 +604,7 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
         updateAsJson(user)
 
         // then
-        .andExpect(status().isForbidden());
+        .andExpect(status().isAccepted());
     }
 
     @Test
@@ -657,41 +657,44 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
 
     @Test
     @WithMockUser(value = USER, roles = {USER_ROLE} )
-    public void updateNonExistingUser_AsUser_Forbidden() throws Exception {
+    public void updateNonExistingUser_AsUser_NotFound() throws Exception {
         // given
+        saveUser(createDefaultUser());
         User user = createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER");
 
         // when
         updateAsJson(user)
 
         // then
-        .andExpect(status().isForbidden());
+        .andExpect(status().isNotFound());
     }
 
     @Test
     @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
-    public void updateNonExistingUser_AsContentCreator_Forbidden() throws Exception {
+    public void updateNonExistingUser_AsContentCreator_isNotFound() throws Exception {
         // given
+        saveUser(createUniqueContentCreator());
         User user = createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER");
 
         // when
         updateAsJson(user)
 
         // then
-        .andExpect(status().isForbidden());
+        .andExpect(status().isNotFound());
     }
 
     @Test
     @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
-    public void updateNonExistingUser_AsModerator_Forbidden() throws Exception {
+    public void updateNonExistingUser_AsModerator_isNotFound() throws Exception {
         // given
+        saveUser(createDefaultModerator());
         User user = createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER");
 
         // when
         updateAsJson(user)
 
         // then
-        .andExpect(status().isForbidden());
+        .andExpect(status().isNotFound());
     }
 
     @Test
