@@ -1,10 +1,12 @@
-package student.laurens.novibackend.controllers;
+package student.laurens.novibackend.controllers.impl;
 
 import org.junit.After;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
+import student.laurens.novibackend.controllers.ControllerIntegrationTestBase;
+import student.laurens.novibackend.controllers.RoleRestController;
 import student.laurens.novibackend.entities.Role;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -16,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Laurens Mäkel
  * @version 1.0, March 2022
  */
-public class RoleRestControllerIntegrationTest extends ControllerIntegrationTestBase<Role>  {
+public class RoleRestControllerIntegrationTest extends ControllerIntegrationTestBase<Role> {
 
     @Override
     protected String getUrlForGet() {

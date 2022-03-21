@@ -10,7 +10,6 @@ import student.laurens.novibackend.entities.User;
 
 public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwnedEntity> extends ControllerIntegrationTestBase<R> {
 
-
     /**
      * Implement this method by a resource specific implementation to create sample owned instances of the resource.
      *-

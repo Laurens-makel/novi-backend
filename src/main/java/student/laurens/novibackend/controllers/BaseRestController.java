@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.entities.AbstractOwnedEntity;
 import student.laurens.novibackend.entities.User;
+import student.laurens.novibackend.exceptions.ResourceException;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.exceptions.ResourceNotOwnedException;
 import student.laurens.novibackend.exceptions.UserNotFoundException;
@@ -79,7 +80,7 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         return new ResponseEntity(createDeletedMessage(), HttpStatus.ACCEPTED);
     }
 
-    private void validateOwnershipOfResource(final Integer resourceId, final HttpMethod method) throws ResourceNotOwnedException {
+        private void validateOwnershipOfResource(final Integer resourceId, final HttpMethod method) throws ResourceNotFoundException, ResourceNotOwnedException  {
         Class<R> resourceClass = getService().getResourceClass();
 
         if(AbstractOwnedEntity.class.isAssignableFrom(resourceClass) && isMethodProtected(method)){

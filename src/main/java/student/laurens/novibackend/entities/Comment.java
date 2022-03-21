@@ -14,16 +14,15 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "COMMENTS")
-public class Comment extends AbstractEntity {
+public class Comment extends AbstractOwnedWithParentEntity<Blogpost> {
 
     @Id
     @Column(name = "COMMENT_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private @Getter Integer id;
 
-    @OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
-    @MapsId
-    @JoinColumn(name = "AUTHOR_UID", referencedColumnName = "UID")
+    @ManyToOne( cascade = CascadeType.REFRESH )
+    @JoinColumn( name = "UID", nullable = false)
     private @Getter @Setter User author;
 
     @Column(name = "TITLE", nullable = false)
@@ -35,8 +34,17 @@ public class Comment extends AbstractEntity {
     @Column(name = "CREATED_AT", nullable = false, updatable = false, insertable=false)
     private @Getter Date createdAt;
 
-    @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
-    @MapsId
-    @JoinColumn(name = "BLOGPOST_ID", referencedColumnName = "BLOGPOST_ID")
+    @ManyToOne( cascade = CascadeType.MERGE )
+    @JoinColumn( name = "BLOGPOST_ID", nullable = false)
     private @Getter @Setter Blogpost blogpost;
+
+    @Override
+    public Integer getOwnerUid() {
+        return getAuthor().getUid();
+    }
+
+    @Override
+    protected Blogpost getParent() {
+        return getBlogpost();
+    }
 }

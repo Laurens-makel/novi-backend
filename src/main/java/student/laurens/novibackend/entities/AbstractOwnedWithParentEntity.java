@@ -9,8 +9,11 @@ package student.laurens.novibackend.entities;
  * @author Laurens Mäkel
  * @version 1.0, March 2022
  */
-public abstract class AbstractOwnedEntity extends AbstractEntity {
+public abstract class AbstractOwnedWithParentEntity<P extends AbstractEntity> extends AbstractOwnedEntity {
 
-    abstract public Integer getOwnerUid();
+    abstract protected P getParent();
 
+    public Integer getParentId(){
+        return getParent().getId();
+    }
 }

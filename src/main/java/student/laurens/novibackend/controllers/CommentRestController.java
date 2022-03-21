@@ -15,6 +15,11 @@ public class CommentRestController extends BaseRestController<Comment> {
     @Autowired
     private @Getter CommentService service;
 
+    @GetMapping("/{commentId}")
+    public ResponseEntity<Comment> getComments(@PathVariable String blogpostId, @PathVariable("commentId") Integer commentId) {
+        return get(commentId);
+    }
+
     @GetMapping
     public ResponseEntity<Iterable<Comment>> getComments(@PathVariable String blogpostId) {
         return get();
@@ -26,12 +31,12 @@ public class CommentRestController extends BaseRestController<Comment> {
     }
 
     @PutMapping("/{commentId}")
-    public ResponseEntity<Comment> updateCommen(@PathVariable String blogpostI, @PathVariable("commentId") Integer commentId, @RequestBody Comment comment){
+    public ResponseEntity<Comment> updateComment(@PathVariable String blogpostId, @PathVariable("commentId") Integer commentId, @RequestBody Comment comment){
         return update(commentId, comment);
     }
 
-    @DeleteMapping("/{roleId}")
-    public ResponseEntity deleteRole(@PathVariable String blogpostI, @PathVariable("commentId") Integer commentId) throws RoleNotFoundException {
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity deleteComment(@PathVariable String blogpostId, @PathVariable("commentId") Integer commentId) throws RoleNotFoundException {
         return delete(commentId);
     }
 }
