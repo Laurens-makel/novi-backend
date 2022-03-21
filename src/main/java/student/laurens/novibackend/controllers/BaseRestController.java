@@ -14,6 +14,7 @@ import student.laurens.novibackend.entities.AbstractOwnedEntity;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.exceptions.ResourceNotOwnedException;
+import student.laurens.novibackend.exceptions.UserNotFoundException;
 import student.laurens.novibackend.services.AppUserDetailsService;
 import student.laurens.novibackend.services.BaseService;
 
@@ -93,18 +94,18 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         }
     }
 
-    protected User getConsumer(){
+    protected User getConsumer() throws UserNotFoundException {
+        String username = null;
         try {
-            String username = SecurityContextHolder.getContext().getAuthentication().getName();
-            log.info("Getting currently logged in user ["+username+"]");
+            username = SecurityContextHolder.getContext().getAuthentication().getName();
+            log.info("Getting currently logged in user [" + username + "]");
             User user = appUserDetailsService.getResource(username);
-            log.info("Getting currently logged in user ["+user+"]");
+            log.info("Getting currently logged in user [" + user + "]");
             return user;
-        } catch (Exception e){
-            log.warn("An exception occured whilst attempting to retrieve the currently logged in user !", e);
+        } catch (Exception e) {
+            log.warn("An exception occurred whilst attempting to retrieve the currently logged in user !", e);
+            throw new UserNotFoundException(username);
         }
-
-        return null;
     }
 
     protected boolean isMethodProtected(HttpMethod method){

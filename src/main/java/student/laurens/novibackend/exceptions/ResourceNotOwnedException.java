@@ -7,7 +7,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ResourceNotOwnedException extends ResourceException {
 
     public ResourceNotOwnedException(final Class resourceClass, final Integer identifier) {
-        super("Forbidden to perform action on resource with provided ID ["+identifier+"]", resourceClass, identifier, HttpStatus.FORBIDDEN);
+        super("Forbidden to perform action on resource with provided ID ["+identifier+"]", resourceClass, identifier);
     }
 
+    @Override
+    protected HttpStatus getHttpStatus() {
+        return HttpStatus.FORBIDDEN;
+    }
 }
