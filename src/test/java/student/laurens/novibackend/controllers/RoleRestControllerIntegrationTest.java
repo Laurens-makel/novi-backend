@@ -45,6 +45,36 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
         return "/roles/" + (id == null ? 9999 : id);
     }
 
+    @Override
+    protected Role create() {
+        return createRole(unique("SAMPLE"));
+    }
+
+    private Role createRole(String rolename){
+        Role role = new Role();
+        role.setName(rolename);
+
+        return role;
+    }
+
+    private Role saveRole(Role role){
+        roleRepository.save(role);
+
+        return role;
+    }
+
+    @Override
+    protected Role save(Role resource) {
+        return saveRole(resource);
+    }
+
+    @Override
+    protected Role modify(Role resource) {
+        resource.setName(unique("MODIFIED"));
+
+        return resource;
+    }
+
     @After
     public void after(){
         Role role = roleRepository.getRoleByName("TEST_ROLE");
@@ -52,6 +82,88 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
             roleRepository.delete(role);
         }
     }
+
+    @Override
+    protected HttpStatus expectedStatusForGetAsUser() {
+        return HttpStatus.OK;
+    }
+    @Override
+    protected HttpStatus expectedStatusForGetAsContentCreator() {
+        return HttpStatus.OK;
+    }
+    @Override
+    protected HttpStatus expectedStatusForGetAsModerator() {
+        return HttpStatus.OK;
+    }
+    @Override
+    protected HttpStatus expectedStatusForGetAsAdmin() {
+        return HttpStatus.OK;
+    }
+
+
+    @Override
+    protected HttpStatus expectedStatusForPostAsUser() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForPostAsContentCreator() {
+        return HttpStatus.FORBIDDEN;
+    }
+    @Override
+    protected HttpStatus expectedStatusForPostAsModerator() {
+        return HttpStatus.FORBIDDEN;
+    }
+    @Override
+    protected HttpStatus expectedStatusForPostAsAdmin() { return HttpStatus.CREATED;}
+
+
+    @Override
+    protected HttpStatus expectedStatusForPutAsAdmin() {
+        return HttpStatus.ACCEPTED;
+    }
+    @Override
+    protected HttpStatus expectedStatusForPutAsUser() {
+        return HttpStatus.FORBIDDEN;
+    }
+    @Override
+    protected HttpStatus expectedStatusForPutAsContentCreator() {
+        return HttpStatus.FORBIDDEN;
+    }
+    @Override
+    protected HttpStatus expectedStatusForPutAsModerator() {
+        return HttpStatus.FORBIDDEN;
+    }
+
+
+    @Override
+    protected HttpStatus expectedStatusForPutAsContentCreatorResourceNotExists() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForPutAsAdminResourceNotExists() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForPutAsUserResourceNotExists() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForPutAsModeratorResourceNotExists() { return HttpStatus.FORBIDDEN;}
+
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsAdmin() {
+        return HttpStatus.ACCEPTED;
+    }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsUser() { return HttpStatus.FORBIDDEN; }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsContentCreator() { return HttpStatus.FORBIDDEN; }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsModerator() {
+        return HttpStatus.FORBIDDEN;
+    }
+
+
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsModeratorResourceNotExists() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsUserResourceNotExists() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsContentCreatorResourceNotExists() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsAdminResourceNotExists() { return HttpStatus.NOT_FOUND;}
 
     @Test
     public void getRoles_isUnauthorized() throws Exception {
@@ -563,48 +675,4 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
         .andExpect(status().isUnauthorized());
     }
 
-    @Override
-    protected Role create() {
-        return createRole(unique("SAMPLE"));
-    }
-
-    private Role createRole(String rolename){
-        Role role = new Role();
-        role.setName(rolename);
-
-        return role;
-    }
-
-    private Role saveRole(Role role){
-        roleRepository.save(role);
-
-        return role;
-    }
-
-    @Override
-    protected Role save(Role resource) {
-        return saveRole(resource);
-    }
-
-    @Override
-    protected Role modify(Role resource) {
-        resource.setName(unique("MODIFIED"));
-
-        return resource;
-    }
-
-    @Override
-    public HttpStatus expectedStatusForGetAsUser() {
-        return HttpStatus.OK;
-    }
-
-    @Override
-    public HttpStatus expectedStatusForGetAsContentCreator() {
-        return HttpStatus.OK;
-    }
-
-    @Override
-    public HttpStatus expectedStatusForGetAsModerator() {
-        return HttpStatus.OK;
-    }
 }

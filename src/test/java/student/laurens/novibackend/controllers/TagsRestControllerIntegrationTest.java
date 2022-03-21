@@ -2,7 +2,9 @@ package student.laurens.novibackend.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import student.laurens.novibackend.entities.Role;
 import student.laurens.novibackend.entities.Tag;
+import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.TagRepository;
 
 public class TagsRestControllerIntegrationTest extends ControllerIntegrationTestBase<Tag>  {
@@ -61,33 +63,84 @@ public class TagsRestControllerIntegrationTest extends ControllerIntegrationTest
     public HttpStatus expectedStatusForGetAsUser() {
         return HttpStatus.OK;
     }
-
     @Override
     public HttpStatus expectedStatusForGetAsContentCreator() {
         return HttpStatus.OK;
     }
-
     @Override
     public HttpStatus expectedStatusForGetAsModerator() {
         return HttpStatus.OK;
     }
+    @Override
+    public HttpStatus expectedStatusForGetAsAdmin() {
+        return HttpStatus.OK;
+    }
+
 
     @Override
-    public HttpStatus expectedStatusForPostAsContentCreator() {
+    protected HttpStatus expectedStatusForPostAsUser() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForPostAsContentCreator() {
         return HttpStatus.CREATED;
     }
+    @Override
+    protected HttpStatus expectedStatusForPostAsModerator() {
+        return HttpStatus.FORBIDDEN;
+    }
+    @Override
+    protected HttpStatus expectedStatusForPostAsAdmin() { return HttpStatus.CREATED;}
+
 
     @Override
-    public HttpStatus expectedStatusForPutAsContentCreator() {
+    protected HttpStatus expectedStatusForPutAsAdmin() {
         return HttpStatus.ACCEPTED;
     }
-
     @Override
-    public HttpStatus expectedStatusForDeleteAsContentCreator() {
+    protected HttpStatus expectedStatusForPutAsUser() {
+        return HttpStatus.FORBIDDEN;
+    }
+    @Override
+    protected HttpStatus expectedStatusForPutAsContentCreator() {
         return HttpStatus.ACCEPTED;
     }
+    @Override
+    protected HttpStatus expectedStatusForPutAsModerator() {
+        return HttpStatus.FORBIDDEN;
+    }
+
 
     @Override
-    public HttpStatus expectedStatusForDeleteAsContentCreatorResourceNotExists() { return HttpStatus.NOT_FOUND;}
+    protected HttpStatus expectedStatusForPutAsContentCreatorResourceNotExists() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForPutAsAdminResourceNotExists() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForPutAsUserResourceNotExists() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForPutAsModeratorResourceNotExists() { return HttpStatus.FORBIDDEN;}
+
+
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsAdmin() {
+        return HttpStatus.ACCEPTED;
+    }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsUser() { return HttpStatus.FORBIDDEN; }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsContentCreator() { return HttpStatus.ACCEPTED; }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsModerator() {
+        return HttpStatus.FORBIDDEN;
+    }
+
+
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsModeratorResourceNotExists() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsUserResourceNotExists() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsContentCreatorResourceNotExists() { return HttpStatus.NOT_FOUND;}
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsAdminResourceNotExists() { return HttpStatus.NOT_FOUND;}
+
 
 }

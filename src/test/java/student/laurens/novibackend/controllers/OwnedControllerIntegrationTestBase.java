@@ -9,24 +9,9 @@ import student.laurens.novibackend.entities.User;
 
 public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwnedEntity> extends ControllerIntegrationTestBase<R> {
 
-    public HttpStatus expectedStatusForPutAsAdminResourceOwned() { return HttpStatus.ACCEPTED;}
-    public HttpStatus expectedStatusForPutAsAdminResourceNotOwned() { return HttpStatus.ACCEPTED;}
-    public HttpStatus expectedStatusForDeleteAsAdminResourceOwned() { return HttpStatus.ACCEPTED;}
-    public HttpStatus expectedStatusForDeleteAsAdminResourceNotOwned() { return HttpStatus.ACCEPTED;}
-    public HttpStatus expectedStatusForPutAsContentCreatorResourceOwned() { return HttpStatus.ACCEPTED;}
-    public HttpStatus expectedStatusForPutAsContentCreatorResourceNotOwned() { return HttpStatus.FORBIDDEN;}
-    public HttpStatus expectedStatusForDeleteAsContentCreatorResourceOwned() {
-        return HttpStatus.ACCEPTED;
-    }
-    public HttpStatus expectedStatusForDeleteAsContentCreatorResourceNotOwned() { return HttpStatus.FORBIDDEN;}
-    public HttpStatus expectedStatusForPutAsModeratorResourceOwned() { return HttpStatus.FORBIDDEN;}
-    public HttpStatus expectedStatusForPutAsModeratorResourceNotOwned() { return HttpStatus.FORBIDDEN;}
-    public HttpStatus expectedStatusForDeleteAsModeratorResourceOwned() { return HttpStatus.FORBIDDEN; }
-    public HttpStatus expectedStatusForDeleteAsModeratorResourceNotOwned() { return HttpStatus.FORBIDDEN;}
-
     /**
      * Implement this method by a resource specific implementation to create sample owned instances of the resource.
-     *
+     *-
      * @return Sample instance of resource.
      */
     abstract protected R createOwned(User owner);
@@ -37,6 +22,62 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
      * @return Sample instance of resource.
      */
     abstract protected R createNotOwned();
+
+    abstract protected HttpStatus expectedStatusForPutAsAdminResourceOwned();
+    abstract protected HttpStatus expectedStatusForPutAsAdminResourceNotOwned();
+    abstract protected HttpStatus expectedStatusForDeleteAsAdminResourceOwned();
+    abstract protected HttpStatus expectedStatusForDeleteAsAdminResourceNotOwned();
+
+    abstract protected HttpStatus expectedStatusForPutAsContentCreatorResourceOwned();
+    abstract protected HttpStatus expectedStatusForPutAsContentCreatorResourceNotOwned();
+    abstract protected HttpStatus expectedStatusForDeleteAsContentCreatorResourceOwned();
+    abstract protected HttpStatus expectedStatusForDeleteAsContentCreatorResourceNotOwned();
+
+    abstract protected HttpStatus expectedStatusForPutAsModeratorResourceOwned();
+    abstract protected HttpStatus expectedStatusForPutAsModeratorResourceNotOwned();
+    abstract protected HttpStatus expectedStatusForDeleteAsModeratorResourceOwned();
+    abstract protected HttpStatus expectedStatusForDeleteAsModeratorResourceNotOwned();
+
+    abstract protected HttpStatus expectedStatusForPutAsUserResourceOwned();
+    abstract protected HttpStatus expectedStatusForPutAsUserResourceNotOwned();
+    abstract protected HttpStatus expectedStatusForDeleteAsUserResourceOwned();
+    abstract protected HttpStatus expectedStatusForDeleteAsUserResourceNotOwned();
+
+    /**
+     * Override this method by a resource specific implementation to send DELETE messages with JSON as default data format.
+     *
+     * @return ResultActions instance which contains the response of the DELETE call.
+     */
+    public ResultActions defaultJsonTestForPut(boolean isOwned, User user) throws Exception {
+        return updateAsJson(modify(save( isOwned ? createOwned(user) : createNotOwned() )));
+    }
+
+    /**
+     * Override this method by a resource specific implementation to send DELETE messages with JSON as default data format.
+     *
+     * @return ResultActions instance which contains the response of the DELETE call.
+     */
+    public ResultActions defaultXmlTestForPut(boolean isOwned, User user) throws Exception {
+        return updateAsXml(modify(save( isOwned ? createOwned(user) : createNotOwned() )));
+    }
+
+    /**
+     * Override this method by a resource specific implementation to send DELETE messages with JSON as default data format.
+     *
+     * @return ResultActions instance which contains the response of the DELETE call.
+     */
+    public ResultActions defaultJsonTestForDelete(final boolean isOwned, final User user) throws Exception {
+        return deleteAsJson(modify(save( isOwned ? createOwned(user) : createNotOwned() )));
+    }
+
+    /**
+     * Override this method by a resource specific implementation to send DELETE messages with JSON as default data format.
+     *
+     * @return ResultActions instance which contains the response of the DELETE call.
+     */
+    public ResultActions defaultXmlTestForDelete(final boolean isOwned, final User user) throws Exception {
+        return deleteAsXml(modify(save( isOwned ? createOwned(user) : createNotOwned() )));
+    }
 
     @Test
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
@@ -83,24 +124,6 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         validateXmlUtf8Response(mvc, expectedStatus);
     }
 
-    /**
-     * Override this method by a resource specific implementation to send DELETE messages with JSON as default data format.
-     *
-     * @return ResultActions instance which contains the response of the DELETE call.
-     */
-    public ResultActions defaultJsonTestForPut(boolean isOwned, User user) throws Exception {
-        return updateAsJson(modify(save( isOwned ? createOwned(user) : createNotOwned() )));
-    }
-
-    /**
-     * Override this method by a resource specific implementation to send DELETE messages with JSON as default data format.
-     *
-     * @return ResultActions instance which contains the response of the DELETE call.
-     */
-    public ResultActions defaultXmlTestForPut(boolean isOwned, User user) throws Exception {
-        return updateAsXml(modify(save( isOwned ? createOwned(user) : createNotOwned() )));
-    }
-
     @Test
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void deleteJsonAsAdminResourceOwned() throws Exception {
@@ -143,24 +166,6 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         ResultActions mvc = defaultXmlTestForDelete(false, user);
 
         validateXmlUtf8Response(mvc, expectedStatus);
-    }
-
-    /**
-     * Override this method by a resource specific implementation to send DELETE messages with JSON as default data format.
-     *
-     * @return ResultActions instance which contains the response of the DELETE call.
-     */
-    public ResultActions defaultJsonTestForDelete(final boolean isOwned, final User user) throws Exception {
-        return deleteAsJson(modify(save( isOwned ? createOwned(user) : createNotOwned() )));
-    }
-
-    /**
-     * Override this method by a resource specific implementation to send DELETE messages with JSON as default data format.
-     *
-     * @return ResultActions instance which contains the response of the DELETE call.
-     */
-    public ResultActions defaultXmlTestForDelete(final boolean isOwned, final User user) throws Exception {
-        return deleteAsXml(modify(save( isOwned ? createOwned(user) : createNotOwned() )));
     }
 
     @Test
@@ -341,11 +346,6 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
 
         validateXmlUtf8Response(mvc, expectedStatus);
     }
-
-    public HttpStatus expectedStatusForPutAsUserResourceOwned() { return HttpStatus.FORBIDDEN;}
-    public HttpStatus expectedStatusForPutAsUserResourceNotOwned() { return HttpStatus.FORBIDDEN;}
-    public HttpStatus expectedStatusForDeleteAsUserResourceOwned() { return HttpStatus.FORBIDDEN; }
-    public HttpStatus expectedStatusForDeleteAsUserResourceNotOwned() { return HttpStatus.FORBIDDEN;}
 
     @Test
     @WithMockUser(value = USER, roles = {USER_ROLE} )

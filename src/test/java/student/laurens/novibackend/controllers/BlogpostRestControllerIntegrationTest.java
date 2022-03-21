@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
 import student.laurens.novibackend.entities.Blogpost;
+import student.laurens.novibackend.entities.Role;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.BlogpostRepository;
 
@@ -40,6 +41,184 @@ public class BlogpostRestControllerIntegrationTest extends OwnedControllerIntegr
         repository.deleteAll();
         userRepository.deleteAll();
     }
+
+    @Override
+    protected String getUrlForGet() {
+        return "/blogposts";
+    }
+
+    @Override
+    protected String getUrlForGet(Blogpost resource) {
+        Integer id = resource.getId();
+        return "/blogposts/" + (id == null ? 9999 : id);
+    }
+
+    @Override
+    protected String getUrlForPut(Blogpost resource) {
+        Integer id = resource.getId();
+        return "/blogposts/" + (id == null ? 9999 : id);
+    }
+
+    @Override
+    protected String getUrlForPost() {
+        return "/blogposts";
+    }
+
+    @Override
+    protected String getUrlForDelete(Blogpost resource) {
+        Integer id = resource.getId();
+        return "/blogposts/" + (id == null ? 9999 : id);
+    }
+
+    @Override
+    protected Blogpost createOwned(User owner) {
+        return createDefaultBlogpost(owner);
+    }
+
+    @Override
+    protected Blogpost createNotOwned() {
+        return createDefaultBlogpost(saveUser(createUniqueContentCreator()));
+    }
+
+    @Override
+    protected Blogpost create() {
+        return createDefaultBlogpost(saveUser(createUniqueContentCreator()));
+    }
+
+    @Override
+    protected Blogpost save(Blogpost resource) {
+        saveBlogpost(resource);
+
+        return resource;
+    }
+
+    @Override
+    protected Blogpost modify(Blogpost resource) {
+        resource.setTitle("MODIFIED"+ new Date().getTime());
+        return resource;
+    }
+
+    @Override
+    protected HttpStatus expectedStatusForGetAsUser() {
+        return HttpStatus.OK;
+    }
+    @Override
+    protected HttpStatus expectedStatusForGetAsContentCreator() {
+        return HttpStatus.OK;
+    }
+    @Override
+    protected HttpStatus expectedStatusForGetAsModerator() {
+        return HttpStatus.OK;
+    }
+    @Override
+    protected HttpStatus expectedStatusForGetAsAdmin() {
+        return HttpStatus.OK;
+    }
+
+
+    @Override
+    protected HttpStatus expectedStatusForPostAsUser() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForPostAsContentCreator() {
+        return HttpStatus.CREATED;
+    }
+    @Override
+    protected HttpStatus expectedStatusForPostAsModerator() {
+        return HttpStatus.FORBIDDEN;
+    }
+    @Override
+    protected HttpStatus expectedStatusForPostAsAdmin() { return HttpStatus.CREATED;}
+
+
+    @Override
+    protected HttpStatus expectedStatusForPutAsAdmin() {
+        return HttpStatus.ACCEPTED;
+    }
+    @Override
+    protected HttpStatus expectedStatusForPutAsUser() {
+        return HttpStatus.FORBIDDEN;
+    }
+    @Override
+    protected HttpStatus expectedStatusForPutAsContentCreator() {
+        return HttpStatus.FORBIDDEN;
+    }
+    @Override
+    protected HttpStatus expectedStatusForPutAsModerator() {
+        return HttpStatus.FORBIDDEN;
+    }
+
+
+    @Override
+    protected HttpStatus expectedStatusForPutAsContentCreatorResourceNotExists() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForPutAsAdminResourceNotExists() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForPutAsUserResourceNotExists() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForPutAsModeratorResourceNotExists() { return HttpStatus.FORBIDDEN;}
+
+
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsAdmin() {
+        return HttpStatus.ACCEPTED;
+    }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsUser() { return HttpStatus.FORBIDDEN; }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsContentCreator() { return HttpStatus.FORBIDDEN; }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsModerator() {
+        return HttpStatus.FORBIDDEN;
+    }
+
+
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsModeratorResourceNotExists() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsUserResourceNotExists() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsContentCreatorResourceNotExists() { return HttpStatus.NOT_FOUND;}
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsAdminResourceNotExists() { return HttpStatus.NOT_FOUND;}
+
+
+    @Override
+    protected HttpStatus expectedStatusForPutAsAdminResourceOwned() { return HttpStatus.ACCEPTED;}
+    @Override
+    protected HttpStatus expectedStatusForPutAsAdminResourceNotOwned() { return HttpStatus.ACCEPTED;}
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsAdminResourceOwned() { return HttpStatus.ACCEPTED;}
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsAdminResourceNotOwned() { return HttpStatus.ACCEPTED;}
+
+    @Override
+    protected HttpStatus expectedStatusForPutAsContentCreatorResourceOwned() { return HttpStatus.ACCEPTED;}
+    @Override
+    protected HttpStatus expectedStatusForPutAsContentCreatorResourceNotOwned() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsContentCreatorResourceOwned() {
+        return HttpStatus.ACCEPTED;
+    }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsContentCreatorResourceNotOwned() { return HttpStatus.FORBIDDEN;}
+
+    @Override
+    protected HttpStatus expectedStatusForPutAsModeratorResourceOwned() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForPutAsModeratorResourceNotOwned() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsModeratorResourceOwned() { return HttpStatus.FORBIDDEN; }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsModeratorResourceNotOwned() { return HttpStatus.FORBIDDEN;}
+
+    @Override
+    protected HttpStatus expectedStatusForPutAsUserResourceOwned() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForPutAsUserResourceNotOwned() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsUserResourceOwned() { return HttpStatus.FORBIDDEN; }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsUserResourceNotOwned() { return HttpStatus.FORBIDDEN;}
 
     @Test
     public void getBlogposts_isUnauthorized() throws Exception {
@@ -276,96 +455,5 @@ public class BlogpostRestControllerIntegrationTest extends OwnedControllerIntegr
 
         return blogpost;
     }
-
-    @Override
-    protected String getUrlForGet() {
-        return "/blogposts";
-    }
-
-    @Override
-    protected String getUrlForGet(Blogpost resource) {
-        Integer id = resource.getId();
-        return "/blogposts/" + (id == null ? 9999 : id);
-    }
-
-    @Override
-    protected String getUrlForPut(Blogpost resource) {
-        Integer id = resource.getId();
-        return "/blogposts/" + (id == null ? 9999 : id);
-    }
-
-    @Override
-    protected String getUrlForPost() {
-        return "/blogposts";
-    }
-
-    @Override
-    protected String getUrlForDelete(Blogpost resource) {
-        Integer id = resource.getId();
-        return "/blogposts/" + (id == null ? 9999 : id);
-    }
-
-    @Override
-    protected Blogpost create() {
-        return createDefaultBlogpost(saveUser(createUniqueContentCreator()));
-    }
-
-    @Override
-    protected Blogpost save(Blogpost resource) {
-        saveBlogpost(resource);
-
-        return resource;
-    }
-
-    @Override
-    protected Blogpost modify(Blogpost resource) {
-        resource.setTitle("MODIFIED"+ new Date().getTime());
-        return resource;
-    }
-
-    @Override
-    public HttpStatus expectedStatusForGetAsUser() {
-        return HttpStatus.OK;
-    }
-
-    @Override
-    public HttpStatus expectedStatusForGetAsContentCreator() {
-        return HttpStatus.OK;
-    }
-
-    @Override
-    public HttpStatus expectedStatusForPostAsContentCreator() {
-        return HttpStatus.CREATED;
-    }
-
-    @Override
-    public HttpStatus expectedStatusForPutAsContentCreator() {
-        return HttpStatus.FORBIDDEN;
-    }
-
-    @Override
-    public HttpStatus expectedStatusForDeleteAsContentCreator() {
-        return HttpStatus.FORBIDDEN;
-    }
-
-    @Override
-    public HttpStatus expectedStatusForGetAsModerator() {
-        return HttpStatus.OK;
-    }
-
-    @Override
-    public HttpStatus expectedStatusForDeleteAsContentCreatorResourceNotExists() { return HttpStatus.NOT_FOUND;}
-
-    @Override
-    protected Blogpost createOwned(User owner) {
-        return createDefaultBlogpost(owner);
-    }
-
-    @Override
-    protected Blogpost createNotOwned() {
-        return createDefaultBlogpost(saveUser(createUniqueContentCreator()));
-    }
-
-    // TODO: Make new class that extends base class for AbstractOwnedEntity with extra features and tests defined
 
 }

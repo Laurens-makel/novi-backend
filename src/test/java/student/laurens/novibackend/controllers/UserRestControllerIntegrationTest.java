@@ -18,6 +18,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 public class UserRestControllerIntegrationTest extends OwnedControllerIntegrationTestBase<User> {
 
+    @After
+    public void after(){
+        userRepository.deleteAll();
+    }
+
     @Override
     protected String getUrlForGet() {
         return "/users";
@@ -48,21 +53,145 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Override
-    public HttpStatus expectedStatusForPutAsUserResourceOwned(){ return HttpStatus.ACCEPTED; }
-
-    @Override
-    public HttpStatus expectedStatusForPutAsModeratorResourceOwned(){ return HttpStatus.ACCEPTED; }
-
-    @Override
-    public HttpStatus expectedStatusForPutAsContentCreatorResourceOwned(){ return HttpStatus.ACCEPTED; }
-
-    @Override
-    public HttpStatus expectedStatusForDeleteAsContentCreatorResourceOwned(){ return HttpStatus.FORBIDDEN; }
-
-    @After
-    public void after(){
-        userRepository.deleteAll();
+    protected User createOwned(User owner) {
+        return owner;
     }
+
+    @Override
+    protected User createNotOwned() {
+        return createUniqueContentCreator();
+    }
+
+    @Override
+    protected User create() {
+        return modify(createDefaultUser());
+    }
+
+    @Override
+    protected User save(User resource) {
+        return saveUser(resource);
+    }
+
+    @Override
+    protected User modify(User resource) {
+        resource.setUsername(unique("MODIFIED"));
+
+        return resource;
+    }
+
+    @Override
+    protected HttpStatus expectedStatusForGetAsUser() { return HttpStatus.FORBIDDEN; }
+    @Override
+    protected HttpStatus expectedStatusForGetAsContentCreator() { return HttpStatus.FORBIDDEN; }
+    @Override
+    protected HttpStatus expectedStatusForGetAsModerator() {
+        return HttpStatus.OK;
+    }
+    @Override
+    protected HttpStatus expectedStatusForGetAsAdmin() { return HttpStatus.OK;  }
+
+
+    @Override
+    protected HttpStatus expectedStatusForPostAsUser() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForPostAsContentCreator() {
+        return HttpStatus.FORBIDDEN;
+    }
+    @Override
+    protected HttpStatus expectedStatusForPostAsModerator() {
+        return HttpStatus.FORBIDDEN;
+    }
+    @Override
+    protected HttpStatus expectedStatusForPostAsAdmin() { return HttpStatus.CREATED;}
+
+
+    @Override
+    protected HttpStatus expectedStatusForPutAsAdmin() {
+        return HttpStatus.ACCEPTED;
+    }
+    @Override
+    protected HttpStatus expectedStatusForPutAsUser() {
+        return HttpStatus.FORBIDDEN;
+    }
+    @Override
+    protected HttpStatus expectedStatusForPutAsContentCreator() {
+        return HttpStatus.FORBIDDEN;
+    }
+    @Override
+    protected HttpStatus expectedStatusForPutAsModerator() {
+        return HttpStatus.FORBIDDEN;
+    }
+
+
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsAdmin() {
+        return HttpStatus.ACCEPTED;
+    }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsUser() { return HttpStatus.FORBIDDEN; }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsContentCreator() { return HttpStatus.FORBIDDEN; }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsModerator() {
+        return HttpStatus.FORBIDDEN;
+    }
+
+
+    @Override
+    protected HttpStatus expectedStatusForPutAsContentCreatorResourceNotExists() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForPutAsAdminResourceNotExists() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForPutAsUserResourceNotExists() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForPutAsModeratorResourceNotExists() { return HttpStatus.FORBIDDEN;}
+
+
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsModeratorResourceNotExists() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsUserResourceNotExists() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsContentCreatorResourceNotExists() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsAdminResourceNotExists() { return HttpStatus.NOT_FOUND;}
+
+
+    @Override
+    protected HttpStatus expectedStatusForPutAsContentCreatorResourceOwned(){ return HttpStatus.ACCEPTED; }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsContentCreatorResourceOwned(){ return HttpStatus.FORBIDDEN; }
+    @Override
+    protected HttpStatus expectedStatusForPutAsAdminResourceOwned() { return HttpStatus.ACCEPTED;}
+    @Override
+    protected HttpStatus expectedStatusForPutAsAdminResourceNotOwned() { return HttpStatus.ACCEPTED;}
+
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsAdminResourceOwned() { return HttpStatus.ACCEPTED;}
+    @Override
+    protected HttpStatus expectedStatusForPutAsModeratorResourceOwned(){ return HttpStatus.ACCEPTED; }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsAdminResourceNotOwned() { return HttpStatus.ACCEPTED;}
+    @Override
+    protected HttpStatus expectedStatusForPutAsContentCreatorResourceNotOwned() { return HttpStatus.FORBIDDEN;}
+
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsContentCreatorResourceNotOwned() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForPutAsModeratorResourceNotOwned() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsModeratorResourceOwned() { return HttpStatus.FORBIDDEN; }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsModeratorResourceNotOwned() { return HttpStatus.FORBIDDEN;}
+
+    @Override
+    protected HttpStatus expectedStatusForPutAsUserResourceOwned(){ return HttpStatus.ACCEPTED; }
+    @Override
+    protected HttpStatus expectedStatusForPutAsUserResourceNotOwned() { return HttpStatus.FORBIDDEN;}
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsUserResourceOwned() { return HttpStatus.FORBIDDEN; }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsUserResourceNotOwned() { return HttpStatus.FORBIDDEN;}
 
     @Test
     public void postUser_isUnauthorized() throws Exception {
@@ -709,35 +838,4 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
         .andExpect(status().isUnauthorized());
     }
 
-    @Override
-    protected User create() {
-        return modify(createDefaultUser());
-    }
-
-    @Override
-    protected User save(User resource) {
-        return saveUser(resource);
-    }
-
-    @Override
-    protected User modify(User resource) {
-        resource.setUsername(unique("MODIFIED"));
-
-        return resource;
-    }
-
-    @Override
-    public HttpStatus expectedStatusForGetAsModerator() {
-        return HttpStatus.OK;
-    }
-
-    @Override
-    protected User createOwned(User owner) {
-        return owner;
-    }
-
-    @Override
-    protected User createNotOwned() {
-        return createUniqueContentCreator();
-    }
 }
