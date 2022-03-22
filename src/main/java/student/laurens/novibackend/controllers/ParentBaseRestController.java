@@ -4,11 +4,16 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import student.laurens.novibackend.entities.*;
-import student.laurens.novibackend.exceptions.ResourceException;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.exceptions.ResourceNotOwnedException;
 import student.laurens.novibackend.services.BaseService;
 
+/**
+ * Base class for RestControllers which expose CRUD methods for {@link AbstractOwnedWithParentEntity}.
+ *
+ * @author Laurens Mäkel
+ * @version 1.0, March 2022
+ */
 public abstract class ParentBaseRestController<R extends AbstractOwnedWithParentEntity, P extends AbstractOwnedParentEntity>
         extends BaseRestController<R>{
 

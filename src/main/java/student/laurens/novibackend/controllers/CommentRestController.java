@@ -8,10 +8,15 @@ import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.Blogpost;
 import student.laurens.novibackend.entities.Comment;
 import student.laurens.novibackend.exceptions.RoleNotFoundException;
-import student.laurens.novibackend.services.BaseService;
 import student.laurens.novibackend.services.BlogpostService;
 import student.laurens.novibackend.services.CommentService;
 
+/**
+ * Rest Controller that exposes CRUD methods for {@link Comment}.
+ *
+ * @author Laurens Mäkel
+ * @version 1.0, March 2022
+ */
 @RestController
 @RequestMapping("/blogposts/{blogpostId}/comments")
 public class CommentRestController extends ParentBaseRestController<Comment, Blogpost> {

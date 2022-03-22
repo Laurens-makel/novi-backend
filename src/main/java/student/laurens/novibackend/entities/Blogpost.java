@@ -2,7 +2,6 @@ package student.laurens.novibackend.entities;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.http.HttpMethod;
 
 import javax.persistence.*;
 import java.util.Date;

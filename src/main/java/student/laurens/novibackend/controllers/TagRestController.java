@@ -8,6 +8,12 @@ import student.laurens.novibackend.entities.Tag;
 import student.laurens.novibackend.exceptions.RoleNotFoundException;
 import student.laurens.novibackend.services.TagService;
 
+/**
+ * Rest Controller that exposes CRUD methods for {@link Tag}.
+ *
+ * @author Laurens Mäkel
+ * @version 1.0, March 2022
+ */
 @RestController
 @RequestMapping("/tags")
 public class TagRestController extends BaseRestController<Tag> {
