@@ -2,6 +2,7 @@ package student.laurens.novibackend.services;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import student.laurens.novibackend.entities.Blogpost;
@@ -18,6 +19,7 @@ import javax.transaction.Transactional;
 @Service
 @Component
 @Transactional
+@Qualifier("BlogpostService")
 public class BlogpostService extends BaseService<Blogpost> {
 
     @Autowired

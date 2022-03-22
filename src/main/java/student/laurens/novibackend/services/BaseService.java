@@ -1,6 +1,5 @@
 package student.laurens.novibackend.services;
 
-import org.springframework.core.GenericTypeResolver;
 import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.repositories.ResourceRepository;
@@ -8,11 +7,6 @@ import student.laurens.novibackend.repositories.ResourceRepository;
 import java.util.Optional;
 
 public abstract class BaseService<R extends AbstractEntity> {
-    private final Class<R> resourceType;
-
-    protected BaseService() {
-        this.resourceType = (Class<R>) GenericTypeResolver.resolveTypeArgument(getClass(), AbstractEntity.class);
-    }
 
     abstract protected ResourceRepository getRepository();
 
@@ -22,7 +16,7 @@ public abstract class BaseService<R extends AbstractEntity> {
         Optional<R> found = getRepository().findById(resourceId);
 
         if(!found.isPresent()){
-            throw new ResourceNotFoundException(resourceType, resourceId);
+            throw new ResourceNotFoundException(getResourceClass(), resourceId);
         }
 
         return found.get();
@@ -40,7 +34,7 @@ public abstract class BaseService<R extends AbstractEntity> {
         Optional<R> found = getRepository().findById(resourceId);
 
         if(!found.isPresent()){
-            throw new ResourceNotFoundException(resourceType, resourceId);
+            throw new ResourceNotFoundException(getResourceClass(), resourceId);
         }
 
         getRepository().save(resource);
@@ -50,7 +44,7 @@ public abstract class BaseService<R extends AbstractEntity> {
         Optional<R> resource = getRepository().findById(resourceId);
 
         if(!resource.isPresent()){
-            throw new ResourceNotFoundException(resourceType, resourceId);
+            throw new ResourceNotFoundException(getResourceClass(), resourceId);
         }
 
         getRepository().delete(resource.get());
