@@ -120,10 +120,26 @@ public abstract class OwnedWithParentControllerIntegrationTestBase<R extends Abs
     abstract protected HttpStatus expectedStatusForPostAsModeratorParentNotOwnedChildOwned();
     abstract protected HttpStatus expectedStatusForPostAsAdminParentNotOwnedChildOwned();
 
+
     abstract protected HttpStatus expectedStatusForPutAsUserParentNotOwnedChildOwned();
     abstract protected HttpStatus expectedStatusForPutAsContentCreatorParentNotOwnedChildOwned();
     abstract protected HttpStatus expectedStatusForPutAsModeratorParentNotOwnedChildOwned();
     abstract protected HttpStatus expectedStatusForPutAsAdminParentNotOwnedChildOwned();
+
+    abstract protected HttpStatus expectedStatusForPutAsUserParentNotOwnedChildNotOwned();
+    abstract protected HttpStatus expectedStatusForPutAsContentCreatorParentNotOwnedChildNotOwned();
+    abstract protected HttpStatus expectedStatusForPutAsModeratorParentNotOwnedChildNotOwned();
+    abstract protected HttpStatus expectedStatusForPutAsAdminParentNotOwnedChildNotOwned();
+
+    abstract protected HttpStatus expectedStatusForPutAsUserParentOwnedChildNotOwned();
+    abstract protected HttpStatus expectedStatusForPutAsContentCreatorParentOwnedChildNotOwned();
+    abstract protected HttpStatus expectedStatusForPutAsModeratorParentOwnedChildNotOwned();
+    abstract protected HttpStatus expectedStatusForPutAsAdminParentOwnedChildNotOwned();
+
+    abstract protected HttpStatus expectedStatusForPutAsUserParentOwnedChildOwned();
+    abstract protected HttpStatus expectedStatusForPutAsContentCreatorParentOwnedChildOwned();
+    abstract protected HttpStatus expectedStatusForPutAsModeratorParentOwnedChildOwned();
+    abstract protected HttpStatus expectedStatusForPutAsAdminParentOwnedChildOwned();
 
     abstract protected HttpStatus expectedStatusForDeleteAsUserParentNotOwnedChildOwned();
     abstract protected HttpStatus expectedStatusForDeleteAsContentCreatorParentNotOwnedChildOwned();
@@ -329,6 +345,138 @@ public abstract class OwnedWithParentControllerIntegrationTestBase<R extends Abs
 
         HttpStatus expectedStatus = expectedStatusForPutAsAdminParentNotOwnedChildOwned();
         ResultActions mvc = defaultJsonTestForPut(true, false, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+    @Test
+    @WithMockUser(value = USER)
+    public void putJsonAsUserParentNotOwnedChildNotOwned() throws Exception {
+        User user = saveUser(createDefaultUser());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsUserParentNotOwnedChildNotOwned();
+        ResultActions mvc = defaultJsonTestForPut(false, false, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE})
+    public void putJsonAsContentCreatorParentNotOwnedChildNotOwned() throws Exception {
+        User user = saveUser(createDefaultContentCreator());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsContentCreatorParentNotOwnedChildNotOwned();
+        ResultActions mvc = defaultJsonTestForPut(false, false, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE})
+    public void putJsonAsModeratorParentNotOwnedChildNotOwned() throws Exception {
+        User user = saveUser(createDefaultModerator());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsModeratorParentNotOwnedChildNotOwned();
+        ResultActions mvc = defaultJsonTestForPut(false, false, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    public void putJsonAsAdminParentNotOwnedChildNotOwned() throws Exception {
+        User user = saveUser(createDefaultAdmin());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsAdminParentNotOwnedChildNotOwned();
+        ResultActions mvc = defaultJsonTestForPut(false, false, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+
+    @Test
+    @WithMockUser(value = USER)
+    public void putJsonAsUserParentOwnedChildNotOwned() throws Exception {
+        User user = saveUser(createDefaultUser());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsUserParentOwnedChildNotOwned();
+        ResultActions mvc = defaultJsonTestForPut(false, true, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE})
+    public void putJsonAsContentCreatorParentOwnedChildNotOwned() throws Exception {
+        User user = saveUser(createDefaultContentCreator());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsContentCreatorParentOwnedChildNotOwned();
+        ResultActions mvc = defaultJsonTestForPut(false, true, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE})
+    public void putJsonAsModeratorParentOwnedChildNotOwned() throws Exception {
+        User user = saveUser(createDefaultModerator());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsModeratorParentOwnedChildNotOwned();
+        ResultActions mvc = defaultJsonTestForPut(false, true, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    public void putJsonAsAdminParentOwnedChildNotOwned() throws Exception {
+        User user = saveUser(createDefaultAdmin());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsAdminParentOwnedChildNotOwned();
+        ResultActions mvc = defaultJsonTestForPut(false, true, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = USER)
+    public void putJsonAsUserParentOwnedChildOwned() throws Exception {
+        User user = saveUser(createDefaultUser());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsUserParentOwnedChildOwned();
+        ResultActions mvc = defaultJsonTestForPut(true, true, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE})
+    public void putJsonAsContentCreatorParentOwnedChildOwned() throws Exception {
+        User user = saveUser(createDefaultContentCreator());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsContentCreatorParentOwnedChildOwned();
+        ResultActions mvc = defaultJsonTestForPut(true, true, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE})
+    public void putJsonAsModeratorParentOwnedChildOwned() throws Exception {
+        User user = saveUser(createDefaultModerator());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsModeratorParentOwnedChildOwned();
+        ResultActions mvc = defaultJsonTestForPut(true, true, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    public void putJsonAsAdminParentOwnedChildOwned() throws Exception {
+        User user = saveUser(createDefaultAdmin());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsAdminParentOwnedChildOwned();
+        ResultActions mvc = defaultJsonTestForPut(true, true, user);
 
         validateJsonResponse(mvc, expectedStatus);
     }
