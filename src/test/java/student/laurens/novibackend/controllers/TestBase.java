@@ -3,18 +3,22 @@ package student.laurens.novibackend.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.junit.After;
-import org.junit.Before;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import student.laurens.novibackend.NoviBackendApplication;
 import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.entities.Blogpost;
-import student.laurens.novibackend.entities.Role;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.BlogpostRepository;
 import student.laurens.novibackend.repositories.RoleRepository;
@@ -26,6 +30,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 
+/**
+ * Base class to provide default methods for testing RestControllers.
+ *
+ * @author Laurens Mäkel
+ * @version 1.0, March 2022
+ */
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = NoviBackendApplication.class)
+@AutoConfigureMockMvc
+@TestPropertySource(locations = "classpath:application-integration-test.properties")
 public abstract class TestBase <R extends AbstractEntity>  {
     protected Logger log = LoggerFactory.getLogger(ControllerIntegrationTestBase.class);
 
@@ -71,13 +85,13 @@ public abstract class TestBase <R extends AbstractEntity>  {
 
         userRepository.deleteAll();
     }
-
-    @Before
-    public void base_before(){
-        log.debug("Deleting all users from repository.");
-
-        userRepository.deleteAll();
-    }
+//
+//    @Before
+//    public void base_before(){
+//        log.debug("Deleting all users from repository.");
+//
+//        userRepository.deleteAll();
+//    }
 
     @Autowired
     protected RoleRepository roleRepository;

@@ -4,7 +4,6 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.GenericTypeResolver;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +11,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.entities.AbstractOwnedEntity;
 import student.laurens.novibackend.entities.User;
-import student.laurens.novibackend.exceptions.ResourceException;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.exceptions.ResourceNotOwnedException;
 import student.laurens.novibackend.exceptions.UserNotFoundException;
@@ -22,6 +20,12 @@ import student.laurens.novibackend.services.BaseService;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Base class for RestControllers which expose CRUD methods for {@link AbstractEntity}.
+ *
+ * @author Laurens Mäkel
+ * @version 1.0, March 2022
+ */
 public abstract class BaseRestController<R extends AbstractEntity> {
 
     protected Logger log = LoggerFactory.getLogger(BaseRestController.class);
@@ -80,7 +84,7 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         return new ResponseEntity(createDeletedMessage(), HttpStatus.ACCEPTED);
     }
 
-        private void validateOwnershipOfResource(final Integer resourceId, final HttpMethod method) throws ResourceNotFoundException, ResourceNotOwnedException  {
+    protected void validateOwnershipOfResource(final Integer resourceId, final HttpMethod method) throws ResourceNotFoundException, ResourceNotOwnedException  {
         Class<R> resourceClass = getService().getResourceClass();
 
         if(AbstractOwnedEntity.class.isAssignableFrom(resourceClass) && isMethodProtected(method)){

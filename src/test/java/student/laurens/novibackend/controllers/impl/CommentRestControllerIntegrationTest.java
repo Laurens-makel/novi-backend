@@ -15,31 +15,63 @@ public class CommentRestControllerIntegrationTest extends OwnedWithParentControl
     private CommentRepository repository;
 
     @Override
-    protected String getUrlForGet() {
-        return "/blogposts/1/comments";
+    protected String getUrlForGetWithParent(Blogpost parentResource) {
+        return "/blogposts/"+parentResource.getId()+"/comments";
     }
 
     @Override
-    protected String getUrlForGet(Comment resource) {
+    protected String getUrlForGetWithParent(Blogpost parentResource, Comment resource) {
+        Integer parentId = parentResource.getId();
         Integer id = resource.getId();
-        return "/blogposts/1/comments/" + (id == null ? 9999 : id);
+        return "/blogposts/"+(parentId == null ? 9999 : parentId)+"/comments/" + (id == null ? 9999 : id);
     }
 
     @Override
-    protected String getUrlForPut(Comment resource) {
+    protected String getUrlForPutWithParent(Blogpost parentResource, Comment resource) {
+        Integer parentId = parentResource.getId();
         Integer id = resource.getId();
-        return "/blogposts/1/comments/" + (id == null ? 9999 : id);
+        return "/blogposts/"+(parentId == null ? 9999 : parentId)+"/comments/" + (id == null ? 9999 : id);
     }
 
     @Override
-    protected String getUrlForPost() {
-        return "/blogposts/1/comments";
+    protected String getUrlForPostWithParent(Blogpost parentResource) {
+        Integer parentId = parentResource.getId();
+        return "/blogposts/"+(parentId == null ? 9999 : parentId)+"/comments";
     }
 
     @Override
-    protected String getUrlForDelete(Comment resource) {
+    protected String getUrlForDeleteWithParent(Blogpost parentResource, Comment resource) {
+        Integer parentId = parentResource.getId();
         Integer id = resource.getId();
-        return "/blogposts/1/comments/" + (id == null ? 9999 : id);
+        return "/blogposts/"+(parentId == null ? 9999 : parentId)+"/comments/" + (id == null ? 9999 : id);
+    }
+
+    @Override
+    protected Comment createOwned(Blogpost parentResource, User owner) {
+        Comment comment = new Comment();
+
+        comment.setTitle(unique("Title"));
+        comment.setContent("Comment Content");
+        comment.setAuthor(owner);
+        comment.setBlogpost(parentResource);
+
+        return comment;
+    }
+
+    @Override
+    protected Blogpost modifyParent(Blogpost parentResource) {
+        parentResource.setContent("modified content");
+        return parentResource;
+    }
+
+    @Override
+    protected Blogpost createParent() {
+        return createDefaultBlogpost(saveUser(createUniqueContentCreator()));
+    }
+
+    @Override
+    protected Blogpost createOwnedParent(User owner) {
+        return createDefaultBlogpost(owner);
     }
 
     @Override
@@ -52,58 +84,10 @@ public class CommentRestControllerIntegrationTest extends OwnedWithParentControl
         return blogpostRepository;
     }
 
-    @Override
-    protected Blogpost createParent() {
-        return createDefaultBlogpost(saveUser(createUniqueContentCreator()));
-    }
-
-    @Override
-    protected Blogpost saveParent(Blogpost parentResource) {
-        return null;
-    }
-
-    @Override
-    protected Blogpost modifyParent(Blogpost parentResource) {
-        return null;
-    }
-
-    @Override
-    protected Blogpost createOwnedParent(User owner) {
-        return createDefaultBlogpost(owner);
-    }
-
-    @Override
-    protected Blogpost createNotOwnedParent() {
-        return createParent();
-    }
-
-    @Override
-    protected Comment createOwned(User owner) {
-        return create(owner, saveBlogpost(createParent()) );
-    }
-
-    @Override
-    protected Comment createNotOwned() {
-        Blogpost post = saveBlogpost(createParent());
-        User author = saveUser(createUniqueContentCreator());
-
-        return create(author, post);
-    }
-
-    protected Comment create(User author, Blogpost post) {
-        Comment comment = new Comment();
-        comment.setTitle(unique("Title"));
-        comment.setContent(unique("Content"));
-        comment.setAuthor(author);
-        comment.setBlogpost(post);
-
-        return comment;
-    }
 
     @Override
     protected Comment save(Comment resource) {
         repository.save(resource);
-
         return resource;
     }
 
@@ -114,241 +98,327 @@ public class CommentRestControllerIntegrationTest extends OwnedWithParentControl
     }
 
     @Override
-    protected HttpStatus expectedStatusForGetAsAdmin() {
+    protected HttpStatus expectedStatusForGetAsUserParentNotOwnedChildOwned() {
+        return HttpStatus.OK;
+    }
+    @Override
+    protected HttpStatus expectedStatusForGetAsContentCreatorParentNotOwnedChildOwned() {
+        return HttpStatus.OK;
+    }
+    @Override
+    protected HttpStatus expectedStatusForGetAsModeratorParentNotOwnedChildOwned() {
+        return HttpStatus.OK;
+    }
+    @Override
+    protected HttpStatus expectedStatusForGetAsAdminParentNotOwnedChildOwned() {
         return HttpStatus.OK;
     }
 
-    @Override
-    public HttpStatus expectedStatusForGetAsUser() {
-        return HttpStatus.OK;
-    }
 
     @Override
-    public HttpStatus expectedStatusForGetAsContentCreator() {
-        return HttpStatus.OK;
+    protected HttpStatus expectedStatusForPostAsUserParentNotOwnedChildOwned() {
+        return HttpStatus.CREATED;
     }
-
     @Override
-    public HttpStatus expectedStatusForGetAsModerator() {
-        return HttpStatus.OK;
+    protected HttpStatus expectedStatusForPostAsContentCreatorParentNotOwnedChildOwned() {
+        return HttpStatus.CREATED;
     }
-
     @Override
-    protected HttpStatus expectedStatusForPostAsAdmin() {
+    protected HttpStatus expectedStatusForPostAsModeratorParentNotOwnedChildOwned() {
+        return HttpStatus.CREATED;
+    }
+    @Override
+    protected HttpStatus expectedStatusForPostAsAdminParentNotOwnedChildOwned() {
         return HttpStatus.CREATED;
     }
 
-    @Override
-    public HttpStatus expectedStatusForPostAsUser() {
-        return HttpStatus.CREATED;
-    }
 
     @Override
-    public HttpStatus expectedStatusForPostAsContentCreator() {
-        return HttpStatus.CREATED;
+    protected HttpStatus expectedStatusForPutAsUserParentNotOwnedChildOwned() {
+        return HttpStatus.ACCEPTED;
     }
-
     @Override
-    public HttpStatus expectedStatusForPostAsModerator() {
-        return HttpStatus.CREATED;
+    protected HttpStatus expectedStatusForPutAsContentCreatorParentNotOwnedChildOwned() {
+        return HttpStatus.ACCEPTED;
     }
-
     @Override
-    protected HttpStatus expectedStatusForPutAsAdmin() {
+    protected HttpStatus expectedStatusForPutAsModeratorParentNotOwnedChildOwned() {
+        return HttpStatus.ACCEPTED;
+    }
+    @Override
+    protected HttpStatus expectedStatusForPutAsAdminParentNotOwnedChildOwned() {
         return HttpStatus.ACCEPTED;
     }
 
+
     @Override
-    public HttpStatus expectedStatusForPutAsUser() {
+    protected HttpStatus expectedStatusForDeleteAsUserParentNotOwnedChildOwned() {
+        return HttpStatus.ACCEPTED;
+    }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsContentCreatorParentNotOwnedChildOwned() {
+        return HttpStatus.ACCEPTED;
+    }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsModeratorParentNotOwnedChildOwned() {
+        return HttpStatus.ACCEPTED;
+    }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsAdminParentNotOwnedChildOwned() {
+        return HttpStatus.ACCEPTED;
+    }
+
+
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsUserParentNotOwnedChildNotOwned() {
         return HttpStatus.FORBIDDEN;
     }
-
     @Override
-    public HttpStatus expectedStatusForPutAsContentCreator() {
+    protected HttpStatus expectedStatusForDeleteAsContentCreatorParentNotOwnedChildNotOwned() {
         return HttpStatus.FORBIDDEN;
     }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsModeratorParentNotOwnedChildNotOwned() {
+        return HttpStatus.ACCEPTED;
+    }
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsAdminParentNotOwnedChildNotOwned() {
+        return HttpStatus.ACCEPTED;
+    }
 
     @Override
-    public HttpStatus expectedStatusForPutAsModerator() {
+    protected HttpStatus expectedStatusForDeleteAsUserParentOwnedChildNotOwned() {
         return HttpStatus.FORBIDDEN;
     }
-
     @Override
-    protected HttpStatus expectedStatusForPutAsContentCreatorResourceNotExists() {
-        return HttpStatus.NOT_FOUND;
+    protected HttpStatus expectedStatusForDeleteAsContentCreatorParentOwnedChildNotOwned() {
+        return HttpStatus.ACCEPTED;
     }
-
     @Override
-    protected HttpStatus expectedStatusForPutAsAdminResourceNotExists() {
-        return HttpStatus.NOT_FOUND;
+    protected HttpStatus expectedStatusForDeleteAsModeratorParentOwnedChildNotOwned() {
+        return HttpStatus.ACCEPTED;
     }
-
     @Override
-    protected HttpStatus expectedStatusForPutAsUserResourceNotExists() {
-        return HttpStatus.NOT_FOUND;
-    }
-
-    @Override
-    protected HttpStatus expectedStatusForPutAsModeratorResourceNotExists() {
-        return HttpStatus.NOT_FOUND;
-    }
-
-    @Override
-    protected HttpStatus expectedStatusForDeleteAsAdmin() {
+    protected HttpStatus expectedStatusForDeleteAsAdminParentOwnedChildNotOwned() {
         return HttpStatus.ACCEPTED;
     }
 
     @Override
-    public HttpStatus expectedStatusForDeleteAsUser() {
-        return HttpStatus.FORBIDDEN;
+    protected HttpStatus expectedStatusForDeleteAsUserParentOwnedChildOwned() {
+        return HttpStatus.ACCEPTED;
     }
-
     @Override
-    public HttpStatus expectedStatusForDeleteAsContentCreator() { return HttpStatus.FORBIDDEN; }
-
-    @Override
-    public HttpStatus expectedStatusForDeleteAsModerator() {
-        return HttpStatus.FORBIDDEN;
+    protected HttpStatus expectedStatusForDeleteAsContentCreatorParentOwnedChildOwned() {
+        return HttpStatus.ACCEPTED;
     }
-
     @Override
-    protected HttpStatus expectedStatusForDeleteAsModeratorResourceNotExists() {
-        return HttpStatus.NOT_FOUND;
+    protected HttpStatus expectedStatusForDeleteAsModeratorParentOwnedChildOwned() {
+        return HttpStatus.ACCEPTED;
     }
-
     @Override
-    protected HttpStatus expectedStatusForDeleteAsUserResourceNotExists() {
-        return HttpStatus.NOT_FOUND;
-    }
-
-    @Override
-    protected HttpStatus expectedStatusForDeleteAsContentCreatorResourceNotExists() {
-        return HttpStatus.NOT_FOUND;
-    }
-
-    @Override
-    protected HttpStatus expectedStatusForDeleteAsAdminResourceNotExists() {
-        return HttpStatus.NOT_FOUND;
-    }
-
-    @Override
-    protected HttpStatus expectedStatusForGetAsAdminResourceOwned() {
-        return HttpStatus.OK;
-    }
-
-    @Override
-    protected HttpStatus expectedStatusForGetAsAdminResourceNotOwned() {
-        return HttpStatus.OK;
-    }
-
-    @Override
-    protected HttpStatus expectedStatusForGetAsModeratorResourceOwned() {
-        return HttpStatus.OK;
-    }
-
-    @Override
-    protected HttpStatus expectedStatusForGetAsModeratorResourceNotOwned() {
-        return HttpStatus.OK;
-    }
-
-    @Override
-    protected HttpStatus expectedStatusForGetAsContentCreatorResourceOwned() {
-        return HttpStatus.OK;
-    }
-
-    @Override
-    protected HttpStatus expectedStatusForGetAsContentCreatorResourceNotOwned() {
-        return HttpStatus.OK;
-    }
-
-    @Override
-    protected HttpStatus expectedStatusForGetAsUserResourceOwned() {
-        return HttpStatus.OK;
-    }
-
-    @Override
-    protected HttpStatus expectedStatusForGetAsUserResourceNotOwned() {
-        return HttpStatus.OK;
-    }
-
-    @Override
-    protected HttpStatus expectedStatusForPutAsAdminResourceOwned() {
+    protected HttpStatus expectedStatusForDeleteAsAdminParentOwnedChildOwned() {
         return HttpStatus.ACCEPTED;
     }
 
-    @Override
-    protected HttpStatus expectedStatusForPutAsAdminResourceNotOwned() {
-        return HttpStatus.ACCEPTED;
-    }
+//    @Override
+//    protected HttpStatus expectedStatusForGetAsAdmin() {
+//        return HttpStatus.OK;
+//    }
+//    @Override
+//    public HttpStatus expectedStatusForGetAsUser() {
+//        return HttpStatus.OK;
+//    }
+//    @Override
+//    public HttpStatus expectedStatusForGetAsContentCreator() {
+//        return HttpStatus.OK;
+//    }
+//    @Override
+//    protected HttpStatus expectedStatusForGetAsModerator() { return HttpStatus.OK; }
+//
+//    @Override
+//    protected HttpStatus expectedStatusForPostAsAdmin() {
+//        return HttpStatus.CREATED;
+//    }
+//    @Override
+//    protected HttpStatus expectedStatusForPostAsUser() {
+//        return HttpStatus.CREATED;
+//    }
+//    @Override
+//    protected HttpStatus expectedStatusForPostAsContentCreator() {
+//        return HttpStatus.CREATED;
+//    }
+//    @Override
+//    protected HttpStatus expectedStatusForPostAsModerator() {
+//        return HttpStatus.CREATED;
+//    }
+//
+//    @Override
+//    protected HttpStatus expectedStatusForPutAsAdmin() {
+//        return HttpStatus.ACCEPTED;
+//    }
+//    @Override
+//    protected HttpStatus expectedStatusForPutAsUser() {
+//        return HttpStatus.FORBIDDEN;
+//    }
+//    @Override
+//    protected HttpStatus expectedStatusForPutAsContentCreator() {
+//        return HttpStatus.FORBIDDEN;
+//    }
+//    @Override
+//    protected HttpStatus expectedStatusForPutAsModerator() {
+//        return HttpStatus.FORBIDDEN;
+//    }
+//
+//    @Override
+//    protected HttpStatus expectedStatusForPutAsContentCreatorResourceNotExists() {
+//        return HttpStatus.NOT_FOUND;
+//    }
+//    @Override
+//    protected HttpStatus expectedStatusForPutAsAdminResourceNotExists() {
+//        return HttpStatus.NOT_FOUND;
+//    }
+//    @Override
+//    protected HttpStatus expectedStatusForPutAsUserResourceNotExists() {
+//        return HttpStatus.NOT_FOUND;
+//    }
+//    @Override
+//    protected HttpStatus expectedStatusForPutAsModeratorResourceNotExists() {
+//        return HttpStatus.NOT_FOUND;
+//    }
+//
+//    @Override
+//    protected HttpStatus expectedStatusForDeleteAsAdmin() {
+//        return HttpStatus.ACCEPTED;
+//    }
+//    @Override
+//    public HttpStatus expectedStatusForDeleteAsUser() {
+//        return HttpStatus.FORBIDDEN;
+//    }
+//    @Override
+//    public HttpStatus expectedStatusForDeleteAsContentCreator() { return HttpStatus.FORBIDDEN; }
+//    @Override
+//    public HttpStatus expectedStatusForDeleteAsModerator() {
+//        return HttpStatus.FORBIDDEN;
+//    }
+//
+//    @Override
+//    protected HttpStatus expectedStatusForDeleteAsModeratorResourceNotExists() {
+//        return HttpStatus.NOT_FOUND;
+//    }
+//    @Override
+//    protected HttpStatus expectedStatusForDeleteAsUserResourceNotExists() {
+//        return HttpStatus.NOT_FOUND;
+//    }
+//    @Override
+//    protected HttpStatus expectedStatusForDeleteAsContentCreatorResourceNotExists() {
+//        return HttpStatus.NOT_FOUND;
+//    }
+//    @Override
+//    protected HttpStatus expectedStatusForDeleteAsAdminResourceNotExists() {
+//        return HttpStatus.NOT_FOUND;
+//    }
 
-    @Override
-    protected HttpStatus expectedStatusForDeleteAsAdminResourceOwned() {
-        return HttpStatus.ACCEPTED;
-    }
-
-    @Override
-    protected HttpStatus expectedStatusForDeleteAsAdminResourceNotOwned() {
-        return HttpStatus.ACCEPTED;
-    }
-
-    @Override
-    protected HttpStatus expectedStatusForPutAsContentCreatorResourceOwned() {
-        return HttpStatus.ACCEPTED;
-    }
-
-    @Override
-    protected HttpStatus expectedStatusForPutAsContentCreatorResourceNotOwned() {
-        return HttpStatus.FORBIDDEN;
-    }
-
-    @Override
-    protected HttpStatus expectedStatusForDeleteAsContentCreatorResourceOwned() {
-        return HttpStatus.ACCEPTED;
-    }
-
-    @Override
-    protected HttpStatus expectedStatusForDeleteAsContentCreatorResourceNotOwned() {
-        return HttpStatus.FORBIDDEN;
-    }
-
-    @Override
-    protected HttpStatus expectedStatusForPutAsModeratorResourceOwned() {
-        return HttpStatus.ACCEPTED;
-    }
-
-    @Override
-    protected HttpStatus expectedStatusForPutAsModeratorResourceNotOwned() {
-        return HttpStatus.FORBIDDEN;
-    }
-
-    @Override
-    protected HttpStatus expectedStatusForDeleteAsModeratorResourceOwned() {
-        return HttpStatus.ACCEPTED;
-    }
-
-    @Override
-    protected HttpStatus expectedStatusForDeleteAsModeratorResourceNotOwned() {
-        return HttpStatus.FORBIDDEN;
-    }
-
-    @Override
-    protected HttpStatus expectedStatusForPutAsUserResourceOwned() {
-        return HttpStatus.ACCEPTED;
-    }
-
-    @Override
-    protected HttpStatus expectedStatusForPutAsUserResourceNotOwned() {
-        return HttpStatus.FORBIDDEN;
-    }
-
-    @Override
-    protected HttpStatus expectedStatusForDeleteAsUserResourceOwned() {
-        return HttpStatus.ACCEPTED;
-    }
-
-    @Override
-    protected HttpStatus expectedStatusForDeleteAsUserResourceNotOwned() {
-        return HttpStatus.FORBIDDEN;
-    }
+//    @Override
+//    protected HttpStatus expectedStatusForGetAsAdminResourceOwned() {
+//        return HttpStatus.OK;
+//    }
+//    @Override
+//    protected HttpStatus expectedStatusForGetAsAdminResourceNotOwned() {
+//        return HttpStatus.OK;
+//    }
+//
+//    @Override
+//    protected HttpStatus expectedStatusForGetAsModeratorResourceOwned() {
+//        return HttpStatus.OK;
+//    }
+//    @Override
+//    protected HttpStatus expectedStatusForGetAsModeratorResourceNotOwned() {
+//        return HttpStatus.OK;
+//    }
+//    @Override
+//    protected HttpStatus expectedStatusForGetAsContentCreatorResourceOwned() {
+//        return HttpStatus.OK;
+//    }
+//    @Override
+//    protected HttpStatus expectedStatusForGetAsContentCreatorResourceNotOwned() {
+//        return HttpStatus.OK;
+//    }
+//
+//    @Override
+//    protected HttpStatus expectedStatusForGetAsUserResourceOwned() {
+//        return HttpStatus.OK;
+//    }
+//    @Override
+//    protected HttpStatus expectedStatusForGetAsUserResourceNotOwned() {
+//        return HttpStatus.OK;
+//    }
+//
+//    @Override
+//    protected HttpStatus expectedStatusForPutAsAdminResourceOwned() {
+//        return HttpStatus.ACCEPTED;
+//    }
+//    @Override
+//    protected HttpStatus expectedStatusForPutAsAdminResourceNotOwned() {
+//        return HttpStatus.ACCEPTED;
+//    }
+//    @Override
+//    protected HttpStatus expectedStatusForDeleteAsAdminResourceOwned() {
+//        return HttpStatus.ACCEPTED;
+//    }
+//    @Override
+//    protected HttpStatus expectedStatusForDeleteAsAdminResourceNotOwned() {
+//        return HttpStatus.ACCEPTED;
+//    }
+//
+//    @Override
+//    protected HttpStatus expectedStatusForPutAsContentCreatorResourceOwned() {
+//        return HttpStatus.ACCEPTED;
+//    }
+//    @Override
+//    protected HttpStatus expectedStatusForPutAsContentCreatorResourceNotOwned() {
+//        return HttpStatus.FORBIDDEN;
+//    }
+//    @Override
+//    protected HttpStatus expectedStatusForDeleteAsContentCreatorResourceOwned() {
+//        return HttpStatus.ACCEPTED;
+//    }
+//    @Override
+//    protected HttpStatus expectedStatusForDeleteAsContentCreatorResourceNotOwned() {
+//        return HttpStatus.FORBIDDEN;
+//    }
+//
+//    @Override
+//    protected HttpStatus expectedStatusForPutAsModeratorResourceOwned() {
+//        return HttpStatus.ACCEPTED;
+//    }
+//    @Override
+//    protected HttpStatus expectedStatusForPutAsModeratorResourceNotOwned() {
+//        return HttpStatus.FORBIDDEN;
+//    }
+//    @Override
+//    protected HttpStatus expectedStatusForDeleteAsModeratorResourceOwned() {
+//        return HttpStatus.ACCEPTED;
+//    }
+//    @Override
+//    protected HttpStatus expectedStatusForDeleteAsModeratorResourceNotOwned() {
+//        return HttpStatus.FORBIDDEN;
+//    }
+//
+//    @Override
+//    protected HttpStatus expectedStatusForPutAsUserResourceOwned() {
+//        return HttpStatus.ACCEPTED;
+//    }
+//    @Override
+//    protected HttpStatus expectedStatusForPutAsUserResourceNotOwned() {
+//        return HttpStatus.FORBIDDEN;
+//    }
+//    @Override
+//    protected HttpStatus expectedStatusForDeleteAsUserResourceOwned() {
+//        return HttpStatus.ACCEPTED;
+//    }
+//    @Override
+//    protected HttpStatus expectedStatusForDeleteAsUserResourceNotOwned() {
+//        return HttpStatus.FORBIDDEN;
+//    }
 
 }
