@@ -84,10 +84,17 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         return new ResponseEntity(createDeletedMessage(), HttpStatus.ACCEPTED);
     }
 
+    /**
+     * Validates if current consumer of the API is the owner of R when if R is an instance of {@link AbstractOwnedEntity},
+     * if corresponding HttpMethod is protected by ownerships.
+     *
+     * @throws ResourceNotFoundException - Thrown when resource could not be found.
+     * @throws ResourceNotOwnedException - Thrown when resource could is not owned by current consumer of API.
+     */
     protected void validateOwnershipOfResource(final Integer resourceId, final HttpMethod method) throws ResourceNotFoundException, ResourceNotOwnedException  {
         Class<R> resourceClass = getService().getResourceClass();
 
-        if(AbstractOwnedEntity.class.isAssignableFrom(resourceClass) && isMethodProtected(method)){
+        if(AbstractOwnedEntity.class.isAssignableFrom(resourceClass) && isMethodOwnershipProtected(method)){
             log.info("Checking if allowed to ["+method+"] AbstractOwnedEntity ["+resourceClass+"] with identifier ["+resourceId+"]");
             User consumer = getConsumer();
             AbstractOwnedEntity ownedResource = (AbstractOwnedEntity) getService().getResourceById(resourceId);
@@ -99,6 +106,12 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         }
     }
 
+    /**
+     * Uses SecurityContextHolder.getContext().getAuthentication().getName() to retrieve current consumer of the API.
+     *
+     * @return the current consumer of the API.
+     * @throws UserNotFoundException - When the current consumer of the API is not a valid user.
+     */
     protected User getConsumer() throws UserNotFoundException {
         String username = null;
         try {
@@ -113,28 +126,40 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         }
     }
 
-    protected boolean isMethodProtected(HttpMethod method){
+    /**
+     * @return indication if HttpMethod is protected by ownership.
+     */
+    protected boolean isMethodOwnershipProtected(HttpMethod method){
         if(method.equals(HttpMethod.GET)){
-            return isGetProtected();
+            return isGetOwnershipProtected();
         }
         if(method.equals(HttpMethod.PUT)){
-            return isPutProtected();
+            return isPutOwnershipProtected();
         }
         if(method.equals(HttpMethod.DELETE)){
-            return isDeleteProtected();
+            return isDeleteOwnershipProtected();
         }
         return false;
     }
 
-    protected boolean isGetProtected(){
+    /**
+     * @return indication if HttpMethod.GET is protected by ownership.
+     */
+    protected boolean isGetOwnershipProtected(){
         return false;
     }
 
-    protected boolean isPutProtected(){
+    /**
+     * @return indication if HttpMethod.PUT is protected by ownership.
+     */
+    protected boolean isPutOwnershipProtected(){
         return true;
     }
 
-    protected boolean isDeleteProtected(){
+    /**
+     * @return indication if HttpMethod.DELETE is protected by ownership.
+     */
+    protected boolean isDeleteOwnershipProtected(){
         return true;
     }
 
