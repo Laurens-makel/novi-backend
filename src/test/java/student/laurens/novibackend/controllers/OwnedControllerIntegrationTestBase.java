@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
 import student.laurens.novibackend.entities.AbstractOwnedEntity;
+import student.laurens.novibackend.entities.Role;
 import student.laurens.novibackend.entities.User;
 
 public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwnedEntity> extends ControllerIntegrationTestBase<R> {
@@ -16,13 +17,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
      * @return Sample instance of resource.
      */
     abstract protected R createOwned(User owner);
-
-    /**
-     * Implement this method by a resource specific implementation to create sample not-owned instances of the resource.
-     *
-     * @return Sample instance of resource.
-     */
-    abstract protected R createNotOwned();
+    protected R createNotOwned(){
+        return createOwned(saveUser(createUniqueContentCreator()));
+    }
 
     @Override
     protected R create(){

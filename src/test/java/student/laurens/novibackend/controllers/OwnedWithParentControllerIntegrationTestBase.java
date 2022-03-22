@@ -7,7 +7,7 @@ import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.ResourceRepository;
 
 public abstract class OwnedWithParentControllerIntegrationTestBase<R extends AbstractOwnedEntity, P extends AbstractOwnedEntity>
-        extends OwnedControllerIntegrationTestBase<R> {
+        extends TestBase<R> {
 
 
     abstract protected ResourceRepository<R> getRepository();
