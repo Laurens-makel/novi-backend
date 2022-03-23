@@ -19,7 +19,7 @@ import student.laurens.novibackend.services.CommentService;
  */
 @RestController
 @RequestMapping("/blogposts/{blogpostId}/comments")
-public class CommentRestController extends ParentBaseRestController<Comment, Blogpost> {
+public class CommentRestController extends ResourceWithParentBaseRestController<Comment, Blogpost> {
 
     @Autowired
     private @Getter CommentService service;

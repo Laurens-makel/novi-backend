@@ -1,9 +1,9 @@
 package student.laurens.novibackend.services;
 
-import student.laurens.novibackend.entities.AbstractEntity;
-import student.laurens.novibackend.entities.AbstractOwnedWithParentEntity;
-import student.laurens.novibackend.entities.PermissionPolicy;
-import student.laurens.novibackend.entities.User;
+import org.springframework.http.HttpMethod;
+import student.laurens.novibackend.entities.*;
+import student.laurens.novibackend.exceptions.ResourceNotFoundException;
+import student.laurens.novibackend.exceptions.ResourceNotOwnedException;
 
 /**
  * Base class for Services which expose CRUD methods for {@link AbstractOwnedWithParentEntity} which has child entities.

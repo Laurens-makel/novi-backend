@@ -58,8 +58,9 @@ public abstract class BaseRestController<R extends AbstractEntity> {
      */
     public ResponseEntity<Iterable<R>> get() {
         logProcessingStarted(HttpMethod.GET);
+        Iterable<R> resources = getService().getResources();
         logProcessingFinished(HttpMethod.GET);
-        return new ResponseEntity<>(getService().getResources(), HttpStatus.OK);
+        return new ResponseEntity<>(resources, HttpStatus.OK);
     }
 
     /**
@@ -72,8 +73,9 @@ public abstract class BaseRestController<R extends AbstractEntity> {
      */
     public ResponseEntity<R> get(final String name) throws ResourceNotFoundException {
         logProcessingStarted(HttpMethod.GET, name);
+        R resource = getService().getResource(name);
         logProcessingFinished(HttpMethod.GET, name);
-        return new ResponseEntity<>(getService().getResource(name), HttpStatus.OK);
+        return new ResponseEntity<>(resource, HttpStatus.OK);
     }
 
     /**
@@ -87,10 +89,10 @@ public abstract class BaseRestController<R extends AbstractEntity> {
     public ResponseEntity<R> get(final Integer resourceId) throws ResourceNotFoundException {
         logProcessingStarted(HttpMethod.GET, resourceId);
 
-        getService().validateOwnershipOfResource(resourceId, HttpMethod.GET, getConsumer());
+        R resource = getService().getResourceById(resourceId, getConsumer());
 
         logProcessingFinished(HttpMethod.GET, resourceId);
-        return new ResponseEntity<>(getService().getResourceById(resourceId), HttpStatus.OK);
+        return new ResponseEntity<>(resource, HttpStatus.OK);
     }
 
     /**
@@ -121,8 +123,7 @@ public abstract class BaseRestController<R extends AbstractEntity> {
     public ResponseEntity<R> update(final Integer resourceId, final R resource) throws ResourceNotFoundException, ResourceNotOwnedException {
         logProcessingStarted(HttpMethod.PUT, resourceId);
 
-        getService().validateOwnershipOfResource(resourceId, HttpMethod.PUT, getConsumer());
-        getService().updateResourceById(resourceId, resource);
+        getService().updateResourceById(resourceId, resource, getConsumer());
 
         logProcessingFinished(HttpMethod.PUT, resourceId);
         return new ResponseEntity<>(resource, HttpStatus.ACCEPTED);
@@ -140,8 +141,7 @@ public abstract class BaseRestController<R extends AbstractEntity> {
     public ResponseEntity<R> delete(final Integer resourceId) throws ResourceNotFoundException, ResourceNotOwnedException {
         logProcessingStarted(HttpMethod.DELETE, resourceId);
 
-        getService().validateOwnershipOfResource(resourceId, HttpMethod.DELETE, getConsumer());
-        getService().deleteResourceById(resourceId);
+        getService().deleteResourceById(resourceId, getConsumer());
 
         logProcessingFinished(HttpMethod.DELETE, resourceId);
         return new ResponseEntity(createDeletedMessage(), HttpStatus.ACCEPTED);

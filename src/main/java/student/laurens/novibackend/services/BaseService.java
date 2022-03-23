@@ -60,7 +60,11 @@ public abstract class BaseService<R extends AbstractEntity> {
      *
      * @param resourceId - Identifier of the resource to retrieve.
      */
-    public R getResourceById(final Integer resourceId) throws ResourceNotFoundException {
+    public R getResourceById(final Integer resourceId, User consumer) throws ResourceNotFoundException {
+        validateOwnershipOfResource(resourceId, HttpMethod.GET, consumer);
+        return getResourceByIdWithoutValidations(resourceId);
+    }
+    protected R getResourceByIdWithoutValidations(final Integer resourceId) throws ResourceNotFoundException {
         Optional<R> found = getRepository().findById(resourceId);
 
         if(!found.isPresent()){
@@ -94,8 +98,9 @@ public abstract class BaseService<R extends AbstractEntity> {
      *
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
      */
-    public void updateResourceById(final Integer resourceId, R resource) throws ResourceNotFoundException {
+    public void updateResourceById(final Integer resourceId, R resource, User consumer) throws ResourceNotFoundException {
         exists(resourceId);
+        validateOwnershipOfResource(resourceId, HttpMethod.PUT, consumer);
         getRepository().save(resource);
     }
 
@@ -106,8 +111,9 @@ public abstract class BaseService<R extends AbstractEntity> {
      *
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
      */
-    public void deleteResourceById(final Integer resourceId) throws ResourceNotFoundException {
+    public void deleteResourceById(final Integer resourceId, User consumer) throws ResourceNotFoundException {
         exists(resourceId);
+        validateOwnershipOfResource(resourceId, HttpMethod.DELETE, consumer);
         getRepository().deleteById(resourceId);
     };
 
@@ -126,7 +132,7 @@ public abstract class BaseService<R extends AbstractEntity> {
 
         if(AbstractOwnedEntity.class.isAssignableFrom(resourceClass) && isMethodOwnershipProtected(method)){
             log.info("Checking if allowed to ["+method+"] AbstractOwnedEntity ["+resourceClass+"] with identifier ["+resourceId+"]");
-            AbstractOwnedEntity ownedResource = (AbstractOwnedEntity) getResourceById(resourceId);
+            AbstractOwnedEntity ownedResource = (AbstractOwnedEntity) getResourceByIdWithoutValidations(resourceId);
 
             if(ownedResource.getOwnerUid() != consumer.getUid() && !consumer.hasRole("ADMIN") ){
                 log.warn("User ["+consumer.getUid()+"] tried to ["+method+"] a forbidden ["+resourceClass+"] with identifier ["+resourceId+"]");
