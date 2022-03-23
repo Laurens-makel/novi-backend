@@ -46,12 +46,12 @@ public class RoleRestController extends BaseRestController<Role> {
     }
 
     @PutMapping("/{roleId}")
-    public ResponseEntity<Role> updateRole(@PathVariable("roleId") Integer roleId, @RequestBody Role role){
+    public ResponseEntity<Role> updateRole(@PathVariable Integer roleId, @RequestBody Role role){
         return update(roleId, role);
     }
 
     @DeleteMapping("/{roleId}")
-    public ResponseEntity deleteRole(@PathVariable("roleId") Integer roleId) throws RoleNotFoundException {
+    public ResponseEntity deleteRole(@PathVariable Integer roleId) throws RoleNotFoundException {
         return delete(roleId);
     }
 

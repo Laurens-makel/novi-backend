@@ -32,12 +32,12 @@ public class TagRestController extends BaseRestController<Tag> {
     }
 
     @PutMapping("/{tagId}")
-    public ResponseEntity<Tag> updateTag(@PathVariable("tagId") Integer tagId, @RequestBody Tag tag){
+    public ResponseEntity<Tag> updateTag(@PathVariable Integer tagId, @RequestBody Tag tag){
         return update(tagId, tag);
     }
 
     @DeleteMapping("/{tagId}")
-    public ResponseEntity deleteTag(@PathVariable("tagId") Integer tagId) throws RoleNotFoundException {
+    public ResponseEntity deleteTag(@PathVariable Integer tagId) throws RoleNotFoundException {
         return delete(tagId);
     }
 }

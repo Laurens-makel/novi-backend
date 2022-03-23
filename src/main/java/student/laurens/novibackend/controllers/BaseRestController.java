@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import student.laurens.novibackend.entities.AbstractEntity;
-import student.laurens.novibackend.entities.AbstractOwnedEntity;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.exceptions.ResourceNotOwnedException;
@@ -39,7 +38,7 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         return createMessage(DELETED_TEXT);
     }
 
-    protected Map<String, String> createMessage(String text){
+    protected Map<String, String> createMessage(final String text){
         final Map<String, String> message = new HashMap<>();
         message.put("message", text);
 

@@ -2,6 +2,7 @@ package student.laurens.novibackend.controllers;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -48,8 +49,12 @@ public class UserRestController extends BaseRestController<User>{
 
     @GetMapping("/user")
     public ResponseEntity<AppUserDetails> getUser(Principal principal) {
-        AppUserDetails userDetails = (AppUserDetails) service.loadUserByUsername(principal.getName());
+        String username = principal.getName();
+        logProcessingStarted(HttpMethod.GET, username);
 
+        AppUserDetails userDetails = (AppUserDetails) service.loadUserByUsername(username);
+
+        logProcessingFinished(HttpMethod.GET, username);
         return new ResponseEntity<>(userDetails, HttpStatus.OK);
     }
 
@@ -64,12 +69,12 @@ public class UserRestController extends BaseRestController<User>{
     }
 
     @PutMapping("/users/{uid}")
-    public ResponseEntity<User> updateUser(@PathVariable("uid") Integer uid, @RequestBody User user) throws UserNotFoundException {
+    public ResponseEntity<User> updateUser(@PathVariable Integer uid, @RequestBody User user) throws UserNotFoundException {
         return update(uid, user);
     }
 
     @DeleteMapping("/users/{uid}")
-    public ResponseEntity deleteUser(@PathVariable("uid") Integer uid) throws UserNotFoundException {
+    public ResponseEntity deleteUser(@PathVariable Integer uid) throws UserNotFoundException {
         return delete(uid);
     }
 

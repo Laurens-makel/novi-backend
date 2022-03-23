@@ -29,7 +29,7 @@ public class CommentRestController extends ParentBaseRestController<Comment, Blo
     private @Getter BlogpostService parentService;
 
     @GetMapping("/{commentId}")
-    public ResponseEntity<Comment> getComments(@PathVariable Integer blogpostId, @PathVariable("commentId") Integer commentId) {
+    public ResponseEntity<Comment> getComments(@PathVariable Integer blogpostId, @PathVariable Integer commentId) {
         return get(commentId);
     }
 
@@ -44,12 +44,12 @@ public class CommentRestController extends ParentBaseRestController<Comment, Blo
     }
 
     @PutMapping("/{commentId}")
-    public ResponseEntity<Comment> updateComment(@PathVariable Integer blogpostId, @PathVariable("commentId") Integer commentId, @RequestBody Comment comment){
+    public ResponseEntity<Comment> updateComment(@PathVariable Integer blogpostId, @PathVariable Integer commentId, @RequestBody Comment comment){
         return update(blogpostId, commentId, comment);
     }
 
     @DeleteMapping("/{commentId}")
-    public ResponseEntity deleteComment(@PathVariable Integer blogpostId, @PathVariable("commentId") Integer commentId) throws RoleNotFoundException {
+    public ResponseEntity deleteComment(@PathVariable Integer blogpostId, @PathVariable Integer commentId) throws RoleNotFoundException {
         return delete(blogpostId, commentId);
     }
 
