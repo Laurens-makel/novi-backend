@@ -7,7 +7,6 @@ import student.laurens.novibackend.entities.*;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.exceptions.ResourceNotOwnedException;
 import student.laurens.novibackend.services.ChildBaseService;
-import student.laurens.novibackend.services.ParentBaseService;
 
 /**
  * Base class for RestControllers which expose CRUD methods for {@link AbstractOwnedWithParentEntity}.

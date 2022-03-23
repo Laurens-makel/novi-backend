@@ -2,8 +2,6 @@ package student.laurens.novibackend.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpMethod;
 import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.entities.AbstractOwnedEntity;
@@ -12,7 +10,6 @@ import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.exceptions.ResourceNotOwnedException;
 import student.laurens.novibackend.repositories.ResourceRepository;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 /**
@@ -30,7 +27,7 @@ public abstract class BaseService<R extends AbstractEntity> {
      *
      * @return Class of R.
      */
-    abstract protected ResourceRepository getRepository();
+    abstract protected ResourceRepository<R> getRepository();
 
     abstract public R getResource(final String string);
 
@@ -48,7 +45,7 @@ public abstract class BaseService<R extends AbstractEntity> {
      *
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
      */
-    public boolean exists(Integer resourceId) throws ResourceNotFoundException {
+    public boolean exists(final Integer resourceId) throws ResourceNotFoundException {
         if(!getRepository().existsById(resourceId)){
             throw new ResourceNotFoundException(getResourceClass(), resourceId);
         }
@@ -60,8 +57,11 @@ public abstract class BaseService<R extends AbstractEntity> {
      * Retrieves a resource from repository, specified by id.
      *
      * @param resourceId - Identifier of the resource to retrieve.
+     * @param consumer - User which has the intention of interacting with the resource.
+     *
+     * @throws ResourceNotFoundException - Thrown when resource could not be found.
      */
-    public R getResourceById(final Integer resourceId, User consumer) throws ResourceNotFoundException {
+    public R getResourceById(final Integer resourceId, final User consumer) throws ResourceNotFoundException {
         Optional<R> resource = validateOwnershipOfResource(resourceId, HttpMethod.GET, consumer);
         if(resource.isEmpty()){
             return getResourceByIdWithoutValidations(resourceId);
@@ -99,10 +99,12 @@ public abstract class BaseService<R extends AbstractEntity> {
      *
      * @param resourceId - Identifier of the resource to update.
      * @param resource - The state of the resource to save.
+     * @param consumer - User which has the intention of interacting with the resource.
      *
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
+     * @throws ResourceNotOwnedException - Thrown when resource could is not owned by current consumer of service.
      */
-    public void updateResourceById(final Integer resourceId, R resource, User consumer) throws ResourceNotFoundException {
+    public void updateResourceById(final Integer resourceId, final R resource, final User consumer) throws ResourceNotFoundException, ResourceNotOwnedException {
         exists(resourceId);
         validateOwnershipOfResource(resourceId, HttpMethod.PUT, consumer);
         getRepository().save(resource);
@@ -112,10 +114,12 @@ public abstract class BaseService<R extends AbstractEntity> {
      * Deletes a resource from repository, specified by resource id.
      *
      * @param resourceId - Identifier of the resource to delete.
+     * @param consumer - User which has the intention of interacting with the resource.
      *
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
+     * @throws ResourceNotOwnedException - Thrown when resource could is not owned by current consumer of service.
      */
-    public void deleteResourceById(final Integer resourceId, User consumer) throws ResourceNotFoundException {
+    public void deleteResourceById(final Integer resourceId, final User consumer) throws ResourceNotFoundException, ResourceNotOwnedException {
         exists(resourceId);
         validateOwnershipOfResource(resourceId, HttpMethod.DELETE, consumer);
         getRepository().deleteById(resourceId);
@@ -129,7 +133,7 @@ public abstract class BaseService<R extends AbstractEntity> {
      * @param consumer - User which has the intention of interacting with the resource.
      *
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
-     * @throws ResourceNotOwnedException - Thrown when resource could is not owned by current consumer of API.
+     * @throws ResourceNotOwnedException - Thrown when resource could is not owned by current consumer of service.
      */
     public  Optional<R> validateOwnershipOfResource(final Integer resourceId, final HttpMethod method, final User consumer) throws ResourceNotFoundException, ResourceNotOwnedException {
         Class<R> resourceClass = getResourceClass();
@@ -152,7 +156,7 @@ public abstract class BaseService<R extends AbstractEntity> {
     /**
      * @return indication if HttpMethod is protected by ownership.
      */
-    protected boolean isMethodOwnershipProtected(HttpMethod method){
+    protected boolean isMethodOwnershipProtected(final HttpMethod method){
         if(method.equals(HttpMethod.GET)){
             return isGetOwnershipProtected();
         }
