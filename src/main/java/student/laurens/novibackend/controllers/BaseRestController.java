@@ -49,7 +49,7 @@ public abstract class BaseRestController<R extends AbstractEntity> {
     abstract protected BaseService<R> getService();
 
     public ResponseEntity<Iterable<R>> get() {
-        return new ResponseEntity<>(getService().getResource(), HttpStatus.OK);
+        return new ResponseEntity<>(getService().getResources(), HttpStatus.OK);
     }
 
     public ResponseEntity<R> get(final String name) throws ResourceNotFoundException {
@@ -87,8 +87,9 @@ public abstract class BaseRestController<R extends AbstractEntity> {
     /**
      * Uses SecurityContextHolder.getContext().getAuthentication().getName() to retrieve current consumer of the API.
      *
-     * @return the current consumer of the API.
      * @throws UserNotFoundException - When the current consumer of the API is not a valid user.
+     *
+     * @return the current consumer of the API.
      */
     protected User getConsumer() throws UserNotFoundException {
         String username = null;

@@ -12,6 +12,12 @@ import student.laurens.novibackend.repositories.ResourceRepository;
 
 import java.util.Optional;
 
+/**
+ * Base class for Services which expose CRUD methods for {@link AbstractEntity}.
+ *
+ * @author Laurens Mäkel
+ * @version 1.0, March 2022
+ */
 public abstract class BaseService<R extends AbstractEntity> {
 
     protected Logger log = LoggerFactory.getLogger(BaseService.class);
@@ -20,7 +26,19 @@ public abstract class BaseService<R extends AbstractEntity> {
 
     abstract public R getResource(final String string);
 
-    public R getResourceById(final Integer resourceId) {
+    /**
+     * Retrieve the specific implemented class of <R> {@link AbstractEntity}.
+     *
+     * @return Class of R.
+     */
+    abstract public Class<R> getResourceClass();
+
+    /**
+     * Retrieves a resource from repository, specified by id.
+     *
+     * @param resourceId - Identifier of the resource to retrieve.
+     */
+    public R getResourceById(final Integer resourceId) throws ResourceNotFoundException {
         Optional<R> found = getRepository().findById(resourceId);
 
         if(!found.isPresent()){
@@ -30,15 +48,31 @@ public abstract class BaseService<R extends AbstractEntity> {
         return found.get();
     }
 
-    public Iterable<R> getResource(){
+    /**
+     * Retrieves a list of resources from repository.
+     */
+    public Iterable<R> getResources(){
         return getRepository().findAll();
     }
 
+    /**
+     * Creates a resource in repository.
+     *
+     * @param resource - The state of the resource to save.
+     */
     public void createResource(final R resource){
         getRepository().save(resource);
     };
 
-    public void updateResourceById(final Integer resourceId, R resource){
+    /**
+     * Updates a resource in repository, specified by resource id.
+     *
+     * @param resourceId - Identifier of the resource to update.
+     * @param resource - The state of the resource to save.
+     *
+     * @throws ResourceNotFoundException - Thrown when resource could not be found.
+     */
+    public void updateResourceById(final Integer resourceId, R resource) throws ResourceNotFoundException {
         Optional<R> found = getRepository().findById(resourceId);
 
         if(!found.isPresent()){
@@ -48,7 +82,14 @@ public abstract class BaseService<R extends AbstractEntity> {
         getRepository().save(resource);
     }
 
-    public void deleteResourceById(final Integer resourceId){
+    /**
+     * Deletes a resource from repository, specified by resource id.
+     *
+     * @param resourceId - Identifier of the resource to delete.
+     *
+     * @throws ResourceNotFoundException - Thrown when resource could not be found.
+     */
+    public void deleteResourceById(final Integer resourceId) throws ResourceNotFoundException {
         Optional<R> resource = getRepository().findById(resourceId);
 
         if(!resource.isPresent()){
@@ -58,8 +99,16 @@ public abstract class BaseService<R extends AbstractEntity> {
         getRepository().delete(resource.get());
     };
 
-    abstract public Class<R> getResourceClass();
-
+    /**
+     * Validates if current consumer is the owner of R when if R is an instance of {@link AbstractOwnedEntity}, if corresponding HttpMethod is protected by ownerships.
+     *
+     * @param resourceId - Identifier of the resource validate ownership of.
+     * @param method - HttpMethod of the current action.
+     * @param consumer - User which has the intention of interacting with the resource.
+     *
+     * @throws ResourceNotFoundException - Thrown when resource could not be found.
+     * @throws ResourceNotOwnedException - Thrown when resource could is not owned by current consumer of API.
+     */
     public void validateOwnershipOfResource(final Integer resourceId, final HttpMethod method, final User consumer) throws ResourceNotFoundException, ResourceNotOwnedException {
         Class<R> resourceClass = getResourceClass();
 

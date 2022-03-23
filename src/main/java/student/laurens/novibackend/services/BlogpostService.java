@@ -29,7 +29,7 @@ public class BlogpostService extends ParentBaseService<Blogpost, Comment> {
     private @Getter BlogpostRepository repository;
 
     @Override
-    public Iterable<Blogpost> getResource() {
+    public Iterable<Blogpost> getResources() {
         return repository.findAllPublished();
     }
 
