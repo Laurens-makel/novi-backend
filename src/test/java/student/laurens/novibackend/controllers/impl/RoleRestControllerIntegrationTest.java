@@ -338,6 +338,8 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     @Test
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void deleteRoles_AsAdmin_JSON_Ok() throws Exception {
+        saveUser(createDefaultAdmin());
+
         // given
         Role role = saveRole(createRole("TEST_ROLE"));
 
@@ -353,6 +355,8 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     @Test
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void deleteRoles_AsAdmin_XML_Ok() throws Exception {
+        saveUser(createDefaultAdmin());
+
         // given
         Role role = saveRole(createRole("TEST_ROLE"));
 
@@ -503,6 +507,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     @Test
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void updateRoles_AsAdmin_JSON_Ok() throws Exception {
+        saveUser(createDefaultAdmin());
         // given
         Role role = saveRole(createRole("TEST_ROLE"));
 
@@ -520,6 +525,8 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     @Test
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void updateRoles_AsAdmin_XML_Ok() throws Exception {
+        saveUser(createDefaultAdmin());
+
         // given
         Role role = saveRole(createRole("TEST_ROLE"));
 
