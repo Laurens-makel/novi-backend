@@ -57,7 +57,7 @@ public abstract class BaseRestController<R extends AbstractEntity> {
     }
 
     public ResponseEntity<R> get(final Integer resourceId) throws ResourceNotFoundException {
-        validateOwnershipOfResource(resourceId, HttpMethod.GET);
+        getService().validateOwnershipOfResource(resourceId, HttpMethod.GET, getConsumer());
 
         return new ResponseEntity<>(getService().getResourceById(resourceId), HttpStatus.OK);
     }
@@ -69,7 +69,7 @@ public abstract class BaseRestController<R extends AbstractEntity> {
     }
 
     public ResponseEntity<R> update(final Integer resourceId, final R resource) throws ResourceNotFoundException, ResourceNotOwnedException {
-        validateOwnershipOfResource(resourceId, HttpMethod.PUT);
+        getService().validateOwnershipOfResource(resourceId, HttpMethod.PUT, getConsumer());
 
         getService().updateResourceById(resourceId, resource);
 
@@ -77,33 +77,11 @@ public abstract class BaseRestController<R extends AbstractEntity> {
     }
 
     public ResponseEntity<R> delete(final Integer resourceId) throws ResourceNotFoundException, ResourceNotOwnedException {
-        validateOwnershipOfResource(resourceId, HttpMethod.DELETE);
+        getService().validateOwnershipOfResource(resourceId, HttpMethod.DELETE, getConsumer());
 
         getService().deleteResourceById(resourceId);
 
         return new ResponseEntity(createDeletedMessage(), HttpStatus.ACCEPTED);
-    }
-
-    /**
-     * Validates if current consumer of the API is the owner of R when if R is an instance of {@link AbstractOwnedEntity},
-     * if corresponding HttpMethod is protected by ownerships.
-     *
-     * @throws ResourceNotFoundException - Thrown when resource could not be found.
-     * @throws ResourceNotOwnedException - Thrown when resource could is not owned by current consumer of API.
-     */
-    protected void validateOwnershipOfResource(final Integer resourceId, final HttpMethod method) throws ResourceNotFoundException, ResourceNotOwnedException  {
-        Class<R> resourceClass = getService().getResourceClass();
-
-        if(AbstractOwnedEntity.class.isAssignableFrom(resourceClass) && isMethodOwnershipProtected(method)){
-            log.info("Checking if allowed to ["+method+"] AbstractOwnedEntity ["+resourceClass+"] with identifier ["+resourceId+"]");
-            User consumer = getConsumer();
-            AbstractOwnedEntity ownedResource = (AbstractOwnedEntity) getService().getResourceById(resourceId);
-
-            if(ownedResource.getOwnerUid() != consumer.getUid() && !consumer.hasRole("ADMIN") ){
-                log.warn("User ["+consumer.getUid()+"] tried to ["+method+"] a forbidden ["+resourceClass+"] with identifier ["+resourceId+"]");
-                throw new ResourceNotOwnedException(resourceClass, resourceId);
-            }
-        }
     }
 
     /**
@@ -126,41 +104,5 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         }
     }
 
-    /**
-     * @return indication if HttpMethod is protected by ownership.
-     */
-    protected boolean isMethodOwnershipProtected(HttpMethod method){
-        if(method.equals(HttpMethod.GET)){
-            return isGetOwnershipProtected();
-        }
-        if(method.equals(HttpMethod.PUT)){
-            return isPutOwnershipProtected();
-        }
-        if(method.equals(HttpMethod.DELETE)){
-            return isDeleteOwnershipProtected();
-        }
-        return false;
-    }
-
-    /**
-     * @return indication if HttpMethod.GET is protected by ownership.
-     */
-    protected boolean isGetOwnershipProtected(){
-        return false;
-    }
-
-    /**
-     * @return indication if HttpMethod.PUT is protected by ownership.
-     */
-    protected boolean isPutOwnershipProtected(){
-        return true;
-    }
-
-    /**
-     * @return indication if HttpMethod.DELETE is protected by ownership.
-     */
-    protected boolean isDeleteOwnershipProtected(){
-        return true;
-    }
 
 }

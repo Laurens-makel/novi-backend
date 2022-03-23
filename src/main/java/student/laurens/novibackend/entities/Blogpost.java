@@ -16,7 +16,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "BLOGPOSTS")
-public class Blogpost extends AbstractOwnedParentEntity<Comment> {
+public class Blogpost extends AbstractOwnedEntity {
 
     @Id
     @Column(name = "BLOGPOST_ID")
@@ -52,32 +52,4 @@ public class Blogpost extends AbstractOwnedParentEntity<Comment> {
         return getAuthor().getUid();
     }
 
-    @Override
-    public PermissionPolicy isReadOnChildPermitted(User user, Comment childResource) {
-        return PermissionPolicy.ALLOW;
-    }
-
-    @Override
-    public PermissionPolicy isCreateChildPermitted(User user, Comment childResource) {
-        return PermissionPolicy.ALLOW;
-    }
-
-    @Override
-    public PermissionPolicy isUpdateOnChildPermitted(User user, Comment childResource) {
-        if(user.hasRole("ADMIN") || user.hasRole("MODERATOR")){
-            return PermissionPolicy.ALLOW;
-        }
-        return PermissionPolicy.ALLOW_CHILD_OWNED;
-    }
-
-    @Override
-    public PermissionPolicy isDeleteOnChildPermitted(User user, Comment childResource) {
-        if(user.hasRole("ADMIN") || user.hasRole("MODERATOR") ){
-            return PermissionPolicy.ALLOW;
-        }
-        if(user.hasRole("CONTENT_CREATOR")){
-            return PermissionPolicy.ALLOW_PARENT_OR_CHILD_OWNED;
-        }
-        return PermissionPolicy.ALLOW_CHILD_OWNED;
-    }
 }

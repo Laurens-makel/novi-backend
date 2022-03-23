@@ -251,7 +251,7 @@ public abstract class OwnedWithParentControllerIntegrationTestBase<R extends Abs
     }
 
     @Test
-    @WithMockUser(value = ADMIN_ROLE, roles = {ADMIN_ROLE})
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
     public void getJsonAsAdminParentNotOwnedChildOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -295,7 +295,7 @@ public abstract class OwnedWithParentControllerIntegrationTestBase<R extends Abs
     }
 
     @Test
-    @WithMockUser(value = ADMIN_ROLE, roles = {ADMIN_ROLE})
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
     public void postJsonAsAdminParentNotOwnedChildOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 

@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import student.laurens.novibackend.entities.Blogpost;
+import student.laurens.novibackend.entities.Comment;
+import student.laurens.novibackend.entities.PermissionPolicy;
+import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.BlogpostRepository;
 
 import javax.transaction.Transactional;
@@ -20,7 +23,7 @@ import javax.transaction.Transactional;
 @Component
 @Transactional
 @Qualifier("BlogpostService")
-public class BlogpostService extends BaseService<Blogpost> {
+public class BlogpostService extends ParentBaseService<Blogpost, Comment> {
 
     @Autowired
     private @Getter BlogpostRepository repository;
@@ -37,6 +40,35 @@ public class BlogpostService extends BaseService<Blogpost> {
 
     public Blogpost getResource(final String title){
         return repository.findByTitle(title);
+    }
+
+    @Override
+    public PermissionPolicy isReadOnChildPermitted(User user, Comment childResource) {
+        return PermissionPolicy.ALLOW;
+    }
+
+    @Override
+    public PermissionPolicy isCreateChildPermitted(User user, Comment childResource) {
+        return PermissionPolicy.ALLOW;
+    }
+
+    @Override
+    public PermissionPolicy isUpdateOnChildPermitted(User user, Comment childResource) {
+        if(user.hasRole("ADMIN") || user.hasRole("MODERATOR")){
+            return PermissionPolicy.ALLOW;
+        }
+        return PermissionPolicy.ALLOW_CHILD_OWNED;
+    }
+
+    @Override
+    public PermissionPolicy isDeleteOnChildPermitted(User user, Comment childResource) {
+        if(user.hasRole("ADMIN") || user.hasRole("MODERATOR") ){
+            return PermissionPolicy.ALLOW;
+        }
+        if(user.hasRole("CONTENT_CREATOR")){
+            return PermissionPolicy.ALLOW_PARENT_OR_CHILD_OWNED;
+        }
+        return PermissionPolicy.ALLOW_CHILD_OWNED;
     }
 
 }
