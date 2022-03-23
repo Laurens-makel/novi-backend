@@ -2,6 +2,8 @@ package student.laurens.novibackend.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpMethod;
 import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.entities.AbstractOwnedEntity;
@@ -32,6 +34,14 @@ public abstract class BaseService<R extends AbstractEntity> {
      * @return Class of R.
      */
     abstract public Class<R> getResourceClass();
+
+    public boolean exists(Integer resourceId){
+        if(!getRepository().existsById(resourceId)){
+            throw new ResourceNotFoundException(getResourceClass(), resourceId);
+        }
+
+        return true;
+    }
 
     /**
      * Retrieves a resource from repository, specified by id.
@@ -73,9 +83,7 @@ public abstract class BaseService<R extends AbstractEntity> {
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
      */
     public void updateResourceById(final Integer resourceId, R resource) throws ResourceNotFoundException {
-        Optional<R> found = getRepository().findById(resourceId);
-
-        if(!found.isPresent()){
+        if(!exists(resourceId)){
             throw new ResourceNotFoundException(getResourceClass(), resourceId);
         }
 
@@ -90,13 +98,11 @@ public abstract class BaseService<R extends AbstractEntity> {
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
      */
     public void deleteResourceById(final Integer resourceId) throws ResourceNotFoundException {
-        Optional<R> resource = getRepository().findById(resourceId);
-
-        if(!resource.isPresent()){
+        if(!exists(resourceId)){
             throw new ResourceNotFoundException(getResourceClass(), resourceId);
         }
 
-        getRepository().delete(resource.get());
+        getRepository().deleteById(resourceId);
     };
 
     /**
