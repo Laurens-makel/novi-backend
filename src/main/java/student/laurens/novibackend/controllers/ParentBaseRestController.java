@@ -31,8 +31,8 @@ public abstract class ParentBaseRestController<R extends AbstractEntity, P exten
         logProcessingStarted(HttpMethod.PUT, parentResourceId, resourceId);
         getParentService().exists(parentResourceId);
 
-        PermissionPolicy childPolicy = getParentService().isUpdateOnChildPermitted(getConsumer(), resource);
-        validatePermissionPolicy(parentResourceId, resource, getConsumer(), resourceId, childPolicy, HttpMethod.PUT);
+        PermissionPolicy childPolicy = getParentService().isUpdateOnChildPermitted(getConsumer());
+        validatePermissionPolicy(parentResourceId, resourceId, getConsumer(), childPolicy, HttpMethod.PUT);
 
         getService().updateResourceById(resourceId, resource);
 
@@ -43,17 +43,16 @@ public abstract class ParentBaseRestController<R extends AbstractEntity, P exten
     public ResponseEntity<R> delete(final Integer parentResourceId, final Integer resourceId) throws ResourceNotFoundException, ResourceNotOwnedException {
         logProcessingStarted(HttpMethod.DELETE, parentResourceId, resourceId);
         getParentService().exists(parentResourceId);
-        R resource = getService().getResourceById(resourceId);
 
-        PermissionPolicy childPolicy = getParentService().isDeleteOnChildPermitted(getConsumer(), resource);
-        validatePermissionPolicy(parentResourceId, resource, getConsumer(), resourceId, childPolicy, HttpMethod.DELETE);
+        PermissionPolicy childPolicy = getParentService().isDeleteOnChildPermitted(getConsumer());
+        validatePermissionPolicy(parentResourceId, resourceId, getConsumer(), childPolicy, HttpMethod.DELETE);
 
         logProcessingFinished(HttpMethod.DELETE, parentResourceId, resourceId);
         return new ResponseEntity(createDeletedMessage(), HttpStatus.ACCEPTED);
     }
 
-    protected void validatePermissionPolicy(final Integer parentResourceId, final R resource, final User consumer,
-          final Integer resourceId, final PermissionPolicy policy, HttpMethod method) throws ResourceNotFoundException, ResourceNotOwnedException {
+    protected void validatePermissionPolicy(final Integer parentResourceId, final Integer resourceId, final User consumer,
+           final PermissionPolicy policy, HttpMethod method) throws ResourceNotFoundException, ResourceNotOwnedException {
         log.info("Checking policy ["+policy+"]");
 
         if(policy.equals(PermissionPolicy.ALLOW)){
@@ -83,7 +82,7 @@ public abstract class ParentBaseRestController<R extends AbstractEntity, P exten
         } else if(policy.equals(PermissionPolicy.DENY)){
             log.info("Policy ["+policy+"], access is denied.");
             // TODO: Change this to resource denied exception
-            throw new ResourceNotOwnedException(resource.getClass(), resourceId);
+            throw new ResourceNotOwnedException(getService().getResourceClass(), resourceId);
         }
     }
 
