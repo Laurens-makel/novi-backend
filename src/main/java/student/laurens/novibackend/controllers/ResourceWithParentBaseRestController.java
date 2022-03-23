@@ -17,6 +17,7 @@ import student.laurens.novibackend.services.ChildBaseService;
 public abstract class ResourceWithParentBaseRestController<R extends AbstractEntity, P extends AbstractEntity>
         extends BaseRestController<R>{
 
+    @Override
     abstract protected ChildBaseService<R, P> getService();
 
     /**
@@ -25,7 +26,7 @@ public abstract class ResourceWithParentBaseRestController<R extends AbstractEnt
      *
      * @param parentResourceId - Identifier of parent resource of the resource to update.
      * @param resourceId - Identifier of the resource to update.
-       @param resource - New state of the resource.
+     * @param resource - New state of the resource.
      *
      * @throws ResourceNotFoundException - Thrown when parent resource or resource could not be found.
      * @throws ResourceNotOwnedException - Thrown when parent resource or resource is not owned by current consumer of the API.
