@@ -12,6 +12,7 @@ import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.exceptions.ResourceNotOwnedException;
 import student.laurens.novibackend.repositories.ResourceRepository;
 
+import javax.swing.text.html.Option;
 import java.util.Optional;
 
 /**
@@ -61,8 +62,11 @@ public abstract class BaseService<R extends AbstractEntity> {
      * @param resourceId - Identifier of the resource to retrieve.
      */
     public R getResourceById(final Integer resourceId, User consumer) throws ResourceNotFoundException {
-        validateOwnershipOfResource(resourceId, HttpMethod.GET, consumer);
-        return getResourceByIdWithoutValidations(resourceId);
+        Optional<R> resource = validateOwnershipOfResource(resourceId, HttpMethod.GET, consumer);
+        if(resource.isEmpty()){
+            return getResourceByIdWithoutValidations(resourceId);
+        }
+        return resource.get();
     }
     protected R getResourceByIdWithoutValidations(final Integer resourceId) throws ResourceNotFoundException {
         Optional<R> found = getRepository().findById(resourceId);
@@ -127,18 +131,22 @@ public abstract class BaseService<R extends AbstractEntity> {
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
      * @throws ResourceNotOwnedException - Thrown when resource could is not owned by current consumer of API.
      */
-    public void validateOwnershipOfResource(final Integer resourceId, final HttpMethod method, final User consumer) throws ResourceNotFoundException, ResourceNotOwnedException {
+    public  Optional<R> validateOwnershipOfResource(final Integer resourceId, final HttpMethod method, final User consumer) throws ResourceNotFoundException, ResourceNotOwnedException {
         Class<R> resourceClass = getResourceClass();
 
         if(AbstractOwnedEntity.class.isAssignableFrom(resourceClass) && isMethodOwnershipProtected(method)){
             log.info("Checking if allowed to ["+method+"] AbstractOwnedEntity ["+resourceClass+"] with identifier ["+resourceId+"]");
-            AbstractOwnedEntity ownedResource = (AbstractOwnedEntity) getResourceByIdWithoutValidations(resourceId);
+            R resource = getResourceByIdWithoutValidations(resourceId);
+            AbstractOwnedEntity ownedResource = (AbstractOwnedEntity) resource;
 
             if(ownedResource.getOwnerUid() != consumer.getUid() && !consumer.hasRole("ADMIN") ){
                 log.warn("User ["+consumer.getUid()+"] tried to ["+method+"] a forbidden ["+resourceClass+"] with identifier ["+resourceId+"]");
                 throw new ResourceNotOwnedException(resourceClass, resourceId);
             }
+
+            return Optional.of(resource);
         }
+        return Optional.empty();
     }
 
     /**
