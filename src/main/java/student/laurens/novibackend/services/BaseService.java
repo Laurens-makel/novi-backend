@@ -24,6 +24,11 @@ public abstract class BaseService<R extends AbstractEntity> {
 
     protected Logger log = LoggerFactory.getLogger(BaseService.class);
 
+    /**
+     * Retrieve the specific {@link ResourceRepository} implementation of R.
+     *
+     * @return Class of R.
+     */
     abstract protected ResourceRepository getRepository();
 
     abstract public R getResource(final String string);
@@ -35,7 +40,14 @@ public abstract class BaseService<R extends AbstractEntity> {
      */
     abstract public Class<R> getResourceClass();
 
-    public boolean exists(Integer resourceId){
+    /**
+     * Validate a resource exists.
+     *
+     * @param resourceId - Identifier of the resource to validate.
+     *
+     * @throws ResourceNotFoundException - Thrown when resource could not be found.
+     */
+    public boolean exists(Integer resourceId) throws ResourceNotFoundException {
         if(!getRepository().existsById(resourceId)){
             throw new ResourceNotFoundException(getResourceClass(), resourceId);
         }
@@ -83,10 +95,7 @@ public abstract class BaseService<R extends AbstractEntity> {
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
      */
     public void updateResourceById(final Integer resourceId, R resource) throws ResourceNotFoundException {
-        if(!exists(resourceId)){
-            throw new ResourceNotFoundException(getResourceClass(), resourceId);
-        }
-
+        exists(resourceId);
         getRepository().save(resource);
     }
 
@@ -98,10 +107,7 @@ public abstract class BaseService<R extends AbstractEntity> {
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
      */
     public void deleteResourceById(final Integer resourceId) throws ResourceNotFoundException {
-        if(!exists(resourceId)){
-            throw new ResourceNotFoundException(getResourceClass(), resourceId);
-        }
-
+        exists(resourceId);
         getRepository().deleteById(resourceId);
     };
 

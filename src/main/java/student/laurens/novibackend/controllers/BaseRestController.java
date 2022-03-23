@@ -45,44 +45,45 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         return message;
     }
 
+    /**
+     * Retrieve the specific {@link BaseService} implementation class of R.
+     *
+     * @return Class of R.
+     */
     abstract protected BaseService<R> getService();
 
-    protected void logProcessingStarted(final HttpMethod method) {
-        log.info("Processing ["+method+"] request on resource ["+getService().getResourceClass()+"] started.");
-    }
-
-    protected void logProcessingStarted(final HttpMethod method, final Integer resourceId) {
-        log.info("Processing ["+method+"] request on resource ["+getService().getResourceClass()+"] with resourceId ["+resourceId+"] started");
-    }
-
-    protected void logProcessingStarted(final HttpMethod method, final String resourceName) {
-        log.info("Processing ["+method+"] request on resource ["+getService().getResourceClass()+"] with resourceId ["+resourceName+"] started");
-    }
-
-    protected void logProcessingFinished(final HttpMethod method, final Integer resourceId) {
-        log.info("Processing ["+method+"] request on resource ["+getService().getResourceClass()+"] with resourceId ["+resourceId+"] successfully finished.");
-    }
-
-    protected void logProcessingFinished(final HttpMethod method, final String resourceName) {
-        log.info("Processing ["+method+"] request on resource ["+getService().getResourceClass()+"] with resourceId ["+resourceName+"] successfully finished.");
-    }
-
-    protected void logProcessingFinished(final HttpMethod method) {
-        log.info("Processing ["+method+"] request on resource ["+getService().getResourceClass()+"] successfully finished.");
-    }
-
+    /**
+     * Provides a default way to handle GET requests on {@link student.laurens.novibackend.entities.AbstractEntity} resources.
+     * Should be implemented by resource specific controller classes.
+     */
     public ResponseEntity<Iterable<R>> get() {
         logProcessingStarted(HttpMethod.GET);
         logProcessingFinished(HttpMethod.GET);
         return new ResponseEntity<>(getService().getResources(), HttpStatus.OK);
     }
 
+    /**
+     * Provides a default way to handle GET requests on {@link student.laurens.novibackend.entities.AbstractEntity} resources.
+     * Should be implemented by resource specific controller classes.
+     *
+     * @param name - Name of the resource to retrieve.
+     *
+     * @throws ResourceNotFoundException - Thrown when resource could not be found.
+     */
     public ResponseEntity<R> get(final String name) throws ResourceNotFoundException {
         logProcessingStarted(HttpMethod.GET, name);
         logProcessingFinished(HttpMethod.GET, name);
         return new ResponseEntity<>(getService().getResource(name), HttpStatus.OK);
     }
 
+    /**
+     * Provides a default way to handle GET requests on {@link student.laurens.novibackend.entities.AbstractEntity} resources.
+     * Should be implemented by resource specific controller classes.
+     *
+     * @param resourceId - Identifier of the resource to retrieve.
+     *
+     * @throws ResourceNotFoundException - Thrown when resource could not be found.
+     */
     public ResponseEntity<R> get(final Integer resourceId) throws ResourceNotFoundException {
         logProcessingStarted(HttpMethod.GET, resourceId);
 
@@ -92,6 +93,12 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         return new ResponseEntity<>(getService().getResourceById(resourceId), HttpStatus.OK);
     }
 
+    /**
+     * Provides a default way to handle POST requests on {@link student.laurens.novibackend.entities.AbstractEntity} resources.
+     * Should be implemented by resource specific controller classes.
+     *
+     * @param resource - The new resource to be created.
+     */
     public ResponseEntity<R> create(final R resource) {
         logProcessingStarted(HttpMethod.POST);
 
@@ -101,6 +108,16 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         return new ResponseEntity<>(resource, HttpStatus.CREATED);
     }
 
+    /**
+     * Provides a default way to handle PUT requests on {@link student.laurens.novibackend.entities.AbstractEntity} resources.
+     * Should be implemented by resource specific controller classes.
+     *
+     * @param resourceId - Identifier of the resource to update.
+     * @param resource - New state of the resource.
+     *
+     * @throws ResourceNotFoundException - Thrown when resource could not be found.
+     * @throws ResourceNotOwnedException - Thrown when resource could is not owned by current consumer of the API.
+     */
     public ResponseEntity<R> update(final Integer resourceId, final R resource) throws ResourceNotFoundException, ResourceNotOwnedException {
         logProcessingStarted(HttpMethod.PUT, resourceId);
 
@@ -111,6 +128,15 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         return new ResponseEntity<>(resource, HttpStatus.ACCEPTED);
     }
 
+    /**
+     * Provides a default way to handle DELETE requests on {@link student.laurens.novibackend.entities.AbstractEntity} resources.
+     * Should be implemented by resource specific controller classes.
+     *
+     * @param resourceId - Identifier of the resource to delete.
+     *
+     * @throws ResourceNotFoundException - Thrown when resource could not be found.
+     * @throws ResourceNotOwnedException - Thrown when resource is not owned by current consumer of the API.
+     */
     public ResponseEntity<R> delete(final Integer resourceId) throws ResourceNotFoundException, ResourceNotOwnedException {
         logProcessingStarted(HttpMethod.DELETE, resourceId);
 
@@ -142,5 +168,25 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         }
     }
 
+
+    protected void logProcessingStarted(final HttpMethod method) {
+        log.info("Processing ["+method+"] request on resource ["+getService().getResourceClass()+"] started.");
+    }
+    protected void logProcessingStarted(final HttpMethod method, final Integer resourceId) {
+        log.info("Processing ["+method+"] request on resource ["+getService().getResourceClass()+"] with resourceId ["+resourceId+"] started");
+    }
+    protected void logProcessingStarted(final HttpMethod method, final String resourceName) {
+        log.info("Processing ["+method+"] request on resource ["+getService().getResourceClass()+"] with resourceId ["+resourceName+"] started");
+    }
+
+    protected void logProcessingFinished(final HttpMethod method, final Integer resourceId) {
+        log.info("Processing ["+method+"] request on resource ["+getService().getResourceClass()+"] with resourceId ["+resourceId+"] successfully finished.");
+    }
+    protected void logProcessingFinished(final HttpMethod method, final String resourceName) {
+        log.info("Processing ["+method+"] request on resource ["+getService().getResourceClass()+"] with resourceId ["+resourceName+"] successfully finished.");
+    }
+    protected void logProcessingFinished(final HttpMethod method) {
+        log.info("Processing ["+method+"] request on resource ["+getService().getResourceClass()+"] successfully finished.");
+    }
 
 }

@@ -19,14 +19,6 @@ public abstract class ParentBaseRestController<R extends AbstractEntity, P exten
 
     abstract protected ParentBaseService<P, R> getParentService();
 
-    protected void logProcessingStarted(final HttpMethod method, final Integer parentResourceId, final Integer resourceId) {
-        log.info("Processing ["+method+"] request on resource ["+getService().getResourceClass()+"] with parentResourceId ["+parentResourceId+"] and resourceId ["+resourceId+"] started.");
-    }
-
-    protected void logProcessingFinished(final HttpMethod method, final Integer parentResourceId, final Integer resourceId) {
-        log.info("Processing ["+method+"] request on resource ["+getService().getResourceClass()+"] with parentResourceId ["+parentResourceId+"] and resourceId ["+resourceId+"] successfully finished.");
-    }
-
     public ResponseEntity<R> update(final Integer parentResourceId, final Integer resourceId, final R resource) throws ResourceNotFoundException, ResourceNotOwnedException {
         logProcessingStarted(HttpMethod.PUT, parentResourceId, resourceId);
         getParentService().exists(parentResourceId);
@@ -40,6 +32,15 @@ public abstract class ParentBaseRestController<R extends AbstractEntity, P exten
         return new ResponseEntity<>(resource, HttpStatus.ACCEPTED);
     }
 
+    /**
+     * Provides a default way to handle DELETE requests on {@link student.laurens.novibackend.entities.AbstractOwnedWithParentEntity} resources.
+     * Should be implemented by resource specific controller classes.
+     *
+     * @param resourceId - Identifier of the resource to delete.
+     *
+     * @throws ResourceNotFoundException - Thrown when parent resource or resource could not be found.
+     * @throws ResourceNotOwnedException - Thrown when parent resource or resource is not owned by current consumer of the API.
+     */
     public ResponseEntity<R> delete(final Integer parentResourceId, final Integer resourceId) throws ResourceNotFoundException, ResourceNotOwnedException {
         logProcessingStarted(HttpMethod.DELETE, parentResourceId, resourceId);
         getParentService().exists(parentResourceId);
@@ -51,6 +52,18 @@ public abstract class ParentBaseRestController<R extends AbstractEntity, P exten
         return new ResponseEntity(createDeletedMessage(), HttpStatus.ACCEPTED);
     }
 
+    /**
+     * Executes {@link PermissionPolicy} policy validation.
+     *
+     * @param parentResourceId - Identifier of parent of resource.
+     * @param resourceId - Identifier of resource.
+     * @param consumer - User which has the intention to delete the child resource.
+     * @param policy - {@link PermissionPolicy} to validate.
+     * @param method - HttpMethod as intention of consumer.
+     *
+     * @throws ResourceNotFoundException - Thrown when parent or resource could not be found.
+     * @throws ResourceNotOwnedException - Thrown when parent or resource is not owned by current consumer of API.
+     */
     protected void validatePermissionPolicy(final Integer parentResourceId, final Integer resourceId, final User consumer,
            final PermissionPolicy policy, HttpMethod method) throws ResourceNotFoundException, ResourceNotOwnedException {
         log.info("Checking policy ["+policy+"]");
@@ -86,4 +99,11 @@ public abstract class ParentBaseRestController<R extends AbstractEntity, P exten
         }
     }
 
+    protected void logProcessingStarted(final HttpMethod method, final Integer parentResourceId, final Integer resourceId) {
+        log.info("Processing ["+method+"] request on resource ["+getService().getResourceClass()+"] with parentResourceId ["+parentResourceId+"] and resourceId ["+resourceId+"] started.");
+    }
+
+    protected void logProcessingFinished(final HttpMethod method, final Integer parentResourceId, final Integer resourceId) {
+        log.info("Processing ["+method+"] request on resource ["+getService().getResourceClass()+"] with parentResourceId ["+parentResourceId+"] and resourceId ["+resourceId+"] successfully finished.");
+    }
 }
