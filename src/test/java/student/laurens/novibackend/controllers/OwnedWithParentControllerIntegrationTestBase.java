@@ -170,6 +170,12 @@ public abstract class OwnedWithParentControllerIntegrationTestBase<R extends Abs
     protected ResultActions executeGet(final P parentResource, final R resource, final MediaType accept) throws Exception {
         return getResource(getUrlForGetWithParent(parentResource, resource), accept);
     }
+    public ResultActions defaultXmlTestForGet(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+        P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
+        R resource = save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) );
+
+        return getAsXml(parentResource, resource);
+    }
     public ResultActions defaultJsonTestForGet(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
         R resource = save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) );
@@ -180,8 +186,17 @@ public abstract class OwnedWithParentControllerIntegrationTestBase<R extends Abs
     protected ResultActions postAsJson(final P parentResource, final R resource) throws Exception {
         return executePost(parentResource, resource, DEFAULT_JSON_CONTENT_TYPE, DEFAULT_JSON_ACCEPT);
     }
+    protected ResultActions postAsXml(final P parentResource, final R resource) throws Exception {
+        return executePost(parentResource, resource, DEFAULT_XML_CONTENT_TYPE, DEFAULT_XML_ACCEPT);
+    }
     protected ResultActions executePost(final P parentResource, final R resource, final MediaType contentType, final MediaType accept) throws Exception {
         return postResource(getUrlForPostWithParent(parentResource), resource, accept, contentType);
+    }
+    public ResultActions defaultXmlTestForPost(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+        P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
+        R resource = save(isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource));
+
+        return postAsXml(parentResource, resource);
     }
     public ResultActions defaultJsonTestForPost(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
@@ -193,12 +208,21 @@ public abstract class OwnedWithParentControllerIntegrationTestBase<R extends Abs
     protected ResultActions putAsJson(final P parentResource, final R resource) throws Exception {
         return executePut(parentResource, resource, DEFAULT_JSON_CONTENT_TYPE, DEFAULT_JSON_ACCEPT);
     }
+    protected ResultActions putAsXml(final P parentResource, final R resource) throws Exception {
+        return executePut(parentResource, resource, DEFAULT_XML_CONTENT_TYPE, DEFAULT_XML_ACCEPT);
+    }
     protected ResultActions executePut(final P parentResource, final R resource, final MediaType contentType, final MediaType accept) throws Exception {
         return putResource(getUrlForPutWithParent(parentResource, resource), resource, accept, contentType);
     }
+    public ResultActions defaultXmlTestForPut(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+        P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
+        R resource = modify(save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) ));
+
+        return putAsXml(parentResource, resource);
+    }
     public ResultActions defaultJsonTestForPut(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
-        R resource = save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) );
+        R resource = modify(save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) ));
 
         return putAsJson(parentResource, resource);
     }
@@ -207,8 +231,17 @@ public abstract class OwnedWithParentControllerIntegrationTestBase<R extends Abs
     protected ResultActions deleteAsJson(final P parentResource, final R resource) throws Exception {
         return executeDelete(parentResource, resource, DEFAULT_JSON_CONTENT_TYPE, DEFAULT_JSON_ACCEPT);
     }
+    protected ResultActions deleteAsXml(final P parentResource, final R resource) throws Exception {
+        return executeDelete(parentResource, resource, DEFAULT_XML_CONTENT_TYPE, DEFAULT_XML_ACCEPT);
+    }
     protected ResultActions executeDelete(final P parentResource, final R resource, final MediaType contentType, final MediaType accept) throws Exception {
         return deleteResource(getUrlForDeleteWithParent(parentResource, resource), accept);
+    }
+    public ResultActions defaultXmlTestForDelete(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+        P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
+        R resource = save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) );
+
+        return deleteAsXml(parentResource, resource);
     }
     public ResultActions defaultJsonTestForDelete(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
@@ -656,5 +689,447 @@ public abstract class OwnedWithParentControllerIntegrationTestBase<R extends Abs
         ResultActions mvc = defaultJsonTestForDelete(true, true, user);
 
         validateJsonResponse(mvc, expectedStatus);
+    }
+
+
+    @Test
+    @WithMockUser(value = USER)
+    public void getXmlAsUserParentNotOwnedChildOwned() throws Exception {
+        User user = saveUser(createDefaultUser());
+
+        HttpStatus expectedStatus = expectedStatusForGetAsUserParentNotOwnedChildOwned();
+        ResultActions mvc = defaultXmlTestForGet(true, false, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE})
+    public void getXmlAsContentCreatorParentNotOwnedChildOwned() throws Exception {
+        User user = saveUser(createDefaultContentCreator());
+
+        HttpStatus expectedStatus = expectedStatusForGetAsContentCreatorParentNotOwnedChildOwned();
+        ResultActions mvc = defaultXmlTestForGet(true, false, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE})
+    public void getXmlAsModeratorParentNotOwnedChildOwned() throws Exception {
+        User user = saveUser(createDefaultModerator());
+
+        HttpStatus expectedStatus = expectedStatusForGetAsModeratorParentNotOwnedChildOwned();
+        ResultActions mvc = defaultXmlTestForGet(true, false, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    public void getXmlAsAdminParentNotOwnedChildOwned() throws Exception {
+        User user = saveUser(createDefaultAdmin());
+
+        HttpStatus expectedStatus = expectedStatusForGetAsAdminParentNotOwnedChildOwned();
+        ResultActions mvc = defaultXmlTestForGet(true, false, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = USER)
+    public void postXmlAsUserParentNotOwnedChildOwned() throws Exception {
+        User user = saveUser(createDefaultUser());
+
+        HttpStatus expectedStatus = expectedStatusForPostAsUserParentNotOwnedChildOwned();
+        ResultActions mvc = defaultXmlTestForPost(true, false, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE})
+    public void postXmlAsContentCreatorParentNotOwnedChildOwned() throws Exception {
+        User user = saveUser(createDefaultContentCreator());
+
+        HttpStatus expectedStatus = expectedStatusForPostAsContentCreatorParentNotOwnedChildOwned();
+        ResultActions mvc = defaultXmlTestForPost(true, false, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE})
+    public void postXmlAsModeratorParentNotOwnedChildOwned() throws Exception {
+        User user = saveUser(createDefaultModerator());
+
+        HttpStatus expectedStatus = expectedStatusForPostAsModeratorParentNotOwnedChildOwned();
+        ResultActions mvc = defaultXmlTestForPost(true, false, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    public void postXmlAsAdminParentNotOwnedChildOwned() throws Exception {
+        User user = saveUser(createDefaultAdmin());
+
+        HttpStatus expectedStatus = expectedStatusForPostAsAdminParentNotOwnedChildOwned();
+        ResultActions mvc = defaultXmlTestForPost(true, false, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = USER)
+    public void putXmlAsUserParentNotOwnedChildOwned() throws Exception {
+        User user = saveUser(createDefaultUser());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsUserParentNotOwnedChildOwned();
+        ResultActions mvc = defaultXmlTestForPut(true, false, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE})
+    public void putXmlAsContentCreatorParentNotOwnedChildOwned() throws Exception {
+        User user = saveUser(createDefaultContentCreator());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsContentCreatorParentNotOwnedChildOwned();
+        ResultActions mvc = defaultXmlTestForPut(true, false, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE})
+    public void putXmlAsModeratorParentNotOwnedChildOwned() throws Exception {
+        User user = saveUser(createDefaultModerator());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsModeratorParentNotOwnedChildOwned();
+        ResultActions mvc = defaultXmlTestForPut(true, false, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    public void putXmlAsAdminParentNotOwnedChildOwned() throws Exception {
+        User user = saveUser(createDefaultAdmin());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsAdminParentNotOwnedChildOwned();
+        ResultActions mvc = defaultXmlTestForPut(true, false, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+    @Test
+    @WithMockUser(value = USER)
+    public void putXmlAsUserParentNotOwnedChildNotOwned() throws Exception {
+        User user = saveUser(createDefaultUser());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsUserParentNotOwnedChildNotOwned();
+        ResultActions mvc = defaultXmlTestForPut(false, false, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE})
+    public void putXmlAsContentCreatorParentNotOwnedChildNotOwned() throws Exception {
+        User user = saveUser(createDefaultContentCreator());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsContentCreatorParentNotOwnedChildNotOwned();
+        ResultActions mvc = defaultXmlTestForPut(false, false, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE})
+    public void putXmlAsModeratorParentNotOwnedChildNotOwned() throws Exception {
+        User user = saveUser(createDefaultModerator());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsModeratorParentNotOwnedChildNotOwned();
+        ResultActions mvc = defaultXmlTestForPut(false, false, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    public void putXmlAsAdminParentNotOwnedChildNotOwned() throws Exception {
+        User user = saveUser(createDefaultAdmin());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsAdminParentNotOwnedChildNotOwned();
+        ResultActions mvc = defaultXmlTestForPut(false, false, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+
+    @Test
+    @WithMockUser(value = USER)
+    public void putXmlAsUserParentOwnedChildNotOwned() throws Exception {
+        User user = saveUser(createDefaultUser());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsUserParentOwnedChildNotOwned();
+        ResultActions mvc = defaultXmlTestForPut(false, true, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE})
+    public void putXmlAsContentCreatorParentOwnedChildNotOwned() throws Exception {
+        User user = saveUser(createDefaultContentCreator());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsContentCreatorParentOwnedChildNotOwned();
+        ResultActions mvc = defaultXmlTestForPut(false, true, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE})
+    public void putXmlAsModeratorParentOwnedChildNotOwned() throws Exception {
+        User user = saveUser(createDefaultModerator());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsModeratorParentOwnedChildNotOwned();
+        ResultActions mvc = defaultXmlTestForPut(false, true, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    public void putXmlAsAdminParentOwnedChildNotOwned() throws Exception {
+        User user = saveUser(createDefaultAdmin());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsAdminParentOwnedChildNotOwned();
+        ResultActions mvc = defaultXmlTestForPut(false, true, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = USER)
+    public void putXmlAsUserParentOwnedChildOwned() throws Exception {
+        User user = saveUser(createDefaultUser());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsUserParentOwnedChildOwned();
+        ResultActions mvc = defaultXmlTestForPut(true, true, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE})
+    public void putXmlAsContentCreatorParentOwnedChildOwned() throws Exception {
+        User user = saveUser(createDefaultContentCreator());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsContentCreatorParentOwnedChildOwned();
+        ResultActions mvc = defaultXmlTestForPut(true, true, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE})
+    public void putXmlAsModeratorParentOwnedChildOwned() throws Exception {
+        User user = saveUser(createDefaultModerator());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsModeratorParentOwnedChildOwned();
+        ResultActions mvc = defaultXmlTestForPut(true, true, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    public void putXmlAsAdminParentOwnedChildOwned() throws Exception {
+        User user = saveUser(createDefaultAdmin());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsAdminParentOwnedChildOwned();
+        ResultActions mvc = defaultXmlTestForPut(true, true, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = USER)
+    public void deleteXmlAsUserParentNotOwnedChildOwned() throws Exception {
+        User user = saveUser(createDefaultUser());
+
+        HttpStatus expectedStatus = expectedStatusForDeleteAsUserParentNotOwnedChildOwned();
+        ResultActions mvc = defaultXmlTestForDelete(true, false, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE})
+    public void deleteXmlAsContentCreatorParentNotOwnedChildOwned() throws Exception {
+        User user = saveUser(createDefaultContentCreator());
+
+        HttpStatus expectedStatus = expectedStatusForDeleteAsContentCreatorParentNotOwnedChildOwned();
+        ResultActions mvc = defaultXmlTestForDelete(true, false, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE})
+    public void deleteXmlAsModeratorParentNotOwnedChildOwned() throws Exception {
+        User user = saveUser(createDefaultModerator());
+
+        HttpStatus expectedStatus = expectedStatusForDeleteAsModeratorParentNotOwnedChildOwned();
+        ResultActions mvc = defaultXmlTestForDelete(true, false, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    public void deleteXmlAsAdminParentNotOwnedChildOwned() throws Exception {
+        User user = saveUser(createDefaultAdmin());
+
+        HttpStatus expectedStatus = expectedStatusForDeleteAsAdminParentNotOwnedChildOwned();
+        ResultActions mvc = defaultXmlTestForDelete(true, false, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = USER)
+    public void deleteXmlAsUserParentNotOwnedChildNotOwned() throws Exception {
+        User user = saveUser(createDefaultUser());
+
+        HttpStatus expectedStatus = expectedStatusForDeleteAsUserParentNotOwnedChildNotOwned();
+        ResultActions mvc = defaultXmlTestForDelete(false, false, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE})
+    public void deleteXmlAsContentCreatorParentNotOwnedChildNotOwned() throws Exception {
+        User user = saveUser(createDefaultContentCreator());
+
+        HttpStatus expectedStatus = expectedStatusForDeleteAsContentCreatorParentNotOwnedChildNotOwned();
+        ResultActions mvc = defaultXmlTestForDelete(false, false, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE})
+    public void deleteXmlAsModeratorParentNotOwnedChildNotOwned() throws Exception {
+        User user = saveUser(createDefaultModerator());
+
+        HttpStatus expectedStatus = expectedStatusForDeleteAsModeratorParentNotOwnedChildNotOwned();
+        ResultActions mvc = defaultXmlTestForDelete(false, false, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    public void deleteXmlAsAdminParentNotOwnedChildNotOwned() throws Exception {
+        User user = saveUser(createDefaultAdmin());
+
+        HttpStatus expectedStatus = expectedStatusForDeleteAsAdminParentNotOwnedChildNotOwned();
+        ResultActions mvc = defaultXmlTestForDelete(false, false, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+
+    @Test
+    @WithMockUser(value = USER)
+    public void deleteXmlAsUserParentOwnedChildNotOwned() throws Exception {
+        User user = saveUser(createDefaultUser());
+
+        HttpStatus expectedStatus = expectedStatusForDeleteAsUserParentOwnedChildNotOwned();
+        ResultActions mvc = defaultXmlTestForDelete(false, true, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE})
+    public void deleteXmlAsContentCreatorParentOwnedChildNotOwned() throws Exception {
+        User user = saveUser(createDefaultContentCreator());
+
+        HttpStatus expectedStatus = expectedStatusForDeleteAsContentCreatorParentOwnedChildNotOwned();
+        ResultActions mvc = defaultXmlTestForDelete(false, true, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE})
+    public void deleteXmlAsModeratorParentOwnedChildNotOwned() throws Exception {
+        User user = saveUser(createDefaultModerator());
+
+        HttpStatus expectedStatus = expectedStatusForDeleteAsModeratorParentOwnedChildNotOwned();
+        ResultActions mvc = defaultXmlTestForDelete(false, true, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    public void deleteXmlAsAdminParentOwnedChildNotOwned() throws Exception {
+        User user = saveUser(createDefaultAdmin());
+
+        HttpStatus expectedStatus = expectedStatusForDeleteAsAdminParentOwnedChildNotOwned();
+        ResultActions mvc = defaultXmlTestForDelete(false, true, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = USER)
+    public void deleteXmlAsUserParentOwnedChildOwned() throws Exception {
+        User user = saveUser(createDefaultUser());
+
+        HttpStatus expectedStatus = expectedStatusForDeleteAsUserParentOwnedChildOwned();
+        ResultActions mvc = defaultXmlTestForDelete(true, true, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE})
+    public void deleteXmlAsContentCreatorParentOwnedChildOwned() throws Exception {
+        User user = saveUser(createDefaultContentCreator());
+
+        HttpStatus expectedStatus = expectedStatusForDeleteAsContentCreatorParentOwnedChildOwned();
+        ResultActions mvc = defaultXmlTestForDelete(true, true, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE})
+    public void deleteXmlAsModeratorParentOwnedChildOwned() throws Exception {
+        User user = saveUser(createDefaultModerator());
+
+        HttpStatus expectedStatus = expectedStatusForDeleteAsModeratorParentOwnedChildOwned();
+        ResultActions mvc = defaultXmlTestForDelete(true, true, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    public void deleteXmlAsAdminParentOwnedChildOwned() throws Exception {
+        User user = saveUser(createDefaultAdmin());
+
+        HttpStatus expectedStatus = expectedStatusForDeleteAsAdminParentOwnedChildOwned();
+        ResultActions mvc = defaultXmlTestForDelete(true, true, user);
+
+        validateXmlUtf8Response(mvc, expectedStatus);
     }
 }
