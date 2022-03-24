@@ -1,9 +1,6 @@
 package student.laurens.novibackend.services;
 
-import org.springframework.http.HttpMethod;
 import student.laurens.novibackend.entities.*;
-import student.laurens.novibackend.exceptions.ResourceNotFoundException;
-import student.laurens.novibackend.exceptions.ResourceNotOwnedException;
 
 /**
  * Base class for Services which expose CRUD methods for {@link AbstractOwnedWithParentEntity} which has child entities.
@@ -11,7 +8,7 @@ import student.laurens.novibackend.exceptions.ResourceNotOwnedException;
  * @author Laurens Mäkel
  * @version 1.0, March 2022
  */
-public abstract class ParentBaseService<R extends AbstractEntity, C extends AbstractEntity> extends BaseService<R> {
+public abstract class ParentBaseService<R extends AbstractEntity> extends BaseService<R> {
 
     /**
      * Validates if user is allowed to read a child.

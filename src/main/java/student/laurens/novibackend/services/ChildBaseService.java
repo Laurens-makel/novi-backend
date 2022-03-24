@@ -3,14 +3,13 @@ package student.laurens.novibackend.services;
 import org.springframework.http.HttpMethod;
 import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.entities.AbstractOwnedEntity;
-import student.laurens.novibackend.entities.PermissionPolicy;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.exceptions.ResourceNotOwnedException;
 
 public abstract class ChildBaseService <R extends AbstractEntity, P extends AbstractEntity> extends BaseService<R> {
 
-    abstract protected ParentBaseService<P, R> getParentService();
+    abstract protected ParentBaseService<P> getParentService();
 
     /**
      * Updates a resource in repository, specified by resource id.

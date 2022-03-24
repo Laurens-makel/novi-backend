@@ -1,4 +1,4 @@
-package student.laurens.novibackend.entities;
+package student.laurens.novibackend.services;
 
 public enum PermissionPolicy {
     ALLOW,

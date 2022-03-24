@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import student.laurens.novibackend.entities.Blogpost;
 import student.laurens.novibackend.entities.Comment;
-import student.laurens.novibackend.entities.PermissionPolicy;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.BlogpostRepository;
 
@@ -23,7 +22,7 @@ import javax.transaction.Transactional;
 @Component
 @Transactional
 @Qualifier("BlogpostService")
-public class BlogpostService extends ParentBaseService<Blogpost, Comment> {
+public class BlogpostService extends ParentBaseService<Blogpost> {
 
     @Autowired
     private @Getter BlogpostRepository repository;

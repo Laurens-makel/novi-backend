@@ -14,7 +14,7 @@ import student.laurens.novibackend.services.ChildBaseService;
  * @author Laurens Mäkel
  * @version 1.0, March 2022
  */
-public abstract class ResourceWithParentBaseRestController<R extends AbstractEntity, P extends AbstractEntity>
+public abstract class ChildBaseRestController<R extends AbstractEntity, P extends AbstractEntity>
         extends BaseRestController<R>{
 
     @Override
