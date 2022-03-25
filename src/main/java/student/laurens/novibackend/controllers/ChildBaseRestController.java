@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import student.laurens.novibackend.entities.*;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
-import student.laurens.novibackend.exceptions.ResourceNotOwnedException;
+import student.laurens.novibackend.exceptions.ResourceForbiddenException;
 import student.laurens.novibackend.services.ChildBaseService;
 
 /**
@@ -28,9 +28,9 @@ public abstract class ChildBaseRestController<R extends AbstractEntity, P extend
      * @param resourceId - Identifier of the resource to retrieve.
      *
      * @throws ResourceNotFoundException - Thrown when parent resource or resource could not be found.
-     * @throws ResourceNotOwnedException - Thrown when parent resource or resource is not owned by current consumer of the API.
+     * @throws ResourceForbiddenException - Thrown when parent resource or resource is not owned by current consumer of the API.
      */
-    public ResponseEntity<R> get(final Integer parentResourceId, final Integer resourceId) throws ResourceNotFoundException, ResourceNotOwnedException {
+    public ResponseEntity<R> get(final Integer parentResourceId, final Integer resourceId) throws ResourceNotFoundException, ResourceForbiddenException {
         logProcessingStarted(HttpMethod.GET, parentResourceId, resourceId);
 
         R resource = getService().getResourceById(parentResourceId, resourceId, getConsumer());
@@ -47,9 +47,9 @@ public abstract class ChildBaseRestController<R extends AbstractEntity, P extend
      * @param parentResourceId - Identifier of parent resource of the resource to retrieve.
      *
      * @throws ResourceNotFoundException - Thrown when parent resource or resource could not be found.
-     * @throws ResourceNotOwnedException - Thrown when parent resource or resource is not owned by current consumer of the API.
+     * @throws ResourceForbiddenException - Thrown when parent resource or resource is not owned by current consumer of the API.
      */
-    public ResponseEntity<Iterable<R>> getResources(final Integer parentResourceId) throws ResourceNotFoundException, ResourceNotOwnedException {
+    public ResponseEntity<Iterable<R>> getResources(final Integer parentResourceId) throws ResourceNotFoundException, ResourceForbiddenException {
         logProcessingStarted(HttpMethod.GET, parentResourceId);
 
         Iterable<R> resources = getService().getResources(parentResourceId, getConsumer());
@@ -69,9 +69,9 @@ public abstract class ChildBaseRestController<R extends AbstractEntity, P extend
      * @param resource - New state of the resource.
      *
      * @throws ResourceNotFoundException - Thrown when parent resource or resource could not be found.
-     * @throws ResourceNotOwnedException - Thrown when parent resource or resource is not owned by current consumer of the API.
+     * @throws ResourceForbiddenException - Thrown when parent resource or resource is not owned by current consumer of the API.
      */
-    public ResponseEntity<R> create(final Integer parentResourceId, final R resource) throws ResourceNotFoundException, ResourceNotOwnedException {
+    public ResponseEntity<R> create(final Integer parentResourceId, final R resource) throws ResourceNotFoundException, ResourceForbiddenException {
         logProcessingStarted(HttpMethod.POST, parentResourceId);
 
         R created = getService().createResource(parentResourceId, resource, getConsumer());
@@ -89,9 +89,9 @@ public abstract class ChildBaseRestController<R extends AbstractEntity, P extend
      * @param resource - New state of the resource.
      *
      * @throws ResourceNotFoundException - Thrown when parent resource or resource could not be found.
-     * @throws ResourceNotOwnedException - Thrown when parent resource or resource is not owned by current consumer of the API.
+     * @throws ResourceForbiddenException - Thrown when parent resource or resource is not owned by current consumer of the API.
      */
-    public ResponseEntity<R> update(final Integer parentResourceId, final Integer resourceId, final R resource) throws ResourceNotFoundException, ResourceNotOwnedException {
+    public ResponseEntity<R> update(final Integer parentResourceId, final Integer resourceId, final R resource) throws ResourceNotFoundException, ResourceForbiddenException {
         logProcessingStarted(HttpMethod.PUT, parentResourceId, resourceId);
 
         R updated = getService().updateResourceById(parentResourceId, resourceId, resource, getConsumer());
@@ -108,9 +108,9 @@ public abstract class ChildBaseRestController<R extends AbstractEntity, P extend
      * @param resourceId - Identifier of the resource to delete.
      *
      * @throws ResourceNotFoundException - Thrown when parent resource or resource could not be found.
-     * @throws ResourceNotOwnedException - Thrown when parent resource or resource is not owned by current consumer of the API.
+     * @throws ResourceForbiddenException - Thrown when parent resource or resource is not owned by current consumer of the API.
      */
-    public ResponseEntity<R> delete(final Integer parentResourceId, final Integer resourceId) throws ResourceNotFoundException, ResourceNotOwnedException {
+    public ResponseEntity<R> delete(final Integer parentResourceId, final Integer resourceId) throws ResourceNotFoundException, ResourceForbiddenException {
         logProcessingStarted(HttpMethod.DELETE, parentResourceId, resourceId);
 
         getService().deleteResourceById(parentResourceId, resourceId, getConsumer());

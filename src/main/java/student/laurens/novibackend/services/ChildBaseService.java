@@ -5,7 +5,7 @@ import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.entities.AbstractOwnedEntity;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
-import student.laurens.novibackend.exceptions.ResourceNotOwnedException;
+import student.laurens.novibackend.exceptions.ResourceForbiddenException;
 
 public abstract class ChildBaseService <R extends AbstractEntity, P extends AbstractEntity> extends BaseService<R> {
 
@@ -76,9 +76,9 @@ public abstract class ChildBaseService <R extends AbstractEntity, P extends Abst
      * @param consumer - User which has the intention of interacting with the resource.
      *
      * @throws ResourceNotFoundException - Thrown when parent or resource could not be found.
-     * @throws ResourceNotOwnedException - Thrown when parent or resource could is not owned by current consumer of API.
+     * @throws ResourceForbiddenException - Thrown when parent or resource could is not owned by current consumer of API.
      */
-    public void deleteResourceById(final Integer parentResourceId, final Integer resourceId, final User consumer) throws ResourceNotFoundException, ResourceNotOwnedException{
+    public void deleteResourceById(final Integer parentResourceId, final Integer resourceId, final User consumer) throws ResourceNotFoundException, ResourceForbiddenException {
         exists(resourceId);
         validateOwnershipOfResources(parentResourceId, resourceId, HttpMethod.DELETE, consumer);
         getRepository().deleteById(resourceId);
@@ -94,9 +94,9 @@ public abstract class ChildBaseService <R extends AbstractEntity, P extends Abst
      * @param consumer - User which has the intention of interacting with the resource.
      *
      * @throws ResourceNotFoundException - Thrown when parent or resource could not be found.
-     * @throws ResourceNotOwnedException - Thrown when parent or resource could is not owned by current consumer of API.
+     * @throws ResourceForbiddenException - Thrown when parent or resource could is not owned by current consumer of API.
      */
-    public void validateOwnershipOfResources(final Integer parentResourceId, final Integer resourceId, final HttpMethod method, final User consumer) throws ResourceNotFoundException, ResourceNotOwnedException {
+    public void validateOwnershipOfResources(final Integer parentResourceId, final Integer resourceId, final HttpMethod method, final User consumer) throws ResourceNotFoundException, ResourceForbiddenException {
         PermissionPolicy childPolicy;
         switch (method){
             case GET:
@@ -127,10 +127,10 @@ public abstract class ChildBaseService <R extends AbstractEntity, P extends Abst
      * @param method - HttpMethod as intention of consumer.
      *
      * @throws ResourceNotFoundException - Thrown when parent or resource could not be found.
-     * @throws ResourceNotOwnedException - Thrown when parent or resource is not owned by current consumer of API.
+     * @throws ResourceForbiddenException - Thrown when parent or resource is not owned by current consumer of API.
      */
     protected void validatePermissionPolicy(final Integer parentResourceId, final Integer resourceId, final User consumer,
-                                            final PermissionPolicy policy, HttpMethod method) throws ResourceNotFoundException, ResourceNotOwnedException {
+                                            final PermissionPolicy policy, HttpMethod method) throws ResourceNotFoundException, ResourceForbiddenException {
         log.info("Checking policy ["+policy+"]");
 
         if(policy.equals(PermissionPolicy.ALLOW)){
@@ -148,7 +148,7 @@ public abstract class ChildBaseService <R extends AbstractEntity, P extends Abst
                 log.info("Policy ["+policy+"], validation of parent ownership started.");
                 getParentService().validateOwnershipOfResource(parentResourceId, method, consumer);
                 log.info("Policy ["+policy+"], validation of parent ownership completed.");
-            } catch (ResourceNotOwnedException e){
+            } catch (ResourceForbiddenException e){
                 log.info("Parent resource ["+parentResourceId+"] not owned, validation of child ownership started.");
                 validateOwnershipOfResource(resourceId, method, consumer);
                 log.info("Parent resource ["+parentResourceId+"] not owned, validation of child ownership completed.");
@@ -160,7 +160,7 @@ public abstract class ChildBaseService <R extends AbstractEntity, P extends Abst
         } else if(policy.equals(PermissionPolicy.DENY)){
             log.info("Policy ["+policy+"], access is denied.");
             // TODO: Change this to resource denied exception
-            throw new ResourceNotOwnedException(getResourceClass(), resourceId);
+            throw new ResourceForbiddenException(getResourceClass(), resourceId);
         }
     }
 

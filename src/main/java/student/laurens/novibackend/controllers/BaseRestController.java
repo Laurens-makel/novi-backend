@@ -11,7 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
-import student.laurens.novibackend.exceptions.ResourceNotOwnedException;
+import student.laurens.novibackend.exceptions.ResourceForbiddenException;
 import student.laurens.novibackend.exceptions.UserNotFoundException;
 import student.laurens.novibackend.services.AppUserDetailsService;
 import student.laurens.novibackend.services.BaseService;
@@ -118,9 +118,9 @@ public abstract class BaseRestController<R extends AbstractEntity> {
      * @param resource - New state of the resource.
      *
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
-     * @throws ResourceNotOwnedException - Thrown when resource could is not owned by current consumer of the API.
+     * @throws ResourceForbiddenException - Thrown when resource could is not owned by current consumer of the API.
      */
-    public ResponseEntity<R> update(final Integer resourceId, final R resource) throws ResourceNotFoundException, ResourceNotOwnedException {
+    public ResponseEntity<R> update(final Integer resourceId, final R resource) throws ResourceNotFoundException, ResourceForbiddenException {
         logProcessingStarted(HttpMethod.PUT, resourceId);
 
         R updated = getService().updateResourceById(resourceId, resource, getConsumer());
@@ -136,9 +136,9 @@ public abstract class BaseRestController<R extends AbstractEntity> {
      * @param resourceId - Identifier of the resource to delete.
      *
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
-     * @throws ResourceNotOwnedException - Thrown when resource is not owned by current consumer of the API.
+     * @throws ResourceForbiddenException - Thrown when resource is not owned by current consumer of the API.
      */
-    public ResponseEntity<R> delete(final Integer resourceId) throws ResourceNotFoundException, ResourceNotOwnedException {
+    public ResponseEntity<R> delete(final Integer resourceId) throws ResourceNotFoundException, ResourceForbiddenException {
         logProcessingStarted(HttpMethod.DELETE, resourceId);
 
         getService().deleteResourceById(resourceId, getConsumer());

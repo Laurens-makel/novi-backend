@@ -7,7 +7,7 @@ import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.entities.AbstractOwnedEntity;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
-import student.laurens.novibackend.exceptions.ResourceNotOwnedException;
+import student.laurens.novibackend.exceptions.ResourceForbiddenException;
 import student.laurens.novibackend.repositories.ResourceRepository;
 
 import java.util.Optional;
@@ -101,9 +101,9 @@ public abstract class BaseService<R extends AbstractEntity> {
      * @param consumer - User which has the intention of interacting with the resource.
      *
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
-     * @throws ResourceNotOwnedException - Thrown when resource could is not owned by current consumer of service.
+     * @throws ResourceForbiddenException - Thrown when resource could is not owned by current consumer of service.
      */
-    public R updateResourceById(final Integer resourceId, final R resource, final User consumer) throws ResourceNotFoundException, ResourceNotOwnedException {
+    public R updateResourceById(final Integer resourceId, final R resource, final User consumer) throws ResourceNotFoundException, ResourceForbiddenException {
         exists(resourceId);
         validateOwnershipOfResource(resourceId, HttpMethod.PUT, consumer);
         return getRepository().save(resource);
@@ -116,9 +116,9 @@ public abstract class BaseService<R extends AbstractEntity> {
      * @param consumer - User which has the intention of interacting with the resource.
      *
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
-     * @throws ResourceNotOwnedException - Thrown when resource could is not owned by current consumer of service.
+     * @throws ResourceForbiddenException - Thrown when resource could is not owned by current consumer of service.
      */
-    public void deleteResourceById(final Integer resourceId, final User consumer) throws ResourceNotFoundException, ResourceNotOwnedException {
+    public void deleteResourceById(final Integer resourceId, final User consumer) throws ResourceNotFoundException, ResourceForbiddenException {
         exists(resourceId);
         validateOwnershipOfResource(resourceId, HttpMethod.DELETE, consumer);
         getRepository().deleteById(resourceId);
@@ -132,9 +132,9 @@ public abstract class BaseService<R extends AbstractEntity> {
      * @param consumer - User which has the intention of interacting with the resource.
      *
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
-     * @throws ResourceNotOwnedException - Thrown when resource could is not owned by current consumer of service.
+     * @throws ResourceForbiddenException - Thrown when resource could is not owned by current consumer of service.
      */
-    public  Optional<R> validateOwnershipOfResource(final Integer resourceId, final HttpMethod method, final User consumer) throws ResourceNotFoundException, ResourceNotOwnedException {
+    public  Optional<R> validateOwnershipOfResource(final Integer resourceId, final HttpMethod method, final User consumer) throws ResourceNotFoundException, ResourceForbiddenException {
         Class<R> resourceClass = getResourceClass();
 
         if(AbstractOwnedEntity.class.isAssignableFrom(resourceClass) && isMethodOwnershipProtected(method)){
@@ -144,7 +144,7 @@ public abstract class BaseService<R extends AbstractEntity> {
 
             if(ownedResource.getOwnerUid() != consumer.getUid() && !consumer.hasRole("ADMIN") ){
                 log.warn("User ["+consumer.getUid()+"] tried to ["+method+"] a forbidden ["+resourceClass+"] with identifier ["+resourceId+"]");
-                throw new ResourceNotOwnedException(resourceClass, resourceId);
+                throw new ResourceForbiddenException(resourceClass, resourceId);
             }
 
             return Optional.of(resource);
