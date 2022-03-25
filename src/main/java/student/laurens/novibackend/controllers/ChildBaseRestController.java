@@ -21,6 +21,66 @@ public abstract class ChildBaseRestController<R extends AbstractEntity, P extend
     abstract protected ChildBaseService<R, P> getService();
 
     /**
+     * Provides a default way to handle GET requests on {@link student.laurens.novibackend.entities.AbstractOwnedWithParentEntity} resources.
+     * Should be implemented by resource specific controller classes.
+     *
+     * @param parentResourceId - Identifier of parent resource of the resource to retrieve.
+     * @param resourceId - Identifier of the resource to retrieve.
+     *
+     * @throws ResourceNotFoundException - Thrown when parent resource or resource could not be found.
+     * @throws ResourceNotOwnedException - Thrown when parent resource or resource is not owned by current consumer of the API.
+     */
+    public ResponseEntity<R> get(final Integer parentResourceId, final Integer resourceId) throws ResourceNotFoundException, ResourceNotOwnedException {
+        logProcessingStarted(HttpMethod.GET, parentResourceId, resourceId);
+
+        R resource = getService().getResourceById(parentResourceId, resourceId, getConsumer());
+
+        logProcessingFinished(HttpMethod.GET, parentResourceId, resourceId);
+        return new ResponseEntity<>(resource, HttpStatus.OK);
+    }
+
+
+    /**
+     * Provides a default way to handle GET requests on {@link student.laurens.novibackend.entities.AbstractOwnedWithParentEntity} resources.
+     * Should be implemented by resource specific controller classes.
+     *
+     * @param parentResourceId - Identifier of parent resource of the resource to retrieve.
+     *
+     * @throws ResourceNotFoundException - Thrown when parent resource or resource could not be found.
+     * @throws ResourceNotOwnedException - Thrown when parent resource or resource is not owned by current consumer of the API.
+     */
+    public ResponseEntity<Iterable<R>> getResources(final Integer parentResourceId) throws ResourceNotFoundException, ResourceNotOwnedException {
+        logProcessingStarted(HttpMethod.GET, parentResourceId);
+
+        Iterable<R> resources = getService().getResources(parentResourceId, getConsumer());
+
+        logProcessingFinished(HttpMethod.GET, parentResourceId);
+        return new ResponseEntity<>(resources, HttpStatus.OK);
+    }
+
+
+
+    /**
+     * Provides a default way to handle PUT requests on {@link student.laurens.novibackend.entities.AbstractOwnedWithParentEntity} resources.
+     * Should be implemented by resource specific controller classes.
+     *
+     * @param parentResourceId - Identifier of parent resource of the resource to update.
+     * @param parentResourceId - Identifier of the parent resource of the resource to create.
+     * @param resource - New state of the resource.
+     *
+     * @throws ResourceNotFoundException - Thrown when parent resource or resource could not be found.
+     * @throws ResourceNotOwnedException - Thrown when parent resource or resource is not owned by current consumer of the API.
+     */
+    public ResponseEntity<R> create(final Integer parentResourceId, final R resource) throws ResourceNotFoundException, ResourceNotOwnedException {
+        logProcessingStarted(HttpMethod.POST, parentResourceId);
+
+        R created = getService().createResource(parentResourceId, resource, getConsumer());
+
+        logProcessingFinished(HttpMethod.POST, parentResourceId);
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
+    }
+
+    /**
      * Provides a default way to handle PUT requests on {@link student.laurens.novibackend.entities.AbstractOwnedWithParentEntity} resources.
      * Should be implemented by resource specific controller classes.
      *
@@ -34,10 +94,10 @@ public abstract class ChildBaseRestController<R extends AbstractEntity, P extend
     public ResponseEntity<R> update(final Integer parentResourceId, final Integer resourceId, final R resource) throws ResourceNotFoundException, ResourceNotOwnedException {
         logProcessingStarted(HttpMethod.PUT, parentResourceId, resourceId);
 
-        getService().updateResourceById(parentResourceId, resourceId, resource, getConsumer());
+        R updated = getService().updateResourceById(parentResourceId, resourceId, resource, getConsumer());
 
         logProcessingFinished(HttpMethod.PUT, parentResourceId, resourceId);
-        return new ResponseEntity<>(resource, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(updated, HttpStatus.ACCEPTED);
     }
 
     /**

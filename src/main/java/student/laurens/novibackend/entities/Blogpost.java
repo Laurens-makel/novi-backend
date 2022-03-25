@@ -1,9 +1,12 @@
 package student.laurens.novibackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,8 +18,9 @@ import java.util.Set;
  * @version 1.0, March 2022
  */
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "BLOGPOSTS")
-public class Blogpost extends AbstractOwnedEntity {
+public class Blogpost extends AbstractOwnedEntity implements Serializable {
 
     @Id
     @Column(name = "BLOGPOST_ID")

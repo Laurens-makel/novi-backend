@@ -1,5 +1,6 @@
 package student.laurens.novibackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,7 @@ import java.util.Date;
  * @version 1.0, March 2022
  */
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "COMMENTS")
 public class Comment extends AbstractOwnedWithParentEntity<Blogpost> {
 

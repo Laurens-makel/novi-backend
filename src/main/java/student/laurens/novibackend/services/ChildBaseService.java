@@ -12,18 +12,60 @@ public abstract class ChildBaseService <R extends AbstractEntity, P extends Abst
     abstract protected ParentBaseService<P> getParentService();
 
     /**
+     * Retrieves a resource from repository, specified by resource id.
+     *
+     * @param parentResourceId - Identifier of the parent resource validate ownership of.
+     * @param resourceId - Identifier of the resource to RETRIEVE.
+     * @param consumer - User which has the intention of interacting with the resource.
+     *
+     * @throws ResourceNotFoundException - Thrown when resource could not be found.
+     */
+    public R getResourceById(final Integer parentResourceId, final Integer resourceId, final User consumer) throws ResourceNotFoundException {
+        exists(resourceId);
+        validateOwnershipOfResources(parentResourceId, resourceId, HttpMethod.GET, consumer);
+        return getRepository().getOne(resourceId);
+    }
+
+    /**
+     * Retrieves a list of resources from repository.
+     *
+     * @param parentResourceId - Identifier of the parent resource validate ownership of.
+     * @param consumer - User which has the intention of interacting with the resource.
+     *
+     * @throws ResourceNotFoundException - Thrown when resource could not be found.
+     */
+    public Iterable<R> getResources(Integer parentResourceId, User consumer) {
+        validateOwnershipOfResources(parentResourceId, null, HttpMethod.GET, consumer);
+        return getRepository().findAll();
+    }
+    /**
+     * Retrieves a resource from repository, specified by resource id.
+     *
+     * @param parentResourceId - Identifier of the parent resource validate ownership of.
+     * @param resource - The state of the resource to save.
+     * @param consumer - User which has the intention of interacting with the resource.
+     *
+     * @throws ResourceNotFoundException - Thrown when resource could not be found.
+     */
+    public R createResource(final Integer parentResourceId, final R resource, final User consumer) throws ResourceNotFoundException {
+        validateOwnershipOfResources(parentResourceId, null, HttpMethod.POST, consumer);
+        return getRepository().save(resource);
+    }
+
+    /**
      * Updates a resource in repository, specified by resource id.
      *
+     * @param parentResourceId - Identifier of the parent resource validate ownership of.
      * @param resourceId - Identifier of the resource to update.
      * @param resource - The state of the resource to save.
      * @param consumer - User which has the intention of interacting with the resource.
      *
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
      */
-    public void updateResourceById(final Integer parentResourceId, final Integer resourceId, final R resource, final User consumer) throws ResourceNotFoundException {
+    public R updateResourceById(final Integer parentResourceId, final Integer resourceId, final R resource, final User consumer) throws ResourceNotFoundException {
         exists(resourceId);
         validateOwnershipOfResources(parentResourceId, resourceId, HttpMethod.PUT, consumer);
-        getRepository().save(resource);
+        return getRepository().save(resource);
     }
 
     /**
@@ -55,7 +97,14 @@ public abstract class ChildBaseService <R extends AbstractEntity, P extends Abst
      * @throws ResourceNotOwnedException - Thrown when parent or resource could is not owned by current consumer of API.
      */
     public void validateOwnershipOfResources(final Integer parentResourceId, final Integer resourceId, final HttpMethod method, final User consumer) throws ResourceNotFoundException, ResourceNotOwnedException {
-        if(method.equals(HttpMethod.PUT)){
+        if(method.equals(HttpMethod.GET)){
+            PermissionPolicy childPolicy = getParentService().isReadOnChildPermitted(consumer);
+            validatePermissionPolicy(parentResourceId, resourceId, consumer, childPolicy, method);
+        }
+        else if(method.equals(HttpMethod.POST)){
+            PermissionPolicy childPolicy = getParentService().isCreateChildPermitted(consumer);
+            validatePermissionPolicy(parentResourceId, resourceId, consumer, childPolicy, method);
+        } else if(method.equals(HttpMethod.PUT)){
             PermissionPolicy childPolicy = getParentService().isUpdateOnChildPermitted(consumer);
             validatePermissionPolicy(parentResourceId, resourceId, consumer, childPolicy, method);
         } else if(method.equals(HttpMethod.DELETE)){
@@ -110,4 +159,5 @@ public abstract class ChildBaseService <R extends AbstractEntity, P extends Abst
             throw new ResourceNotOwnedException(getResourceClass(), resourceId);
         }
     }
+
 }

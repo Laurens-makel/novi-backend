@@ -30,17 +30,17 @@ public class CommentRestController extends ChildBaseRestController<Comment, Blog
 
     @GetMapping("/{commentId}")
     public ResponseEntity<Comment> getComments(@PathVariable Integer blogpostId, @PathVariable Integer commentId) {
-        return get(commentId);
+        return get(blogpostId, commentId);
     }
 
     @GetMapping
     public ResponseEntity<Iterable<Comment>> getComments(@PathVariable Integer blogpostId) {
-        return get();
+        return getResources(blogpostId);
     }
 
     @PostMapping
     public ResponseEntity<Comment> addComment(@PathVariable Integer blogpostId, @RequestBody Comment comment){
-        return create(comment);
+        return create(blogpostId, comment);
     }
 
     @PutMapping("/{commentId}")

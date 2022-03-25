@@ -49,7 +49,6 @@ public abstract class BaseService<R extends AbstractEntity> {
         if(!getRepository().existsById(resourceId)){
             throw new ResourceNotFoundException(getResourceClass(), resourceId);
         }
-
         return true;
     }
 
@@ -69,13 +68,13 @@ public abstract class BaseService<R extends AbstractEntity> {
         return resource.get();
     }
     protected R getResourceByIdWithoutValidations(final Integer resourceId) throws ResourceNotFoundException {
-        Optional<R> found = getRepository().findById(resourceId);
+        R found = getRepository().getOne(resourceId);
 
-        if(!found.isPresent()){
+        if(found == null){
             throw new ResourceNotFoundException(getResourceClass(), resourceId);
         }
 
-        return found.get();
+        return found;
     }
 
     /**
@@ -90,8 +89,8 @@ public abstract class BaseService<R extends AbstractEntity> {
      *
      * @param resource - The state of the resource to save.
      */
-    public void createResource(final R resource){
-        getRepository().save(resource);
+    public R createResource(final R resource){
+        return getRepository().save(resource);
     };
 
     /**
@@ -104,10 +103,10 @@ public abstract class BaseService<R extends AbstractEntity> {
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
      * @throws ResourceNotOwnedException - Thrown when resource could is not owned by current consumer of service.
      */
-    public void updateResourceById(final Integer resourceId, final R resource, final User consumer) throws ResourceNotFoundException, ResourceNotOwnedException {
+    public R updateResourceById(final Integer resourceId, final R resource, final User consumer) throws ResourceNotFoundException, ResourceNotOwnedException {
         exists(resourceId);
         validateOwnershipOfResource(resourceId, HttpMethod.PUT, consumer);
-        getRepository().save(resource);
+        return getRepository().save(resource);
     }
 
     /**

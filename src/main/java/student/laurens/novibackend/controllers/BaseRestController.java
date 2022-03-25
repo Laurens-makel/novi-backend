@@ -104,10 +104,10 @@ public abstract class BaseRestController<R extends AbstractEntity> {
     public ResponseEntity<R> create(final R resource) {
         logProcessingStarted(HttpMethod.POST);
 
-        getService().createResource(resource);
+        R created = getService().createResource(resource);
 
         logProcessingFinished(HttpMethod.POST);
-        return new ResponseEntity<>(resource, HttpStatus.CREATED);
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     /**
@@ -123,10 +123,10 @@ public abstract class BaseRestController<R extends AbstractEntity> {
     public ResponseEntity<R> update(final Integer resourceId, final R resource) throws ResourceNotFoundException, ResourceNotOwnedException {
         logProcessingStarted(HttpMethod.PUT, resourceId);
 
-        getService().updateResourceById(resourceId, resource, getConsumer());
+        R updated = getService().updateResourceById(resourceId, resource, getConsumer());
 
         logProcessingFinished(HttpMethod.PUT, resourceId);
-        return new ResponseEntity<>(resource, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(updated, HttpStatus.ACCEPTED);
     }
 
     /**
