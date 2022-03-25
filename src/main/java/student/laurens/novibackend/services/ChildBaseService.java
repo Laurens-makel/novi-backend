@@ -97,20 +97,24 @@ public abstract class ChildBaseService <R extends AbstractEntity, P extends Abst
      * @throws ResourceNotOwnedException - Thrown when parent or resource could is not owned by current consumer of API.
      */
     public void validateOwnershipOfResources(final Integer parentResourceId, final Integer resourceId, final HttpMethod method, final User consumer) throws ResourceNotFoundException, ResourceNotOwnedException {
-        if(method.equals(HttpMethod.GET)){
-            PermissionPolicy childPolicy = getParentService().isReadOnChildPermitted(consumer);
-            validatePermissionPolicy(parentResourceId, resourceId, consumer, childPolicy, method);
+        PermissionPolicy childPolicy;
+        switch (method){
+            case GET:
+                childPolicy = getParentService().isReadOnChildPermitted(consumer);
+                break;
+            case POST:
+                childPolicy = getParentService().isCreateChildPermitted(consumer);
+                break;
+            case PUT:
+                childPolicy = getParentService().isUpdateOnChildPermitted(consumer);
+                break;
+            case DELETE:
+                childPolicy = getParentService().isDeleteOnChildPermitted(consumer);
+                break;
+            default:
+                childPolicy = PermissionPolicy.DENY;
         }
-        else if(method.equals(HttpMethod.POST)){
-            PermissionPolicy childPolicy = getParentService().isCreateChildPermitted(consumer);
-            validatePermissionPolicy(parentResourceId, resourceId, consumer, childPolicy, method);
-        } else if(method.equals(HttpMethod.PUT)){
-            PermissionPolicy childPolicy = getParentService().isUpdateOnChildPermitted(consumer);
-            validatePermissionPolicy(parentResourceId, resourceId, consumer, childPolicy, method);
-        } else if(method.equals(HttpMethod.DELETE)){
-            PermissionPolicy childPolicy = getParentService().isDeleteOnChildPermitted(consumer);
-            validatePermissionPolicy(parentResourceId, resourceId, consumer, childPolicy, method);
-        }
+        validatePermissionPolicy(parentResourceId, resourceId, consumer, childPolicy, method);
     }
 
     /**
