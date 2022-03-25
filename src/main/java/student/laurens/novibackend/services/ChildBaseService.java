@@ -34,7 +34,7 @@ public abstract class ChildBaseService <R extends AbstractEntity, P extends Abst
      *
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
      */
-    public Iterable<R> getResources(Integer parentResourceId, User consumer) {
+    public Iterable<R> getResources(final Integer parentResourceId, final User consumer) {
         validateOwnershipOfResources(parentResourceId, null, HttpMethod.GET, consumer);
         return getRepository().findAll();
     }

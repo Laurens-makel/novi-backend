@@ -42,17 +42,17 @@ public class BlogpostService extends ParentBaseService<Blogpost> {
     }
 
     @Override
-    public PermissionPolicy isReadOnChildPermitted(User user) {
+    public PermissionPolicy isReadOnChildPermitted(final User user) {
         return PermissionPolicy.ALLOW;
     }
 
     @Override
-    public PermissionPolicy isCreateChildPermitted(User user) {
+    public PermissionPolicy isCreateChildPermitted(final User user) {
         return PermissionPolicy.ALLOW;
     }
 
     @Override
-    public PermissionPolicy isUpdateOnChildPermitted(User user) {
+    public PermissionPolicy isUpdateOnChildPermitted(final User user) {
         if(user.hasRole("ADMIN") || user.hasRole("MODERATOR")){
             return PermissionPolicy.ALLOW;
         }
@@ -60,7 +60,7 @@ public class BlogpostService extends ParentBaseService<Blogpost> {
     }
 
     @Override
-    public PermissionPolicy isDeleteOnChildPermitted(User user) {
+    public PermissionPolicy isDeleteOnChildPermitted(final User user) {
         if(user.hasRole("ADMIN") || user.hasRole("MODERATOR") ){
             return PermissionPolicy.ALLOW;
         }

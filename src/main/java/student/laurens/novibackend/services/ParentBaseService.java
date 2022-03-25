@@ -17,7 +17,7 @@ public abstract class ParentBaseService<R extends AbstractEntity> extends BaseSe
      *
      * @return Security Policy which applies to reading the child resource.
      */
-    abstract public PermissionPolicy isReadOnChildPermitted(User user);
+    abstract public PermissionPolicy isReadOnChildPermitted(final User user);
 
     /**
      * Validates if user is allowed to create a child.
@@ -26,7 +26,7 @@ public abstract class ParentBaseService<R extends AbstractEntity> extends BaseSe
      *
      * @return Security Policy which applies to creating the child resource.
      */
-    abstract public PermissionPolicy isCreateChildPermitted(User user);
+    abstract public PermissionPolicy isCreateChildPermitted(final User user);
 
     /**
      * Validates if user is allowed to update a child.
@@ -35,7 +35,7 @@ public abstract class ParentBaseService<R extends AbstractEntity> extends BaseSe
      *
      * @return Security Policy which applies to updating the child resource.
      */
-    abstract public PermissionPolicy isUpdateOnChildPermitted(User user);
+    abstract public PermissionPolicy isUpdateOnChildPermitted(final User user);
 
     /**
      * Validates if user is allowed to delete a child.
@@ -44,6 +44,6 @@ public abstract class ParentBaseService<R extends AbstractEntity> extends BaseSe
      *
      * @return Security Policy which applies to deleting the child resource.
      */
-    abstract public PermissionPolicy isDeleteOnChildPermitted(User user);
+    abstract public PermissionPolicy isDeleteOnChildPermitted(final User user);
 
 }
