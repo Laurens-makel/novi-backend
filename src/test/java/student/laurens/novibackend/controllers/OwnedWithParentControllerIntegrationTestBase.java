@@ -11,6 +11,8 @@ import student.laurens.novibackend.entities.AbstractOwnedEntity;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.ResourceRepository;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+
 public abstract class OwnedWithParentControllerIntegrationTestBase<R extends AbstractOwnedEntity, P extends AbstractOwnedEntity>
         extends TestBase<R> {
 
@@ -110,16 +112,33 @@ public abstract class OwnedWithParentControllerIntegrationTestBase<R extends Abs
         return createOwnedParent(saveUser(createUniqueContentCreator()));
     }
 
+
+    abstract protected HttpStatus expectedStatusForGetAsUserParentNotExistsChildOwned();
+    abstract protected HttpStatus expectedStatusForGetAsContentCreatorParentNotExistsChildOwned();
+    abstract protected HttpStatus expectedStatusForGetAsModeratorParentNotExistsChildOwned();
+    abstract protected HttpStatus expectedStatusForGetAsAdminParentNotExistsChildOwned();
+
     abstract protected HttpStatus expectedStatusForGetAsUserParentNotOwnedChildOwned();
     abstract protected HttpStatus expectedStatusForGetAsContentCreatorParentNotOwnedChildOwned();
     abstract protected HttpStatus expectedStatusForGetAsModeratorParentNotOwnedChildOwned();
     abstract protected HttpStatus expectedStatusForGetAsAdminParentNotOwnedChildOwned();
+
+
+    abstract protected HttpStatus expectedStatusForPostAsUserParentNotExistsChildOwned();
+    abstract protected HttpStatus expectedStatusForPostAsContentCreatorParentNotExistsChildOwned();
+    abstract protected HttpStatus expectedStatusForPostAsModeratorParentNotExistsChildOwned();
+    abstract protected HttpStatus expectedStatusForPostAsAdminParentNotExistsChildOwned();
 
     abstract protected HttpStatus expectedStatusForPostAsUserParentNotOwnedChildOwned();
     abstract protected HttpStatus expectedStatusForPostAsContentCreatorParentNotOwnedChildOwned();
     abstract protected HttpStatus expectedStatusForPostAsModeratorParentNotOwnedChildOwned();
     abstract protected HttpStatus expectedStatusForPostAsAdminParentNotOwnedChildOwned();
 
+
+    abstract protected HttpStatus expectedStatusForPutAsUserParentNotExistsChildOwned();
+    abstract protected HttpStatus expectedStatusForPutAsContentCreatorParentNotExistsChildOwned();
+    abstract protected HttpStatus expectedStatusForPutAsModeratorParentNotExistsChildOwned();
+    abstract protected HttpStatus expectedStatusForPutAsAdminParentNotExistsChildOwned();
 
     abstract protected HttpStatus expectedStatusForPutAsUserParentNotOwnedChildOwned();
     abstract protected HttpStatus expectedStatusForPutAsContentCreatorParentNotOwnedChildOwned();
@@ -140,6 +159,12 @@ public abstract class OwnedWithParentControllerIntegrationTestBase<R extends Abs
     abstract protected HttpStatus expectedStatusForPutAsContentCreatorParentOwnedChildOwned();
     abstract protected HttpStatus expectedStatusForPutAsModeratorParentOwnedChildOwned();
     abstract protected HttpStatus expectedStatusForPutAsAdminParentOwnedChildOwned();
+
+
+    abstract protected HttpStatus expectedStatusForDeleteAsUserParentNotExistsChildOwned();
+    abstract protected HttpStatus expectedStatusForDeleteAsContentCreatorParentNotExistsChildOwned();
+    abstract protected HttpStatus expectedStatusForDeleteAsModeratorParentNotExistsChildOwned();
+    abstract protected HttpStatus expectedStatusForDeleteAsAdminParentNotExistsChildOwned();
 
     abstract protected HttpStatus expectedStatusForDeleteAsUserParentNotOwnedChildOwned();
     abstract protected HttpStatus expectedStatusForDeleteAsContentCreatorParentNotOwnedChildOwned();
@@ -182,6 +207,18 @@ public abstract class OwnedWithParentControllerIntegrationTestBase<R extends Abs
 
         return getAsJson(parentResource, resource);
     }
+    public ResultActions defaultXmlTestForGetParentNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+        P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() );
+        R resource = save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) );
+
+        return getAsXml(createNotOwnedParent(), resource);
+    }
+    public ResultActions defaultJsonTestForGetParentNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+        P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() );
+        R resource = save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) );
+
+        return getAsJson(createNotOwnedParent(), resource);
+    }
 
     protected ResultActions postAsJson(final P parentResource, final R resource) throws Exception {
         return executePost(parentResource, resource, DEFAULT_JSON_CONTENT_TYPE, DEFAULT_JSON_ACCEPT);
@@ -203,6 +240,18 @@ public abstract class OwnedWithParentControllerIntegrationTestBase<R extends Abs
         R resource = isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource);
 
         return postAsJson(parentResource, resource);
+    }
+    public ResultActions defaultXmlTestForPostParentNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+        P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
+        R resource = save(isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource));
+
+        return postAsXml(createNotOwnedParent(), resource);
+    }
+    public ResultActions defaultJsonTestForPostParentNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+        P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
+        R resource = isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource);
+
+        return postAsJson(createNotOwnedParent(), resource);
     }
 
     protected ResultActions putAsJson(final P parentResource, final R resource) throws Exception {
@@ -226,7 +275,18 @@ public abstract class OwnedWithParentControllerIntegrationTestBase<R extends Abs
 
         return putAsJson(parentResource, resource);
     }
+    public ResultActions defaultXmlTestForPutParentNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+        P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
+        R resource = modify(save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) ));
 
+        return putAsXml(createNotOwnedParent(), resource);
+    }
+    public ResultActions defaultJsonTestForPutParentNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+        P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
+        R resource = modify(save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) ));
+
+        return putAsJson(createNotOwnedParent(), resource);
+    }
 
     protected ResultActions deleteAsJson(final P parentResource, final R resource) throws Exception {
         return executeDelete(parentResource, resource, DEFAULT_JSON_CONTENT_TYPE, DEFAULT_JSON_ACCEPT);
@@ -248,6 +308,62 @@ public abstract class OwnedWithParentControllerIntegrationTestBase<R extends Abs
         R resource = save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) );
 
         return deleteAsJson(parentResource, resource);
+    }
+    public ResultActions defaultXmlTestForDeleteParentNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+        P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
+        R resource = save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) );
+
+        return deleteAsXml(createNotOwnedParent(), resource);
+    }
+    public ResultActions defaultJsonTestForDeleteParentNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+        P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
+        R resource = save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) );
+
+        return deleteAsJson(createNotOwnedParent(), resource);
+    }
+
+    @Test
+    @WithMockUser(value = USER)
+    public void getJsonAsUserParentNotExistsChildOwned() throws Exception {
+        User user = saveUser(createDefaultUser());
+
+        HttpStatus expectedStatus = expectedStatusForGetAsUserParentNotExistsChildOwned();
+        ResultActions mvc = defaultJsonTestForGetParentNotExists(true, false, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE})
+    public void getJsonAsContentCreatorParentNotExistsChildOwned() throws Exception {
+        User user = saveUser(createDefaultContentCreator());
+
+        HttpStatus expectedStatus = expectedStatusForGetAsContentCreatorParentNotExistsChildOwned();
+        ResultActions mvc = defaultJsonTestForGetParentNotExists(true, false, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE})
+    public void getJsonAsModeratorParentNotExistsChildOwned() throws Exception {
+        User user = saveUser(createDefaultModerator());
+
+        HttpStatus expectedStatus = expectedStatusForGetAsModeratorParentNotExistsChildOwned();
+        ResultActions mvc = defaultJsonTestForGetParentNotExists(true, false, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    public void getJsonAsAdminParentNotExistsChildOwned() throws Exception {
+        User user = saveUser(createDefaultAdmin());
+
+        HttpStatus expectedStatus = expectedStatusForGetAsAdminParentNotExistsChildOwned();
+        ResultActions mvc = defaultJsonTestForGetParentNotExists(true, false, user);
+
+        validateJsonResponse(mvc, expectedStatus);
     }
 
     @Test
@@ -296,6 +412,50 @@ public abstract class OwnedWithParentControllerIntegrationTestBase<R extends Abs
 
     @Test
     @WithMockUser(value = USER)
+    public void postJsonAsUserParentNotExistsChildOwned() throws Exception {
+        User user = saveUser(createDefaultUser());
+
+        HttpStatus expectedStatus = expectedStatusForPostAsUserParentNotExistsChildOwned();
+        ResultActions mvc = defaultJsonTestForPostParentNotExists(true, false, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE})
+    public void postJsonAsContentCreatorParentNotExistsChildOwned() throws Exception {
+        User user = saveUser(createDefaultContentCreator());
+
+        HttpStatus expectedStatus = expectedStatusForPostAsContentCreatorParentNotExistsChildOwned();
+        ResultActions mvc = defaultJsonTestForPostParentNotExists(true, false, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE})
+    public void postJsonAsModeratorParentNotExistsChildOwned() throws Exception {
+        User user = saveUser(createDefaultModerator());
+
+        HttpStatus expectedStatus = expectedStatusForPostAsModeratorParentNotExistsChildOwned();
+        ResultActions mvc = defaultJsonTestForPostParentNotExists(true, false, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    public void postJsonAsAdminParentNotExistsChildOwned() throws Exception {
+        User user = saveUser(createDefaultAdmin());
+
+        HttpStatus expectedStatus = expectedStatusForPostAsAdminParentNotExistsChildOwned();
+        ResultActions mvc = defaultJsonTestForPostParentNotExists(true, false, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = USER)
     public void postJsonAsUserParentNotOwnedChildOwned() throws Exception {
         User user = saveUser(createDefaultUser());
 
@@ -334,6 +494,50 @@ public abstract class OwnedWithParentControllerIntegrationTestBase<R extends Abs
 
         HttpStatus expectedStatus = expectedStatusForPostAsAdminParentNotOwnedChildOwned();
         ResultActions mvc = defaultJsonTestForPost(true, false, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = USER)
+    public void putJsonAsUserParentNotExistsChildOwned() throws Exception {
+        User user = saveUser(createDefaultUser());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsUserParentNotExistsChildOwned();
+        ResultActions mvc = defaultJsonTestForPutParentNotExists(true, false, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE})
+    public void putJsonAsContentCreatorParentNotExistsChildOwned() throws Exception {
+        User user = saveUser(createDefaultContentCreator());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsContentCreatorParentNotExistsChildOwned();
+        ResultActions mvc = defaultJsonTestForPutParentNotExists(true, false, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE})
+    public void putJsonAsModeratorParentNotExistsChildOwned() throws Exception {
+        User user = saveUser(createDefaultModerator());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsModeratorParentNotExistsChildOwned();
+        ResultActions mvc = defaultJsonTestForPutParentNotExists(true, false, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    public void putJsonAsAdminParentNotExistsChildOwned() throws Exception {
+        User user = saveUser(createDefaultAdmin());
+
+        HttpStatus expectedStatus = expectedStatusForPutAsAdminParentNotExistsChildOwned();
+        ResultActions mvc = defaultJsonTestForPutParentNotExists(true, false, user);
 
         validateJsonResponse(mvc, expectedStatus);
     }
@@ -498,7 +702,7 @@ public abstract class OwnedWithParentControllerIntegrationTestBase<R extends Abs
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsModeratorParentOwnedChildOwned();
-        ResultActions mvc = defaultJsonTestForPut(true, true, user);
+        ResultActions mvc = defaultJsonTestForPut(true, true, user).andDo(print());
 
         validateJsonResponse(mvc, expectedStatus);
     }
@@ -954,6 +1158,50 @@ public abstract class OwnedWithParentControllerIntegrationTestBase<R extends Abs
         ResultActions mvc = defaultXmlTestForPut(true, true, user);
 
         validateXmlUtf8Response(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = USER)
+    public void deleteJsonAsUserParentNotExistsChildOwned() throws Exception {
+        User user = saveUser(createDefaultUser());
+
+        HttpStatus expectedStatus = expectedStatusForDeleteAsUserParentNotExistsChildOwned();
+        ResultActions mvc = defaultJsonTestForDeleteParentNotExists(true, false, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE})
+    public void deleteJsonAsContentCreatorParentNotExistsChildOwned() throws Exception {
+        User user = saveUser(createDefaultContentCreator());
+
+        HttpStatus expectedStatus = expectedStatusForDeleteAsContentCreatorParentNotExistsChildOwned();
+        ResultActions mvc = defaultJsonTestForDeleteParentNotExists(true, false, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE})
+    public void deleteJsonAsModeratorParentNotExistsChildOwned() throws Exception {
+        User user = saveUser(createDefaultModerator());
+
+        HttpStatus expectedStatus = expectedStatusForDeleteAsModeratorParentNotExistsChildOwned();
+        ResultActions mvc = defaultJsonTestForDeleteParentNotExists(true, false, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    public void deleteJsonAsAdminParentNotExistsChildOwned() throws Exception {
+        User user = saveUser(createDefaultAdmin());
+
+        HttpStatus expectedStatus = expectedStatusForDeleteAsAdminParentNotExistsChildOwned();
+        ResultActions mvc = defaultJsonTestForDeleteParentNotExists(true, false, user);
+
+        validateJsonResponse(mvc, expectedStatus);
     }
 
     @Test

@@ -21,6 +21,7 @@ public abstract class ChildBaseService <R extends AbstractEntity, P extends Abst
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
      */
     public R getResourceById(final Integer parentResourceId, final Integer resourceId, final User consumer) throws ResourceNotFoundException {
+        getParentService().exists(parentResourceId);
         exists(resourceId);
         validateOwnershipOfResources(parentResourceId, resourceId, HttpMethod.GET, consumer);
         return getRepository().getOne(resourceId);
@@ -35,6 +36,7 @@ public abstract class ChildBaseService <R extends AbstractEntity, P extends Abst
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
      */
     public Iterable<R> getResources(final Integer parentResourceId, final User consumer) {
+        getParentService().exists(parentResourceId);
         validateOwnershipOfResources(parentResourceId, null, HttpMethod.GET, consumer);
         return getRepository().findAll();
     }
@@ -48,6 +50,7 @@ public abstract class ChildBaseService <R extends AbstractEntity, P extends Abst
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
      */
     public R createResource(final Integer parentResourceId, final R resource, final User consumer) throws ResourceNotFoundException {
+        getParentService().exists(parentResourceId);
         validateOwnershipOfResources(parentResourceId, null, HttpMethod.POST, consumer);
         return getRepository().save(resource);
     }
@@ -63,6 +66,7 @@ public abstract class ChildBaseService <R extends AbstractEntity, P extends Abst
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
      */
     public R updateResourceById(final Integer parentResourceId, final Integer resourceId, final R resource, final User consumer) throws ResourceNotFoundException {
+        getParentService().exists(parentResourceId);
         exists(resourceId);
         validateOwnershipOfResources(parentResourceId, resourceId, HttpMethod.PUT, consumer);
         return getRepository().save(resource);
@@ -79,6 +83,7 @@ public abstract class ChildBaseService <R extends AbstractEntity, P extends Abst
      * @throws ResourceForbiddenException - Thrown when parent or resource could is not owned by current consumer of API.
      */
     public void deleteResourceById(final Integer parentResourceId, final Integer resourceId, final User consumer) throws ResourceNotFoundException, ResourceForbiddenException {
+        getParentService().exists(parentResourceId);
         exists(resourceId);
         validateOwnershipOfResources(parentResourceId, resourceId, HttpMethod.DELETE, consumer);
         getRepository().deleteById(resourceId);
