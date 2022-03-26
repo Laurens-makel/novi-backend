@@ -58,9 +58,11 @@ public abstract class BaseRestController<R extends AbstractEntity> {
      */
     public ResponseEntity<Iterable<R>> get() {
         logProcessingStarted(HttpMethod.GET);
+
         Iterable<R> resources = getService().getResources();
+
         logProcessingFinished(HttpMethod.GET);
-        return new ResponseEntity<>(resources, HttpStatus.OK);
+        return createSuccessResponseGET(resources);
     }
 
     /**
@@ -73,9 +75,11 @@ public abstract class BaseRestController<R extends AbstractEntity> {
      */
     public ResponseEntity<R> get(final String name) throws ResourceNotFoundException {
         logProcessingStarted(HttpMethod.GET, name);
+
         R resource = getService().getResource(name);
+
         logProcessingFinished(HttpMethod.GET, name);
-        return new ResponseEntity<>(resource, HttpStatus.OK);
+        return createSuccessResponseGET(resource);
     }
 
     /**
@@ -92,7 +96,7 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         R resource = getService().getResourceById(resourceId, getConsumer());
 
         logProcessingFinished(HttpMethod.GET, resourceId);
-        return new ResponseEntity<>(resource, HttpStatus.OK);
+        return createSuccessResponseGET(resource);
     }
 
     /**
@@ -107,7 +111,7 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         R created = getService().createResource(resource);
 
         logProcessingFinished(HttpMethod.POST);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+        return createSuccessResponsePOST(created);
     }
 
     /**
@@ -126,7 +130,7 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         R updated = getService().updateResourceById(resourceId, resource, getConsumer());
 
         logProcessingFinished(HttpMethod.PUT, resourceId);
-        return new ResponseEntity<>(updated, HttpStatus.ACCEPTED);
+        return createSuccessResponsePUT(updated);
     }
 
     /**
@@ -144,7 +148,7 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         getService().deleteResourceById(resourceId, getConsumer());
 
         logProcessingFinished(HttpMethod.DELETE, resourceId);
-        return new ResponseEntity(createDeletedMessage(), HttpStatus.ACCEPTED);
+        return createSuccessResponseDELETE();
     }
 
     /**
@@ -168,6 +172,21 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         }
     }
 
+    protected ResponseEntity<Iterable<R>> createSuccessResponseGET(Iterable<R> resources){
+        return new ResponseEntity<>(resources, HttpStatus.OK);
+    }
+    protected ResponseEntity<R> createSuccessResponseGET(R resource){
+        return new ResponseEntity<>(resource, HttpStatus.OK);
+    }
+    protected ResponseEntity<R> createSuccessResponsePOST(R resource){
+        return new ResponseEntity<>(resource, HttpStatus.CREATED);
+    }
+    protected ResponseEntity<R> createSuccessResponsePUT(R resource){
+        return new ResponseEntity<>(resource, HttpStatus.ACCEPTED);
+    }
+    protected ResponseEntity<R> createSuccessResponseDELETE(){
+        return new ResponseEntity(createDeletedMessage(), HttpStatus.ACCEPTED);
+    }
 
     protected void logProcessingStarted(final HttpMethod method) {
         log.info("Processing ["+method+"] request on resource ["+getService().getResourceClass()+"] started.");

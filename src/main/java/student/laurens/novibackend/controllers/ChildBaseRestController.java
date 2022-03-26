@@ -1,7 +1,6 @@
 package student.laurens.novibackend.controllers;
 
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import student.laurens.novibackend.entities.*;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
@@ -36,9 +35,8 @@ public abstract class ChildBaseRestController<R extends AbstractEntity, P extend
         R resource = getService().getResourceById(parentResourceId, resourceId, getConsumer());
 
         logProcessingFinished(HttpMethod.GET, parentResourceId, resourceId);
-        return new ResponseEntity<>(resource, HttpStatus.OK);
+        return createSuccessResponseGET(resource);
     }
-
 
     /**
      * Provides a default way to handle GET requests on {@link student.laurens.novibackend.entities.AbstractOwnedWithParentEntity} resources.
@@ -55,10 +53,8 @@ public abstract class ChildBaseRestController<R extends AbstractEntity, P extend
         Iterable<R> resources = getService().getResources(parentResourceId, getConsumer());
 
         logProcessingFinished(HttpMethod.GET, parentResourceId);
-        return new ResponseEntity<>(resources, HttpStatus.OK);
+        return createSuccessResponseGET(resources);
     }
-
-
 
     /**
      * Provides a default way to handle PUT requests on {@link student.laurens.novibackend.entities.AbstractOwnedWithParentEntity} resources.
@@ -77,7 +73,7 @@ public abstract class ChildBaseRestController<R extends AbstractEntity, P extend
         R created = getService().createResource(parentResourceId, resource, getConsumer());
 
         logProcessingFinished(HttpMethod.POST, parentResourceId);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+        return createSuccessResponsePOST(created);
     }
 
     /**
@@ -97,7 +93,7 @@ public abstract class ChildBaseRestController<R extends AbstractEntity, P extend
         R updated = getService().updateResourceById(parentResourceId, resourceId, resource, getConsumer());
 
         logProcessingFinished(HttpMethod.PUT, parentResourceId, resourceId);
-        return new ResponseEntity<>(updated, HttpStatus.ACCEPTED);
+        return createSuccessResponsePUT(updated);
     }
 
     /**
@@ -116,7 +112,7 @@ public abstract class ChildBaseRestController<R extends AbstractEntity, P extend
         getService().deleteResourceById(parentResourceId, resourceId, getConsumer());
 
         logProcessingFinished(HttpMethod.DELETE, parentResourceId, resourceId);
-        return new ResponseEntity(createDeletedMessage(), HttpStatus.ACCEPTED);
+        return createSuccessResponseDELETE();
     }
 
     protected void logProcessingStarted(final HttpMethod method, final Integer parentResourceId, final Integer resourceId) {
