@@ -98,6 +98,23 @@ public class CommentRestControllerIntegrationTest extends OwnedWithParentControl
     }
 
     @Override
+    protected HttpStatus expectedStatusForGetAsUser() {
+        return HttpStatus.OK;
+    }
+    @Override
+    protected HttpStatus expectedStatusForGetAsContentCreator() {
+        return HttpStatus.OK;
+    }
+    @Override
+    protected HttpStatus expectedStatusForGetAsModerator() {
+        return HttpStatus.OK;
+    }
+    @Override
+    protected HttpStatus expectedStatusForGetAsAdmin() {
+        return HttpStatus.OK;
+    }
+
+    @Override
     protected HttpStatus expectedStatusForGetAsUserParentNotExistsChildOwned() {
         return HttpStatus.NOT_FOUND;
     }

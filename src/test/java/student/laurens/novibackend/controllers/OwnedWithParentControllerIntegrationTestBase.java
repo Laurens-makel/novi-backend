@@ -112,6 +112,10 @@ public abstract class OwnedWithParentControllerIntegrationTestBase<R extends Abs
         return createOwnedParent(saveUser(createUniqueContentCreator()));
     }
 
+    abstract protected HttpStatus expectedStatusForGetAsUser();
+    abstract protected HttpStatus expectedStatusForGetAsContentCreator();
+    abstract protected HttpStatus expectedStatusForGetAsModerator();
+    abstract protected HttpStatus expectedStatusForGetAsAdmin();
 
     abstract protected HttpStatus expectedStatusForGetAsUserParentNotExistsChildOwned();
     abstract protected HttpStatus expectedStatusForGetAsContentCreatorParentNotExistsChildOwned();
@@ -186,14 +190,35 @@ public abstract class OwnedWithParentControllerIntegrationTestBase<R extends Abs
     abstract protected HttpStatus expectedStatusForDeleteAsModeratorParentOwnedChildOwned();
     abstract protected HttpStatus expectedStatusForDeleteAsAdminParentOwnedChildOwned();
 
+    protected ResultActions getAsJson(final P parentResource) throws Exception {
+        return executeGet(parentResource, DEFAULT_JSON_ACCEPT);
+    }
+    protected ResultActions getAsXml(final P parentResource) throws Exception {
+        return executeGet(parentResource, DEFAULT_XML_ACCEPT);
+    }
     protected ResultActions getAsJson(final P parentResource, final R resource) throws Exception {
         return executeGet(parentResource, resource, DEFAULT_JSON_ACCEPT);
     }
     protected ResultActions getAsXml(final P parentResource, final R resource) throws Exception {
         return executeGet(parentResource, resource, DEFAULT_XML_ACCEPT);
     }
+    protected ResultActions executeGet(final P parentResource, final MediaType accept) throws Exception {
+        return getResource(getUrlForGetWithParent(parentResource), accept);
+    }
     protected ResultActions executeGet(final P parentResource, final R resource, final MediaType accept) throws Exception {
         return getResource(getUrlForGetWithParent(parentResource, resource), accept);
+    }
+    public ResultActions defaultXmlTestForGetAll(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+        P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
+        R resource = save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) );
+
+        return getAsXml(parentResource);
+    }
+    public ResultActions defaultJsonTestForGetAll(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+        P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
+        R resource = save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) );
+
+        return getAsJson(parentResource);
     }
     public ResultActions defaultXmlTestForGet(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
@@ -320,6 +345,50 @@ public abstract class OwnedWithParentControllerIntegrationTestBase<R extends Abs
         R resource = save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) );
 
         return deleteAsJson(createNotOwnedParent(), resource);
+    }
+
+    @Test
+    @WithMockUser(value = USER)
+    public void getJsonAsUser() throws Exception {
+        User user = saveUser(createDefaultUser());
+
+        HttpStatus expectedStatus = expectedStatusForGetAsUser();
+        ResultActions mvc = defaultJsonTestForGetAll(true, false, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE})
+    public void getJsonAsContentCreator() throws Exception {
+        User user = saveUser(createDefaultContentCreator());
+
+        HttpStatus expectedStatus = expectedStatusForGetAsContentCreator();
+        ResultActions mvc = defaultJsonTestForGetAll(true, false, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE})
+    public void getJsonAsModerator() throws Exception {
+        User user = saveUser(createDefaultModerator());
+
+        HttpStatus expectedStatus = expectedStatusForGetAsModerator();
+        ResultActions mvc = defaultJsonTestForGetAll(true, false, user);
+
+        validateJsonResponse(mvc, expectedStatus);
+    }
+
+    @Test
+    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    public void getJsonAsAdmin() throws Exception {
+        User user = saveUser(createDefaultAdmin());
+
+        HttpStatus expectedStatus = expectedStatusForGetAsAdmin();
+        ResultActions mvc = defaultJsonTestForGetAll(true, false, user);
+
+        validateJsonResponse(mvc, expectedStatus);
     }
 
     @Test

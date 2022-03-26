@@ -24,10 +24,6 @@ public class CommentRestController extends ChildBaseRestController<Comment, Blog
     @Autowired
     private @Getter CommentService service;
 
-    @Autowired
-    @Qualifier("BlogpostService")
-    private @Getter BlogpostService parentService;
-
     @GetMapping("/{commentId}")
     public ResponseEntity<Comment> getComments(@PathVariable Integer blogpostId, @PathVariable Integer commentId) {
         return get(blogpostId, commentId);
