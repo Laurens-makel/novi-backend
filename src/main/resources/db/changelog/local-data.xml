@@ -34,7 +34,7 @@
 
     <changeSet  id="Fill BLOGPOSTS table"  author="Laurens Mäkel" context="DEV">
         <insert tableName="BLOGPOSTS">
-            <column name="AUTHOR_UID">1</column>
+            <column name="UID">1</column>
             <column name="TITLE">My first blogpost</column>
             <column name="CONTENT">My first content</column>
             <column name="PUBLISHED">true</column>
