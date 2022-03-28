@@ -175,13 +175,13 @@ public abstract class BaseRestController<R extends AbstractEntity> {
     protected ResponseEntity<Iterable<R>> createSuccessResponseGET(Iterable<R> resources){
         return new ResponseEntity<>(resources, HttpStatus.OK);
     }
-    protected ResponseEntity<R> createSuccessResponseGET(R resource){
+    protected ResponseEntity<R> createSuccessResponseGET(final R resource){
         return new ResponseEntity<>(resource, HttpStatus.OK);
     }
-    protected ResponseEntity<R> createSuccessResponsePOST(R resource){
+    protected ResponseEntity<R> createSuccessResponsePOST(final R resource){
         return new ResponseEntity<>(resource, HttpStatus.CREATED);
     }
-    protected ResponseEntity<R> createSuccessResponsePUT(R resource){
+    protected ResponseEntity<R> createSuccessResponsePUT(final R resource){
         return new ResponseEntity<>(resource, HttpStatus.ACCEPTED);
     }
     protected ResponseEntity<R> createSuccessResponseDELETE(){
