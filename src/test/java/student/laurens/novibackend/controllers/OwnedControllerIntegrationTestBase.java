@@ -9,6 +9,12 @@ import student.laurens.novibackend.entities.AbstractOwnedEntity;
 import student.laurens.novibackend.entities.Role;
 import student.laurens.novibackend.entities.User;
 
+/**
+ * Base class to provide default methods for testing RestControllers which expose HTTP method for resources which are owned.
+ *
+ * @author Laurens Mäkel
+ * @version 1.0, March 2022
+ */
 public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwnedEntity> extends ControllerIntegrationTestBase<R> {
 
     /**

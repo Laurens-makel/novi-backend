@@ -13,6 +13,12 @@ import student.laurens.novibackend.repositories.ResourceRepository;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
+/**
+ * Base class to provide default methods for testing RestControllers which expose HTTP method for resources which have a parent resource.
+ *
+ * @author Laurens Mäkel
+ * @version 1.0, March 2022
+ */
 public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwnedEntity, P extends AbstractOwnedEntity>
         extends TestBase<R> {
 
