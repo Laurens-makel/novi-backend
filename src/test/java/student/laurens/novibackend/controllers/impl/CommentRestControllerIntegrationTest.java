@@ -98,21 +98,22 @@ public class CommentRestControllerIntegrationTest extends OwnedWithParentControl
     }
 
     @Override
-    protected HttpStatus expectedStatusForGetAsUser() {
-        return HttpStatus.OK;
-    }
+    protected HttpStatus expectedStatusForGetAsUser() { return HttpStatus.OK; }
     @Override
-    protected HttpStatus expectedStatusForGetAsContentCreator() {
-        return HttpStatus.OK;
-    }
+    protected HttpStatus expectedStatusForGetAsContentCreator() { return HttpStatus.OK; }
     @Override
-    protected HttpStatus expectedStatusForGetAsModerator() {
-        return HttpStatus.OK;
-    }
+    protected HttpStatus expectedStatusForGetAsModerator() { return HttpStatus.OK; }
     @Override
-    protected HttpStatus expectedStatusForGetAsAdmin() {
-        return HttpStatus.OK;
-    }
+    protected HttpStatus expectedStatusForGetAsAdmin() { return HttpStatus.OK;}
+
+    @Override
+    protected HttpStatus expectedStatusForGetAsUserParentNotOwnedChildNotExists(){ return HttpStatus.NOT_FOUND;}
+    @Override
+    protected HttpStatus expectedStatusForGetAsContentCreatorParentNotOwnedChildNotExists(){ return HttpStatus.NOT_FOUND;};
+    @Override
+    protected HttpStatus expectedStatusForGetAsModeratorParentNotOwnedChildNotExists(){ return HttpStatus.NOT_FOUND;};
+    @Override
+    protected HttpStatus expectedStatusForGetAsAdminParentNotOwnedChildNotExists(){ return HttpStatus.NOT_FOUND;};
 
     @Override
     protected HttpStatus expectedStatusForGetAsUserParentNotExistsChildOwned() {
@@ -196,6 +197,15 @@ public class CommentRestControllerIntegrationTest extends OwnedWithParentControl
     }
 
     @Override
+    protected HttpStatus expectedStatusForPutAsUserParentNotOwnedChildNotExists(){ return HttpStatus.NOT_FOUND;}
+    @Override
+    protected HttpStatus expectedStatusForPutAsContentCreatorParentNotOwnedChildNotExists(){ return HttpStatus.NOT_FOUND;};
+    @Override
+    protected HttpStatus expectedStatusForPutAsModeratorParentNotOwnedChildNotExists(){ return HttpStatus.NOT_FOUND;};
+    @Override
+    protected HttpStatus expectedStatusForPutAsAdminParentNotOwnedChildNotExists(){ return HttpStatus.NOT_FOUND;};
+
+    @Override
     protected HttpStatus expectedStatusForPutAsUserParentNotOwnedChildOwned() {
         return HttpStatus.ACCEPTED;
     }
@@ -277,6 +287,15 @@ public class CommentRestControllerIntegrationTest extends OwnedWithParentControl
     protected HttpStatus expectedStatusForDeleteAsAdminParentNotExistsChildOwned() {
         return HttpStatus.NOT_FOUND;
     }
+
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsUserParentNotOwnedChildNotExists(){ return HttpStatus.NOT_FOUND;}
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsContentCreatorParentNotOwnedChildNotExists(){ return HttpStatus.NOT_FOUND;};
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsModeratorParentNotOwnedChildNotExists(){ return HttpStatus.NOT_FOUND;};
+    @Override
+    protected HttpStatus expectedStatusForDeleteAsAdminParentNotOwnedChildNotExists(){ return HttpStatus.NOT_FOUND;};
 
     @Override
     protected HttpStatus expectedStatusForDeleteAsUserParentNotOwnedChildOwned() {
