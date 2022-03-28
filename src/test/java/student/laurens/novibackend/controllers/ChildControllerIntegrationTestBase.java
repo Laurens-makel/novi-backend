@@ -13,7 +13,7 @@ import student.laurens.novibackend.repositories.ResourceRepository;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
-public abstract class OwnedWithParentControllerIntegrationTestBase<R extends AbstractOwnedEntity, P extends AbstractOwnedEntity>
+public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwnedEntity, P extends AbstractOwnedEntity>
         extends TestBase<R> {
 
 
