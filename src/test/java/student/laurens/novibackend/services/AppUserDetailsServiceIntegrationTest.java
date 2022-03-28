@@ -76,7 +76,7 @@ public class AppUserDetailsServiceIntegrationTest extends ServiceIntegrationTest
         User john = createTestUser("John", "Doe", "JOHN", "myPass123");
         User alex = createTestUser("Alex", "Doe", "ALEX", "myPass123");
 
-        Iterable<User> users = service.getResource();
+        Iterable<User> users = service.getResources();
         verifyFindAllUsersIsCalledOnce();
 
         assertThat(users).hasSize(3).extracting(User::getUsername).contains(alex.getUsername(), john.getUsername(), bob.getUsername());

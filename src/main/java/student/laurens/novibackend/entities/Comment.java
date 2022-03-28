@@ -1,33 +1,29 @@
 package student.laurens.novibackend.entities;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
- * Entity class for BLOGPOSTS table.
+ * Entity class for COMMENTS table.
  *
  * @author Laurens Mäkel
  * @version 1.0, March 2022
  */
 @Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "BLOGPOSTS")
-public class Blogpost extends AbstractOwnedEntity implements Serializable {
+@Table(name = "COMMENTS")
+public class Comment extends AbstractOwnedWithParentEntity<Blogpost> {
 
     @Id
-    @Column(name = "BLOGPOST_ID")
+    @Column(name = "COMMENT_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private @Getter Integer id;
 
-    @ManyToOne( cascade = CascadeType.MERGE )
+    @ManyToOne( cascade = CascadeType.REFRESH )
     @JoinColumn( name = "UID", nullable = false)
     private @Getter @Setter User author;
 
@@ -37,23 +33,20 @@ public class Blogpost extends AbstractOwnedEntity implements Serializable {
     @Column(name = "CONTENT", nullable = false)
     private @Getter @Setter String content;
 
-    @Column(name = "PUBLISHED", nullable = false)
-    private @Getter @Setter boolean published;
-
     @Column(name = "CREATED_AT", nullable = false, updatable = false, insertable=false)
     private @Getter Date createdAt;
 
-    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "BLOGPOSTS_TAGS",
-            joinColumns = @JoinColumn(name = "BLOGPOST_ID"),
-            inverseJoinColumns = @JoinColumn(name = "TAG_ID")
-    )
-    private @Getter Set<Tag> tags = new HashSet<>();
+    @ManyToOne( cascade = CascadeType.MERGE )
+    @JoinColumn( name = "BLOGPOST_ID", nullable = false)
+    private @Getter @Setter Blogpost blogpost;
 
     @Override
     public Integer getOwnerUid() {
         return getAuthor().getUid();
     }
 
+    @Override
+    protected Blogpost getParent() {
+        return getBlogpost();
+    }
 }

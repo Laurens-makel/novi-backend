@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.Blogpost;
-import student.laurens.novibackend.exceptions.BlogpostNotFoundException;
+import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.services.BlogpostService;
 
 /**
@@ -33,7 +33,7 @@ public class BlogpostRestController extends BaseRestController<Blogpost> {
     private @Getter BlogpostService service;
 
     @GetMapping("/{blogpostId}")
-    public ResponseEntity<Blogpost> getBlogpost(@PathVariable("blogpostId") Integer blogpostId) {
+    public ResponseEntity<Blogpost> getBlogpost(@PathVariable Integer blogpostId) {
         return get(blogpostId);
     }
 
@@ -48,12 +48,12 @@ public class BlogpostRestController extends BaseRestController<Blogpost> {
     }
 
     @PutMapping("/{blogpostId}")
-    public ResponseEntity<Blogpost> updateBlogpost(@PathVariable("blogpostId") Integer blogpostId, @RequestBody Blogpost blogpost)  throws BlogpostNotFoundException {
+    public ResponseEntity<Blogpost> updateBlogpost(@PathVariable Integer blogpostId, @RequestBody Blogpost blogpost) throws ResourceNotFoundException {
         return update(blogpostId, blogpost);
     }
 
     @DeleteMapping("/{blogpostId}")
-    public ResponseEntity deleteRole(@PathVariable("blogpostId") Integer blogpostId) throws BlogpostNotFoundException {
+    public ResponseEntity deleteBlogpost(@PathVariable Integer blogpostId) throws ResourceNotFoundException {
         return delete(blogpostId);
     }
 }

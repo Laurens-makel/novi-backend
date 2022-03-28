@@ -31,10 +31,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
             return handleExceptionInternal(ex, response, responseHeaders, ex.getHttpStatus(), request);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            logger.error("Failed to translate resource exception to a consumer friendly response!", e);
+            return handleExceptionInternal(ex, ex.getMessage(), responseHeaders, ex.getHttpStatus(), request);
         }
-
-        return handleExceptionInternal(ex, ex.getMessage(), responseHeaders, ex.getHttpStatus(), request);
     }
 
     private Map<String, String> createError(final ResourceException exception, final WebRequest request) {

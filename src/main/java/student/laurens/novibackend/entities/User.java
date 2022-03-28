@@ -1,5 +1,6 @@
 package student.laurens.novibackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,6 +18,7 @@ import javax.persistence.*;
  * @version 1.0, March 2022
  */
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "USERS")
 public class User extends AbstractOwnedEntity {
 

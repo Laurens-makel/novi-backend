@@ -2,9 +2,12 @@ package student.laurens.novibackend.services;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import student.laurens.novibackend.entities.Blogpost;
+import student.laurens.novibackend.entities.Comment;
+import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.BlogpostRepository;
 
 import javax.transaction.Transactional;
@@ -18,13 +21,14 @@ import javax.transaction.Transactional;
 @Service
 @Component
 @Transactional
-public class BlogpostService extends BaseService<Blogpost> {
+@Qualifier("BlogpostService")
+public class BlogpostService extends ParentBaseService<Blogpost> {
 
     @Autowired
     private @Getter BlogpostRepository repository;
 
     @Override
-    public Iterable<Blogpost> getResource() {
+    public Iterable<Blogpost> getResources() {
         return repository.findAllPublished();
     }
 
@@ -35,6 +39,35 @@ public class BlogpostService extends BaseService<Blogpost> {
 
     public Blogpost getResource(final String title){
         return repository.findByTitle(title);
+    }
+
+    @Override
+    public PermissionPolicy isReadOnChildPermitted(final User user) {
+        return PermissionPolicy.ALLOW;
+    }
+
+    @Override
+    public PermissionPolicy isCreateChildPermitted(final User user) {
+        return PermissionPolicy.ALLOW;
+    }
+
+    @Override
+    public PermissionPolicy isUpdateOnChildPermitted(final User user) {
+        if(user.hasRole("ADMIN") || user.hasRole("MODERATOR")){
+            return PermissionPolicy.ALLOW;
+        }
+        return PermissionPolicy.ALLOW_CHILD_OWNED;
+    }
+
+    @Override
+    public PermissionPolicy isDeleteOnChildPermitted(final User user) {
+        if(user.hasRole("ADMIN") || user.hasRole("MODERATOR") ){
+            return PermissionPolicy.ALLOW;
+        }
+        if(user.hasRole("CONTENT_CREATOR")){
+            return PermissionPolicy.ALLOW_PARENT_OR_CHILD_OWNED;
+        }
+        return PermissionPolicy.ALLOW_CHILD_OWNED;
     }
 
 }

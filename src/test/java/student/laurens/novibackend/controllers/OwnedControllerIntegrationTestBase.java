@@ -6,10 +6,16 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
 import student.laurens.novibackend.entities.AbstractOwnedEntity;
+import student.laurens.novibackend.entities.Role;
 import student.laurens.novibackend.entities.User;
 
+/**
+ * Base class to provide default methods for testing RestControllers which expose HTTP method for resources which are owned.
+ *
+ * @author Laurens Mäkel
+ * @version 1.0, March 2022
+ */
 public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwnedEntity> extends ControllerIntegrationTestBase<R> {
-
 
     /**
      * Implement this method by a resource specific implementation to create sample owned instances of the resource.
@@ -17,13 +23,14 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
      * @return Sample instance of resource.
      */
     abstract protected R createOwned(User owner);
+    protected R createNotOwned(){
+        return createOwned(saveUser(createUniqueContentCreator()));
+    }
 
-    /**
-     * Implement this method by a resource specific implementation to create sample not-owned instances of the resource.
-     *
-     * @return Sample instance of resource.
-     */
-    abstract protected R createNotOwned();
+    @Override
+    protected R create(){
+        return createNotOwned();
+    }
 
     abstract protected HttpStatus expectedStatusForGetAsAdminResourceOwned();
     abstract protected HttpStatus expectedStatusForGetAsAdminResourceNotOwned();

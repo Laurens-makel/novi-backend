@@ -1,10 +1,12 @@
-package student.laurens.novibackend.controllers;
+package student.laurens.novibackend.controllers.impl;
 
 import org.junit.After;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
+import student.laurens.novibackend.controllers.OwnedControllerIntegrationTestBase;
+import student.laurens.novibackend.controllers.UserRestController;
 import student.laurens.novibackend.entities.User;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -60,11 +62,6 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     @Override
     protected User createNotOwned() {
         return createUniqueContentCreator();
-    }
-
-    @Override
-    protected User create() {
-        return modify(createDefaultUser());
     }
 
     @Override

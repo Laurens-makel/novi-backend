@@ -125,7 +125,7 @@
             <column name="COMMENT_ID" type="int" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="AUTHOR_UID" type="int">
+            <column name="UID" type="int">
                 <constraints nullable="false"/>
             </column>
             <column name="BLOGPOST_ID" type="int">
@@ -143,7 +143,7 @@
         </createTable>
 
         <addForeignKeyConstraint  constraintName="Fk_COMMENTS_AUTHOR_UID"
-                                  baseTableName="COMMENTS" baseColumnNames="AUTHOR_UID"
+                                  baseTableName="COMMENTS" baseColumnNames="UID"
                                   referencedTableName="USERS" referencedColumnNames="UID" />
 
         <addForeignKeyConstraint  constraintName="Fk_COMMENTS_BLOGPOST_ID"

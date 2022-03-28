@@ -1,8 +1,15 @@
 package student.laurens.novibackend.exceptions;
 
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+/**
+ * Abstract exception for resources.
+ *
+ * Used by {@link RestExceptionHandler} to format these to a format (JSON or XML is supported) the consumer specified by the <code>Accept</code> header.
+ *
+ * @author Laurens Mäkel
+ * @version 1.0, March 2022
+ */
 public abstract class ResourceException extends RuntimeException {
     protected Class resourceClass;
     protected Object identifier;

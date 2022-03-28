@@ -1,16 +1,16 @@
-package student.laurens.novibackend.controllers;
+package student.laurens.novibackend.controllers.impl;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
+import student.laurens.novibackend.controllers.BlogpostRestController;
+import student.laurens.novibackend.controllers.OwnedControllerIntegrationTestBase;
 import student.laurens.novibackend.entities.Blogpost;
-import student.laurens.novibackend.entities.Role;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.BlogpostRepository;
 
@@ -77,11 +77,6 @@ public class BlogpostRestControllerIntegrationTest extends OwnedControllerIntegr
 
     @Override
     protected Blogpost createNotOwned() {
-        return createDefaultBlogpost(saveUser(createUniqueContentCreator()));
-    }
-
-    @Override
-    protected Blogpost create() {
         return createDefaultBlogpost(saveUser(createUniqueContentCreator()));
     }
 
@@ -454,22 +449,6 @@ public class BlogpostRestControllerIntegrationTest extends OwnedControllerIntegr
                 .content(asJsonString(blogpost))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
-    }
-
-    private Blogpost createDefaultBlogpost(User author){
-        Blogpost blogpost = new Blogpost();
-
-        blogpost.setTitle("Example blogpost");
-        blogpost.setContent("Lorem ipsum");
-        blogpost.setAuthor(author);
-
-        return blogpost;
-    }
-
-    private Blogpost saveBlogpost(Blogpost blogpost){
-        repository.save(blogpost);
-
-        return blogpost;
     }
 
 }
