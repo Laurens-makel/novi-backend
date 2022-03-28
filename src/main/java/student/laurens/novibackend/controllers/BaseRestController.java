@@ -195,14 +195,14 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         log.info("Processing ["+method+"] request on resource ["+getService().getResourceClass()+"] with resourceId ["+resourceId+"] started");
     }
     protected void logProcessingStarted(final HttpMethod method, final String resourceName) {
-        log.info("Processing ["+method+"] request on resource ["+getService().getResourceClass()+"] with resourceId ["+resourceName+"] started");
+        log.info("Processing ["+method+"] request on resource ["+getService().getResourceClass()+"] with resourceName ["+resourceName+"] started");
     }
 
     protected void logProcessingFinished(final HttpMethod method, final Integer resourceId) {
         log.info("Processing ["+method+"] request on resource ["+getService().getResourceClass()+"] with resourceId ["+resourceId+"] successfully finished.");
     }
     protected void logProcessingFinished(final HttpMethod method, final String resourceName) {
-        log.info("Processing ["+method+"] request on resource ["+getService().getResourceClass()+"] with resourceId ["+resourceName+"] successfully finished.");
+        log.info("Processing ["+method+"] request on resource ["+getService().getResourceClass()+"] with resourceName ["+resourceName+"] successfully finished.");
     }
     protected void logProcessingFinished(final HttpMethod method) {
         log.info("Processing ["+method+"] request on resource ["+getService().getResourceClass()+"] successfully finished.");
