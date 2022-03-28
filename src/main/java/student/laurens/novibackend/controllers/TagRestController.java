@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.Tag;
-import student.laurens.novibackend.exceptions.RoleNotFoundException;
+import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.services.TagService;
 
 /**
@@ -32,12 +32,12 @@ public class TagRestController extends BaseRestController<Tag> {
     }
 
     @PutMapping("/{tagId}")
-    public ResponseEntity<Tag> updateTag(@PathVariable Integer tagId, @RequestBody Tag tag){
+    public ResponseEntity<Tag> updateTag(@PathVariable Integer tagId, @RequestBody Tag tag) throws ResourceNotFoundException {
         return update(tagId, tag);
     }
 
     @DeleteMapping("/{tagId}")
-    public ResponseEntity deleteTag(@PathVariable Integer tagId) throws RoleNotFoundException {
+    public ResponseEntity deleteTag(@PathVariable Integer tagId) throws ResourceNotFoundException {
         return delete(tagId);
     }
 }

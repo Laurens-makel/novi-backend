@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.Role;
-import student.laurens.novibackend.exceptions.RoleNotFoundException;
+import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.services.RoleService;
 
 /**
@@ -46,12 +46,12 @@ public class RoleRestController extends BaseRestController<Role> {
     }
 
     @PutMapping("/{roleId}")
-    public ResponseEntity<Role> updateRole(@PathVariable Integer roleId, @RequestBody Role role){
+    public ResponseEntity<Role> updateRole(@PathVariable Integer roleId, @RequestBody Role role) throws ResourceNotFoundException{
         return update(roleId, role);
     }
 
     @DeleteMapping("/{roleId}")
-    public ResponseEntity deleteRole(@PathVariable Integer roleId) throws RoleNotFoundException {
+    public ResponseEntity deleteRole(@PathVariable Integer roleId) throws ResourceNotFoundException {
         return delete(roleId);
     }
 
