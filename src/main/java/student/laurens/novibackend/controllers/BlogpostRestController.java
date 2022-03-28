@@ -1,12 +1,19 @@
 package student.laurens.novibackend.controllers;
 
 import lombok.Getter;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import student.laurens.novibackend.dto.BlogpostDto;
 import student.laurens.novibackend.entities.Blogpost;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.services.BlogpostService;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * Rest Controller that exposes CRUD methods for {@link Blogpost}.
@@ -28,6 +35,8 @@ import student.laurens.novibackend.services.BlogpostService;
 @RestController
 @RequestMapping("/blogposts")
 public class BlogpostRestController extends BaseRestController<Blogpost> {
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Autowired
     private @Getter BlogpostService service;
@@ -38,8 +47,12 @@ public class BlogpostRestController extends BaseRestController<Blogpost> {
     }
 
     @GetMapping
-    public ResponseEntity<Iterable<Blogpost>> getBlogposts() {
-        return get();
+    public ResponseEntity<List<BlogpostDto>> getBlogposts() {
+        List<BlogpostDto> posts = StreamSupport.stream(getService().getResources().spliterator(), false)
+                .map(user -> modelMapper.map(user, BlogpostDto.class))
+                .collect(Collectors.toList());
+
+        return new ResponseEntity(posts, HttpStatus.OK);
     }
 
     @PostMapping
