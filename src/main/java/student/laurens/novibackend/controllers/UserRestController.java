@@ -1,18 +1,23 @@
 package student.laurens.novibackend.controllers;
 
 import lombok.Getter;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import student.laurens.novibackend.dto.UserDto;
 import student.laurens.novibackend.entities.AppUserDetails;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.exceptions.UserNotFoundException;
 import student.laurens.novibackend.services.AppUserDetailsService;
 
 import java.security.Principal;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * Rest Controller that exposes CRUD methods for {@link User}.
@@ -43,6 +48,8 @@ import java.security.Principal;
  */
 @RestController
 public class UserRestController extends BaseRestController<User>{
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Autowired
     private @Getter AppUserDetailsService service;
@@ -59,8 +66,12 @@ public class UserRestController extends BaseRestController<User>{
     }
 
     @GetMapping("/users")
-    public ResponseEntity<Iterable<User>> getUsers() {
-        return get();
+    public ResponseEntity<List<UserDto>> getUsers() {
+        List<UserDto> users = StreamSupport.stream(getService().getResources().spliterator(), false)
+                .map(user -> modelMapper.map(user, UserDto.class))
+                .collect(Collectors.toList());
+
+        return new ResponseEntity(users, HttpStatus.OK);
     }
 
     @PostMapping("/users")
