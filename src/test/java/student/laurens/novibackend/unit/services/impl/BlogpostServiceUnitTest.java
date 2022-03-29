@@ -13,6 +13,7 @@ import student.laurens.novibackend.entities.Blogpost;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.BlogpostRepository;
 import student.laurens.novibackend.services.BlogpostService;
+import student.laurens.novibackend.services.PermissionPolicy;
 import student.laurens.novibackend.unit.services.OwnedServiceUnitTestBase;
 
 import java.util.Arrays;
@@ -20,7 +21,27 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BlogpostServiceUnitTest extends OwnedServiceUnitTestBase<Blogpost> {
+public class BlogpostServiceUnitTest extends ParentServiceUnitBase<Blogpost> {
+
+    @Override
+    protected PermissionPolicy get_expected_is_read_on_child_permitted_admin() {
+        return PermissionPolicy.ALLOW;
+    }
+
+    @Override
+    protected PermissionPolicy get_expected_is_create_on_child_permitted_admin() {
+        return PermissionPolicy.ALLOW;
+    }
+
+    @Override
+    protected PermissionPolicy get_expected_is_update_on_child_permitted_admin() {
+        return PermissionPolicy.ALLOW;
+    }
+
+    @Override
+    protected PermissionPolicy get_expected_is_delete_on_child_permitted_admin() {
+        return PermissionPolicy.ALLOW;
+    }
 
     @TestConfiguration
     static class BlogpostServiceeTestContextConfiguration {

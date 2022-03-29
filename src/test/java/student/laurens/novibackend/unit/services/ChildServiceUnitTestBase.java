@@ -13,6 +13,12 @@ import student.laurens.novibackend.services.PermissionPolicy;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Base class to provide default methods for testing Service for child resources.
+ *
+ * @author Laurens Mäkel
+ * @version 1.0, March 2022
+ */
 public abstract class ChildServiceUnitTestBase<R extends AbstractEntity,P extends AbstractOwnedEntity> extends UnitTestBase<R> {
 
     abstract protected ChildBaseService<R, P> getService();

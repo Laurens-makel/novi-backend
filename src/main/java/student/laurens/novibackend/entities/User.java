@@ -52,7 +52,7 @@ public class User extends AbstractOwnedEntity {
     private @Getter Set<Role> roles = new HashSet<>();
 
     public boolean hasRole(String name){
-        return getRoles().stream().anyMatch( (role -> role.getName().equalsIgnoreCase(name)));
+        return getRoles().stream().peek((role -> log.info("User has role ["+role.getName()+"]"))).anyMatch( (role -> role.getName().equalsIgnoreCase(name)));
     }
 
     @Override
