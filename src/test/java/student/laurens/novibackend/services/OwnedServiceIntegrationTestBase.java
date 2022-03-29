@@ -12,13 +12,16 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Laurens Mäkel
  * @version 1.0, March 2022
  */
-public abstract class ServiceIntegrationTestBase<R extends AbstractEntity> extends TestBase<R> {
+public abstract class OwnedServiceIntegrationTestBase<R extends AbstractEntity> extends TestBase<R> {
+
+    abstract protected R create(User owner);
 
     @Test
-    public void get_resource() {
+    public void get_resource_owned_admin() {
         // given
         R resource = create();
         mockResourceGetById(resource);
+        mockResourceExistsById(resource);
 
         // when
         R found = getService().getResourceById(resource.getId(), consumer());
@@ -28,10 +31,11 @@ public abstract class ServiceIntegrationTestBase<R extends AbstractEntity> exten
         verifyGetOneIsCalledOnce(resource.getId());
     }
 
+
     @Test
-    public void create_resource() {
+    public void create_resource_owned_admin() {
         // given
-        R resource = create();
+        R resource = create(consumer(createRole("ADMIN")));
 
         // when
         getService().createResource(resource);
@@ -41,10 +45,11 @@ public abstract class ServiceIntegrationTestBase<R extends AbstractEntity> exten
     }
 
     @Test
-    public void update_resource() {
+    public void update_resource_owned_admin() {
         // given
-        User consumer = consumer();
-        R resource = create();
+        User consumer = consumer(createRole("ADMIN"));
+        R resource = create(consumer);
+        mockResourceGetById(resource);
         mockResourceExistsById(resource);
 
         // when
@@ -52,14 +57,16 @@ public abstract class ServiceIntegrationTestBase<R extends AbstractEntity> exten
 
         // then
         verifyExistsByIdIsCalledOnce(resource.getId());
+        verifyGetOneIsCalledOnce(resource.getId());
         verifySaveIsCalledOnce(resource);
     }
 
     @Test
-    public void delete_resource() {
-        // Given
-        R resource = create();
-        User consumer = consumer();
+    public void delete_resource_owned_admin() {
+        // given
+        User consumer = consumer(createRole("ADMIN"));
+        R resource = create(consumer);
+        mockResourceGetById(resource);
         mockResourceExistsById(resource);
 
         // when
@@ -67,6 +74,7 @@ public abstract class ServiceIntegrationTestBase<R extends AbstractEntity> exten
 
         // then
         verifyExistsByIdIsCalledOnce(resource.getId());
+        verifyGetOneIsCalledOnce(resource.getId());
         verifyDeleteByIdIsCalledOnce(resource.getId());
     }
 }

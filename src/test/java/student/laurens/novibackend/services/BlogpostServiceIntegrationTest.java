@@ -1,5 +1,6 @@
 package student.laurens.novibackend.services;
 
+import lombok.Getter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -9,6 +10,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import student.laurens.novibackend.entities.Blogpost;
+import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.BlogpostRepository;
 
 import java.util.Arrays;
@@ -16,7 +18,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BlogpostServiceIntegrationTest extends ServiceIntegrationTestBase {
+public class BlogpostServiceIntegrationTest extends OwnedServiceIntegrationTestBase<Blogpost> {
 
     @TestConfiguration
     static class BlogpostServiceeTestContextConfiguration {
@@ -27,10 +29,21 @@ public class BlogpostServiceIntegrationTest extends ServiceIntegrationTestBase {
     }
 
     @Autowired
-    private BlogpostService service;
+    private @Getter BlogpostService service;
 
     @MockBean
-    private BlogpostRepository repository;
+    private @Getter BlogpostRepository repository;
+
+    @Override
+    protected Blogpost create() {
+        return createBlogpost("test", "content");
+    }
+    @Override
+    protected Blogpost create(User owner) {
+        Blogpost blog = createBlogpost("test", "content");
+        blog.setAuthor(owner);
+        return blog;
+    }
 
     @Before
     public void setup(){
@@ -62,11 +75,6 @@ public class BlogpostServiceIntegrationTest extends ServiceIntegrationTestBase {
         verifySaveIsCalledOnce(post);
     }
 
-    private void verifySaveIsCalledOnce(Blogpost post) {
-        Mockito.verify(repository, VerificationModeFactory.times(1)).save(post);
-        Mockito.reset(repository);
-    }
-
     private void verifyFindByTitleIsCalledOnce(String title) {
         Mockito.verify(repository, VerificationModeFactory.times(1)).findByTitle(title);
         Mockito.reset(repository);
@@ -79,6 +87,7 @@ public class BlogpostServiceIntegrationTest extends ServiceIntegrationTestBase {
         blogpost.setContent(content);
         blogpost.setPublished(true);
         blogpost.setAuthor(createTestUser("Bob", "Marley", "MARLEY", "MyPassword123"));
+        blogpost.setId(generateId());
 
         return blogpost;
     }

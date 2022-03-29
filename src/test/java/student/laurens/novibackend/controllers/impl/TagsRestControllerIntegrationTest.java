@@ -3,9 +3,7 @@ package student.laurens.novibackend.controllers.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import student.laurens.novibackend.controllers.ControllerIntegrationTestBase;
-import student.laurens.novibackend.entities.Role;
 import student.laurens.novibackend.entities.Tag;
-import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.TagRepository;
 
 public class TagsRestControllerIntegrationTest extends ControllerIntegrationTestBase<Tag> {

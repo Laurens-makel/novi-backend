@@ -1,5 +1,6 @@
 package student.laurens.novibackend.services;
 
+import lombok.Getter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -23,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Laurens Mäkel
  * @version 1.0, March 2022
  */
-public class AppUserDetailsServiceIntegrationTest extends ServiceIntegrationTestBase {
+public class AppUserDetailsServiceIntegrationTest extends OwnedServiceIntegrationTestBase<User> {
 
     @TestConfiguration
     static class EmployeeServiceImplTestContextConfiguration {
@@ -34,10 +35,19 @@ public class AppUserDetailsServiceIntegrationTest extends ServiceIntegrationTest
     }
 
     @Autowired
-    private AppUserDetailsService service;
+    private @Getter AppUserDetailsService service;
 
     @MockBean
-    private UserRepository repository;
+    private @Getter UserRepository repository;
+
+    @Override
+    protected User create() {
+        return consumer();
+    }
+    @Override
+    protected User create(User user) {
+        return user;
+    }
 
     @Before
     public void setup(){
