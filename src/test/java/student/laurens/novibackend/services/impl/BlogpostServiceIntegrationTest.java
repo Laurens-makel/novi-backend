@@ -88,7 +88,7 @@ public class BlogpostServiceIntegrationTest extends OwnedServiceIntegrationTestB
         blogpost.setTitle(title);
         blogpost.setContent(content);
         blogpost.setPublished(true);
-        blogpost.setAuthor(createTestUser("Bob", "Marley", "MARLEY", "MyPassword123"));
+        blogpost.setAuthor(createUniqueContentCreator());
         blogpost.setId(generateId());
 
         return blogpost;

@@ -53,9 +53,9 @@ public class AppUserDetailsServiceIntegrationTest extends OwnedServiceIntegratio
 
     @Before
     public void setup(){
-        User bob = createTestUser("Bob", "Doe", "BOB", "myPass123");
-        User john = createTestUser("John", "Doe", "JOHN", "myPass123");
-        User alex = createTestUser("Alex", "Doe", "ALEX", "myPass123");
+        User bob = createTestUser("Bob", "Doe", "BOB", "myPass123", "USER");
+        User john = createTestUser("John", "Doe", "JOHN", "myPass123","USER");
+        User alex = createTestUser("Alex", "Doe", "ALEX", "myPass123","USER");
 
         List<User> users = Arrays.asList(john, bob, alex);
 
@@ -84,9 +84,9 @@ public class AppUserDetailsServiceIntegrationTest extends OwnedServiceIntegratio
 
     @Test
     public void given3Users_whengetAll_thenReturn3Records() {
-        User bob = createTestUser("Bob", "Doe", "BOB", "myPass123");
-        User john = createTestUser("John", "Doe", "JOHN", "myPass123");
-        User alex = createTestUser("Alex", "Doe", "ALEX", "myPass123");
+        User bob = createTestUser("Bob", "Doe", "BOB", "myPass123", "USER");
+        User john = createTestUser("John", "Doe", "JOHN", "myPass123", "USER");
+        User alex = createTestUser("Alex", "Doe", "ALEX", "myPass123", "USER");
 
         Iterable<User> users = service.getResources();
         verifyFindAllUsersIsCalledOnce();
@@ -96,7 +96,7 @@ public class AppUserDetailsServiceIntegrationTest extends OwnedServiceIntegratio
 
     @Test
     public void whenAddingUser_ThenRepositorySaveUserIsCalled() {
-        User peter = createTestUser("Peter", "Doe", "PETER", "myPass123");
+        User peter = createTestUser("Peter", "Doe", "PETER", "myPass123", "USER");
 
         service.createResource(peter);
         verifySaveUserIsCalledOnce(peter);

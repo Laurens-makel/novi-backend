@@ -11,6 +11,8 @@ import student.laurens.novibackend.entities.Role;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.ResourceRepository;
 
+import java.util.Date;
+
 /**
  * Base class to provide default methods for testing Service.
  *
@@ -20,6 +22,17 @@ import student.laurens.novibackend.repositories.ResourceRepository;
 @RunWith(SpringRunner.class)
 @TestPropertySource(locations = "classpath:application-integration-test.properties")
 public abstract class TestBase <R extends AbstractEntity> {
+    protected final String USER = "DefaultUser";
+    protected final String USER_ROLE = "USER";
+
+    protected final String ADMIN = "DefaultAdmin";
+    protected final String ADMIN_ROLE = "ADMIN";
+
+    protected final String CONTENT_CREATOR = "DefaultContentCreator";
+    protected final String CONTENT_CREATOR_ROLE = "CONTENT_CREATOR";
+
+    protected final String MODERATOR = "DefaultModerator";
+    protected final String MODERATOR_ROLE = "MODERATOR";
 
     @After
     public void base_breakdown(){
@@ -44,23 +57,41 @@ public abstract class TestBase <R extends AbstractEntity> {
     }
 
     protected User consumer(){
-        return createTestUser("Joe", "Biden", "SleepyJoe123", "GoBrandon");
+        return createTestUser("Joe", "Biden", "SleepyJoe123", "GoBrandon", "USER");
     }
     protected User consumer(Role role){
-        User consumer = createTestUser("Joe", "Biden", "SleepyJoe123", "GoBrandon");
+        User consumer = createTestUser("Joe", "Biden", "SleepyJoe123", "GoBrandon", "USER");
         consumer.getRoles().clear();
         consumer.getRoles().add(role);
         return consumer;
     }
+    protected String unique(String text){
+        return text + new Date().getTime();
+    }
 
-    protected User createTestUser(String firstname, String lastname, String username, String password){
+    protected User createDefaultUser(){
+        return createTestUser("Bob", "Doe", USER, "MyPassword123", "USER");
+    }
+    protected User createDefaultAdmin(){
+        return createTestUser("John", "Doe", ADMIN, "MyPassword123", "ADMIN");
+    }
+    protected User createDefaultContentCreator(){
+        return createTestUser("Kanye", "West", CONTENT_CREATOR, "MyPassword123", "CONTENT_CREATOR");
+    }
+    protected User createUniqueContentCreator(){
+        return createTestUser("Kanye", "West", unique(CONTENT_CREATOR), "MyPassword123", "CONTENT_CREATOR");
+    }
+    protected User createDefaultModerator(){
+        return createTestUser("Kanye", "West", MODERATOR, "MyPassword123", "MODERATOR");
+    }
+    protected User createTestUser(String firstname, String lastname, String username, String password,  String role){
         User testUser = new User();
 
         testUser.setFirstName(firstname);
         testUser.setLastName(lastname);
         testUser.setUsername(username);
         testUser.setPassword(password);
-        testUser.getRoles().add(createRole("USER"));
+        testUser.getRoles().add(createRole(role));
 
         return testUser;
     }
