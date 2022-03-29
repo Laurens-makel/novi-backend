@@ -14,14 +14,14 @@ import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.BlogpostRepository;
 import student.laurens.novibackend.services.BlogpostService;
 import student.laurens.novibackend.services.PermissionPolicy;
-import student.laurens.novibackend.unit.services.OwnedServiceUnitTestBase;
+import student.laurens.novibackend.unit.services.ParentServiceUnitTestBase;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BlogpostServiceUnitTest extends ParentServiceUnitBase<Blogpost> {
+public class BlogpostServiceUnitTest extends ParentServiceUnitTestBase<Blogpost> {
 
     @Override
     protected PermissionPolicy get_expected_is_read_on_child_permitted_admin() {

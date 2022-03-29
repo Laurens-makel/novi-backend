@@ -1,15 +1,14 @@
-package student.laurens.novibackend.unit.services.impl;
+package student.laurens.novibackend.unit.services;
 
 import org.junit.Test;
 import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.services.ParentBaseService;
 import student.laurens.novibackend.services.PermissionPolicy;
-import student.laurens.novibackend.unit.services.OwnedServiceUnitTestBase;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public abstract class ParentServiceUnitBase<R extends AbstractEntity> extends OwnedServiceUnitTestBase {
+public abstract class ParentServiceUnitTestBase<R extends AbstractEntity> extends OwnedServiceUnitTestBase {
 
     abstract protected ParentBaseService<R> getService();
 
