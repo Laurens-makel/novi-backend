@@ -1,4 +1,4 @@
-package student.laurens.novibackend.services;
+package student.laurens.novibackend.services.impl;
 
 import lombok.Getter;
 import org.junit.Before;
@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Bean;
 import student.laurens.novibackend.entities.Blogpost;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.BlogpostRepository;
+import student.laurens.novibackend.services.BlogpostService;
+import student.laurens.novibackend.services.OwnedServiceIntegrationTestBase;
 
 import java.util.Arrays;
 import java.util.List;

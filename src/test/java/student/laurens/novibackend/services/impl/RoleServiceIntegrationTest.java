@@ -1,4 +1,4 @@
-package student.laurens.novibackend.services;
+package student.laurens.novibackend.services.impl;
 
 import lombok.Getter;
 import org.junit.After;
@@ -12,6 +12,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import student.laurens.novibackend.repositories.RoleRepository;
 import student.laurens.novibackend.entities.*;
+import student.laurens.novibackend.services.RoleService;
+import student.laurens.novibackend.services.ServiceIntegrationTestBase;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,4 +1,4 @@
-package student.laurens.novibackend.services;
+package student.laurens.novibackend.services.impl;
 
 import lombok.Getter;
 import org.junit.Before;
@@ -13,6 +13,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import student.laurens.novibackend.entities.AppUserDetails;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.UserRepository;
+import student.laurens.novibackend.services.AppUserDetailsService;
+import student.laurens.novibackend.services.OwnedServiceIntegrationTestBase;
 
 import java.util.Arrays;
 import java.util.List;
