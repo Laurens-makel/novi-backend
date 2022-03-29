@@ -1,4 +1,4 @@
-package student.laurens.novibackend.services.impl;
+package student.laurens.novibackend.unit.services.impl;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +10,10 @@ import student.laurens.novibackend.entities.Comment;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.CommentRepository;
 import student.laurens.novibackend.services.BlogpostService;
-import student.laurens.novibackend.services.ChildServiceIntegrationTestBase;
+import student.laurens.novibackend.unit.services.ChildServiceUnitTestBase;
 import student.laurens.novibackend.services.CommentService;
 
-public class CommentServiceIntegrationTest extends ChildServiceIntegrationTestBase<Comment, Blogpost> {
+public class CommentServiceUnitTest extends ChildServiceUnitTestBase<Comment, Blogpost> {
 
     @TestConfiguration
     static class CommentServiceTestContextConfiguration {

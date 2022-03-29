@@ -1,4 +1,4 @@
-package student.laurens.novibackend.services;
+package student.laurens.novibackend.unit.services;
 
 import org.junit.Test;
 import student.laurens.novibackend.entities.AbstractEntity;
@@ -12,16 +12,13 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Laurens Mäkel
  * @version 1.0, March 2022
  */
-public abstract class OwnedServiceIntegrationTestBase<R extends AbstractEntity> extends TestBase<R> {
-
-    abstract protected R create(User owner);
+public abstract class ServiceUnitTestBase<R extends AbstractEntity> extends UnitTestBase<R> {
 
     @Test
-    public void get_resource_owned_admin() {
+    public void get_resource() {
         // given
         R resource = create();
         mockResourceGetById(resource);
-        mockResourceExistsById(resource);
 
         // when
         R found = getService().getResourceById(resource.getId(), consumer());
@@ -31,11 +28,10 @@ public abstract class OwnedServiceIntegrationTestBase<R extends AbstractEntity> 
         verifyGetOneIsCalledOnce(resource.getId());
     }
 
-
     @Test
-    public void create_resource_owned_admin() {
+    public void create_resource() {
         // given
-        R resource = create(consumer(createRole("ADMIN")));
+        R resource = create();
 
         // when
         getService().createResource(resource);
@@ -45,11 +41,10 @@ public abstract class OwnedServiceIntegrationTestBase<R extends AbstractEntity> 
     }
 
     @Test
-    public void update_resource_owned_admin() {
+    public void update_resource() {
         // given
-        User consumer = consumer(createRole("ADMIN"));
-        R resource = create(consumer);
-        mockResourceGetById(resource);
+        User consumer = consumer();
+        R resource = create();
         mockResourceExistsById(resource);
 
         // when
@@ -57,16 +52,14 @@ public abstract class OwnedServiceIntegrationTestBase<R extends AbstractEntity> 
 
         // then
         verifyExistsByIdIsCalledOnce(resource.getId());
-        verifyGetOneIsCalledOnce(resource.getId());
         verifySaveIsCalledOnce(resource);
     }
 
     @Test
-    public void delete_resource_owned_admin() {
-        // given
-        User consumer = consumer(createRole("ADMIN"));
-        R resource = create(consumer);
-        mockResourceGetById(resource);
+    public void delete_resource() {
+        // Given
+        R resource = create();
+        User consumer = consumer();
         mockResourceExistsById(resource);
 
         // when
@@ -74,7 +67,6 @@ public abstract class OwnedServiceIntegrationTestBase<R extends AbstractEntity> 
 
         // then
         verifyExistsByIdIsCalledOnce(resource.getId());
-        verifyGetOneIsCalledOnce(resource.getId());
         verifyDeleteByIdIsCalledOnce(resource.getId());
     }
 }

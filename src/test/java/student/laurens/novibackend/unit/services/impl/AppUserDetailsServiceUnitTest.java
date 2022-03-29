@@ -1,4 +1,4 @@
-package student.laurens.novibackend.services.impl;
+package student.laurens.novibackend.unit.services.impl;
 
 import lombok.Getter;
 import org.junit.Before;
@@ -14,7 +14,7 @@ import student.laurens.novibackend.entities.AppUserDetails;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.UserRepository;
 import student.laurens.novibackend.services.AppUserDetailsService;
-import student.laurens.novibackend.services.OwnedServiceIntegrationTestBase;
+import student.laurens.novibackend.unit.services.OwnedServiceUnitTestBase;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Laurens Mäkel
  * @version 1.0, March 2022
  */
-public class AppUserDetailsServiceIntegrationTest extends OwnedServiceIntegrationTestBase<User> {
+public class AppUserDetailsServiceUnitTest extends OwnedServiceUnitTestBase<User> {
 
     @TestConfiguration
     static class EmployeeServiceImplTestContextConfiguration {

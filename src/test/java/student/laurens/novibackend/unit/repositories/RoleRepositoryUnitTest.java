@@ -1,9 +1,10 @@
-package student.laurens.novibackend.repositories;
+package student.laurens.novibackend.unit.repositories;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import student.laurens.novibackend.entities.Role;
+import student.laurens.novibackend.repositories.RoleRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -13,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Laurens Mäkel
  * @version 1.0, March 2022
  */
-public class RoleRepositoryIntegrationTest extends RepositoryIntegrationTestBase {
+public class RoleRepositoryUnitTest extends RepositoryUnitTestBase {
 
     @Autowired
     private TestEntityManager entityManager;

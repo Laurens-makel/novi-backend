@@ -1,13 +1,14 @@
-package student.laurens.novibackend.repositories;
+package student.laurens.novibackend.unit.repositories;
 
 import org.junit.After;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import student.laurens.novibackend.entities.Blogpost;
+import student.laurens.novibackend.repositories.BlogpostRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BlogpostRepositoryIntegrationTest extends RepositoryIntegrationTestBase {
+public class BlogpostRepositoryUnitTest extends RepositoryUnitTestBase {
 
     @Autowired
     private BlogpostRepository repository;

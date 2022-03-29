@@ -1,4 +1,4 @@
-package student.laurens.novibackend.services.impl;
+package student.laurens.novibackend.unit.services.impl;
 
 import lombok.Getter;
 import org.junit.Before;
@@ -13,14 +13,14 @@ import student.laurens.novibackend.entities.Blogpost;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.BlogpostRepository;
 import student.laurens.novibackend.services.BlogpostService;
-import student.laurens.novibackend.services.OwnedServiceIntegrationTestBase;
+import student.laurens.novibackend.unit.services.OwnedServiceUnitTestBase;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BlogpostServiceIntegrationTest extends OwnedServiceIntegrationTestBase<Blogpost> {
+public class BlogpostServiceUnitTest extends OwnedServiceUnitTestBase<Blogpost> {
 
     @TestConfiguration
     static class BlogpostServiceeTestContextConfiguration {

@@ -25,7 +25,7 @@ public class User extends AbstractOwnedEntity {
     @Id
     @Column(name = "UID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private @Getter Integer uid;
+    private @Getter @Setter Integer uid;
 
     @Column(name = "USERNAME", nullable = false, unique = true)
     private @Getter @Setter String username;

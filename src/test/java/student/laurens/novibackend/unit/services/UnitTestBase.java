@@ -1,4 +1,4 @@
-package student.laurens.novibackend.services;
+package student.laurens.novibackend.unit.services;
 
 import org.junit.After;
 import org.junit.runner.RunWith;
@@ -10,6 +10,7 @@ import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.entities.Role;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.ResourceRepository;
+import student.laurens.novibackend.services.BaseService;
 
 import java.util.Date;
 
@@ -21,7 +22,7 @@ import java.util.Date;
  */
 @RunWith(SpringRunner.class)
 @TestPropertySource(locations = "classpath:application-integration-test.properties")
-public abstract class TestBase <R extends AbstractEntity> {
+public abstract class UnitTestBase<R extends AbstractEntity> {
     protected final String USER = "DefaultUser";
     protected final String USER_ROLE = "USER";
 
@@ -92,6 +93,7 @@ public abstract class TestBase <R extends AbstractEntity> {
         testUser.setUsername(username);
         testUser.setPassword(password);
         testUser.getRoles().add(createRole(role));
+        testUser.setUid(generateId());
 
         return testUser;
     }

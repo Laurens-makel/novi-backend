@@ -1,4 +1,4 @@
-package student.laurens.novibackend.services.impl;
+package student.laurens.novibackend.unit.services.impl;
 
 import lombok.Getter;
 import org.junit.After;
@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Bean;
 import student.laurens.novibackend.repositories.RoleRepository;
 import student.laurens.novibackend.entities.*;
 import student.laurens.novibackend.services.RoleService;
-import student.laurens.novibackend.services.ServiceIntegrationTestBase;
+import student.laurens.novibackend.unit.services.ServiceUnitTestBase;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Laurens Mäkel
  * @version 1.0, March 2022
  */
-public class RoleServiceIntegrationTest extends ServiceIntegrationTestBase<Role> {
+public class RoleServiceUnitTest extends ServiceUnitTestBase<Role> {
 
     @TestConfiguration
     static class RoleServiceTestContextConfiguration {

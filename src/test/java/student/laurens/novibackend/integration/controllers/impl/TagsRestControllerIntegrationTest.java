@@ -1,8 +1,8 @@
-package student.laurens.novibackend.controllers.impl;
+package student.laurens.novibackend.integration.controllers.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import student.laurens.novibackend.controllers.ControllerIntegrationTestBase;
+import student.laurens.novibackend.integration.controllers.ControllerIntegrationTestBase;
 import student.laurens.novibackend.entities.Tag;
 import student.laurens.novibackend.repositories.TagRepository;
 

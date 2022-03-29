@@ -1,4 +1,4 @@
-package student.laurens.novibackend.controllers;
+package student.laurens.novibackend.integration.controllers;
 
 import org.junit.After;
 import org.junit.Before;

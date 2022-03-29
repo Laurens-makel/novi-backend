@@ -1,9 +1,10 @@
-package student.laurens.novibackend.repositories;
+package student.laurens.novibackend.unit.repositories;
 
 import org.junit.After;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import student.laurens.novibackend.entities.User;
+import student.laurens.novibackend.repositories.UserRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -13,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Laurens Mäkel
  * @version 1.0, March 2022
  */
-public class UserRepositoryIntegrationTest extends RepositoryIntegrationTestBase {
+public class UserRepositoryUnitTest extends RepositoryUnitTestBase {
 
     @Autowired
     private UserRepository repository;
