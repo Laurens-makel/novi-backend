@@ -10,6 +10,9 @@ import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.BlogpostRepository;
 
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * Transactional service that takes care of interactions with  {@link BlogpostRepository}.
@@ -27,8 +30,11 @@ public class BlogpostService extends ParentBaseService<Blogpost> {
     private @Getter BlogpostRepository repository;
 
     @Override
-    public Iterable<Blogpost> getResources() {
-        return repository.findAllPublished();
+    public List<Blogpost> getResources() {
+        Iterable<Blogpost> resourcesIterable = repository.findAllPublished();
+
+        return StreamSupport.stream(resourcesIterable.spliterator(), false)
+                .collect(Collectors.toList());
     }
 
     @Override

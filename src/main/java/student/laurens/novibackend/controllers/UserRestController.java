@@ -13,6 +13,7 @@ import student.laurens.novibackend.exceptions.UserNotFoundException;
 import student.laurens.novibackend.services.AppUserDetailsService;
 
 import java.security.Principal;
+import java.util.List;
 
 /**
  * Rest Controller that exposes CRUD methods for {@link User}.
@@ -59,7 +60,7 @@ public class UserRestController extends BaseRestController<User>{
     }
 
     @GetMapping("/users")
-    public ResponseEntity<Iterable<User>> getUsers() {
+    public ResponseEntity<List<User>> getUsers() {
         return get();
     }
 

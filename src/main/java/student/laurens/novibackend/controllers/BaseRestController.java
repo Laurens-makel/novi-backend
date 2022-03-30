@@ -17,6 +17,7 @@ import student.laurens.novibackend.services.AppUserDetailsService;
 import student.laurens.novibackend.services.BaseService;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -56,10 +57,10 @@ public abstract class BaseRestController<R extends AbstractEntity> {
      * Provides a default way to handle GET requests on {@link student.laurens.novibackend.entities.AbstractEntity} resources.
      * Should be implemented by resource specific controller classes.
      */
-    public ResponseEntity<Iterable<R>> get() {
+    public ResponseEntity<List<R>> get() {
         logProcessingStarted(HttpMethod.GET);
 
-        Iterable<R> resources = getService().getResources();
+        List<R> resources = getService().getResources();
 
         logProcessingFinished(HttpMethod.GET);
         return createSuccessResponseGET(resources);
@@ -172,7 +173,7 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         }
     }
 
-    protected ResponseEntity<Iterable<R>> createSuccessResponseGET(Iterable<R> resources){
+    protected ResponseEntity<List<R>> createSuccessResponseGET(List<R> resources){
         return new ResponseEntity<>(resources, HttpStatus.OK);
     }
     protected ResponseEntity<R> createSuccessResponseGET(final R resource){

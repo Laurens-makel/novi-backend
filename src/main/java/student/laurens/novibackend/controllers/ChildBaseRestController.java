@@ -7,6 +7,8 @@ import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.exceptions.ResourceForbiddenException;
 import student.laurens.novibackend.services.ChildBaseService;
 
+import java.util.List;
+
 /**
  * Base class for RestControllers which expose CRUD methods for {@link AbstractOwnedWithParentEntity}.
  *
@@ -47,10 +49,10 @@ public abstract class ChildBaseRestController<R extends AbstractEntity, P extend
      * @throws ResourceNotFoundException - Thrown when parent resource or resource could not be found.
      * @throws ResourceForbiddenException - Thrown when parent resource or resource is not owned by current consumer of the API.
      */
-    public ResponseEntity<Iterable<R>> getResources(final Integer parentResourceId) throws ResourceNotFoundException, ResourceForbiddenException {
+    public ResponseEntity<List<R>> getResources(final Integer parentResourceId) throws ResourceNotFoundException, ResourceForbiddenException {
         logProcessingStarted(HttpMethod.GET, parentResourceId);
 
-        Iterable<R> resources = getService().getResources(parentResourceId, getConsumer());
+        List<R> resources = getService().getResources(parentResourceId, getConsumer());
 
         logProcessingFinished(HttpMethod.GET, parentResourceId);
         return createSuccessResponseGET(resources);

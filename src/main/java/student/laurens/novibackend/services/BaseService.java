@@ -10,7 +10,10 @@ import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.exceptions.ResourceForbiddenException;
 import student.laurens.novibackend.repositories.ResourceRepository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * Base class for Services which expose CRUD methods for {@link AbstractEntity}.
@@ -88,8 +91,11 @@ public abstract class BaseService<R extends AbstractEntity> {
     /**
      * Retrieves a list of resources from repository.
      */
-    public Iterable<R> getResources(){
-        return getRepository().findAll();
+    public List<R> getResources(){
+        Iterable<R> resourcesIterable = getRepository().findAll();
+
+        return StreamSupport.stream(resourcesIterable.spliterator(), false)
+                .collect(Collectors.toList());
     }
 
     /**
