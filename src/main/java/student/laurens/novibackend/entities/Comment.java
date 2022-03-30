@@ -1,7 +1,9 @@
 package student.laurens.novibackend.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -16,6 +18,8 @@ import java.util.Date;
 @Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "COMMENTS")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Comment extends AbstractOwnedWithParentEntity<Blogpost> {
 
     @Id
