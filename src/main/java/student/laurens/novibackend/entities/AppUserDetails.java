@@ -1,5 +1,7 @@
 package student.laurens.novibackend.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,6 +18,7 @@ import java.util.Set;
  * @author Laurens Mäkel
  * @version 1.0, March 2022
  */
+@NoArgsConstructor
 public class AppUserDetails extends AbstractEntity implements UserDetails  {
 
     private User user;

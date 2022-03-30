@@ -1,7 +1,11 @@
 package student.laurens.novibackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -20,6 +24,8 @@ import javax.persistence.*;
 @Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "USERS")
+@NoArgsConstructor
+@AllArgsConstructor
 public class User extends AbstractOwnedEntity {
 
     @Id
@@ -37,8 +43,10 @@ public class User extends AbstractOwnedEntity {
     private @Getter @Setter String lastName;
 
     @Column(name = "PASSWORD", nullable = false, length = 60)
+    @JsonIgnore
     private @Getter String password;
 
+    @JsonProperty
     public void setPassword(String password){
         this.password = new BCryptPasswordEncoder().encode(password);
     }
