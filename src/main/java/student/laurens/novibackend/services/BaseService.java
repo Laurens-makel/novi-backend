@@ -162,10 +162,9 @@ public abstract class BaseService<R extends AbstractEntity> {
             if(ownedResource.getOwnerUid() != consumer.getUid() && !consumer.hasRole("ADMIN") ){
                 log.warn("User ["+consumer.getUid()+"] tried to ["+method+"] a forbidden ["+resourceClass+"] with identifier ["+resourceId+"]");
                 throw new ResourceForbiddenException(resourceClass, resourceId);
-            } else {
-                log.info("User ["+consumer.getUid()+"] is the owner of resource ["+ownedResource.getOwnerUid()+"]");
             }
 
+            log.info("User ["+consumer.getUid()+"] is the owner of resource ["+ownedResource.getOwnerUid()+"]");
             return Optional.of(resource);
         }
         return Optional.empty();

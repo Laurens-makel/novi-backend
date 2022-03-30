@@ -1,6 +1,8 @@
 package student.laurens.novibackend.unit.services.impl;
 
 import lombok.Getter;
+import org.mockito.Mockito;
+import org.mockito.internal.verification.VerificationModeFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -61,6 +63,21 @@ public class CommentServiceUnitTest extends ChildServiceUnitTestBase<Comment, Bl
         comment.setContent("Example content");
 
         return comment;
+    }
+
+    @Override
+    protected String getName(Comment resource) {
+        return resource.getTitle();
+    }
+
+    @Override
+    protected void mockGetResourceByName(Comment resource) {
+        Mockito.when(repository.getCommentByTitle(resource.getTitle())).thenReturn(resource);
+    }
+
+    @Override
+    protected void verifyGetResourceByNameIsCalledOnce(Comment resource) {
+        Mockito.verify(repository, VerificationModeFactory.times(1)).getCommentByTitle(resource.getTitle());
     }
 
     private Blogpost createBlogpost() {

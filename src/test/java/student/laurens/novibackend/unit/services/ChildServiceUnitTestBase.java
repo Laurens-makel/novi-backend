@@ -75,6 +75,25 @@ public abstract class ChildServiceUnitTestBase<R extends AbstractEntity,P extend
         return createNotOwned(createNotOwnedParent());
     }
 
+    abstract protected String getName(R resource);
+    abstract protected void mockGetResourceByName(R resource);
+    abstract protected void verifyGetResourceByNameIsCalledOnce(R resource);
+
+    @Test
+    public void get_resource_by_name_owned_admin() {
+        // given
+        R resource = create();
+        mockResourceGetById(resource);
+        mockGetResourceByName(resource);
+
+        // when
+        R found = getService().getResource(getName(resource));
+
+        // then
+        assertThat(found.getId()).isEqualTo(resource.getId());
+        verifyGetResourceByNameIsCalledOnce(resource);
+    }
+
     @Test
     public void get_resource_owned_parent_owned_admin() {
         // given

@@ -31,7 +31,6 @@ public abstract class OwnedServiceUnitTestBase<R extends AbstractEntity> extends
         verifyGetOneIsCalledOnce(resource.getId());
     }
 
-
     @Test
     public void create_resource_owned_admin() {
         // given
