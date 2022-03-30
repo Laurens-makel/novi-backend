@@ -7,6 +7,10 @@ import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.exceptions.ResourceForbiddenException;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 public abstract class ChildBaseService <R extends AbstractEntity, P extends AbstractEntity> extends BaseService<R> {
 
     abstract protected ParentBaseService<P> getParentService();
@@ -35,10 +39,14 @@ public abstract class ChildBaseService <R extends AbstractEntity, P extends Abst
      *
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
      */
-    public Iterable<R> getResources(final Integer parentResourceId, final User consumer) {
+    public List<R> getResources(final Integer parentResourceId, final User consumer) {
         getParentService().exists(parentResourceId);
         validateOwnershipOfResources(parentResourceId, null, HttpMethod.GET, consumer);
-        return getRepository().findAll();
+
+        Iterable<R> resourcesIterable = getRepository().findAll();
+
+        return StreamSupport.stream(resourcesIterable.spliterator(), false)
+                .collect(Collectors.toList());
     }
     /**
      * Retrieves a resource from repository, specified by resource id.
