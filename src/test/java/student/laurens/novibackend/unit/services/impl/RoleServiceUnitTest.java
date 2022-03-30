@@ -31,8 +31,9 @@ public class RoleServiceUnitTest extends ServiceUnitTestBase<Role> {
     @TestConfiguration
     static class RoleServiceTestContextConfiguration {
         @Bean
-        public RoleService service() {
-            return new RoleService();
+        @Autowired
+        public RoleService service(RoleRepository repository) {
+            return new RoleService(repository);
         }
     }
 

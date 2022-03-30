@@ -44,10 +44,11 @@ public class BlogpostServiceUnitTest extends ParentServiceUnitTestBase<Blogpost>
     }
 
     @TestConfiguration
-    static class BlogpostServiceeTestContextConfiguration {
+    static class BlogpostServiceTestContextConfiguration {
         @Bean
-        public BlogpostService service() {
-            return new BlogpostService();
+        @Autowired
+        public BlogpostService service(BlogpostRepository repository) {
+            return new BlogpostService(repository);
         }
     }
 
@@ -55,7 +56,7 @@ public class BlogpostServiceUnitTest extends ParentServiceUnitTestBase<Blogpost>
     private @Getter BlogpostService service;
 
     @MockBean
-    private @Getter BlogpostRepository repository;
+    public @Getter BlogpostRepository repository;
 
     @Override
     protected Blogpost create() {

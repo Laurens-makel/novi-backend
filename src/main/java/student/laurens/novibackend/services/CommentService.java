@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.entities.Blogpost;
 import student.laurens.novibackend.entities.Comment;
+import student.laurens.novibackend.repositories.BlogpostRepository;
 import student.laurens.novibackend.repositories.CommentRepository;
 
 import javax.transaction.Transactional;
@@ -16,6 +17,10 @@ import javax.transaction.Transactional;
 @Component
 @Transactional
 public class CommentService extends ChildBaseService<Comment, Blogpost> {
+
+    public CommentService(CommentRepository repository){
+        this.repository = repository;
+    }
 
     @Autowired
     private @Getter CommentRepository repository;
