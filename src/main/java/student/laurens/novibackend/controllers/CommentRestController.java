@@ -2,6 +2,7 @@ package student.laurens.novibackend.controllers;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +38,7 @@ public class CommentRestController extends ChildBaseRestController<Comment, Blog
     }
 
     @GetMapping("/{commentId}")
-    public ResponseEntity<Comment> getComments(@PathVariable Integer blogpostId, @PathVariable Integer commentId) throws ResourceNotFoundException {
+    public ResponseEntity<Resource<Comment>> getComments(@PathVariable Integer blogpostId, @PathVariable Integer commentId) throws ResourceNotFoundException {
         return get(blogpostId, commentId);
     }
 
@@ -74,6 +75,12 @@ public class CommentRestController extends ChildBaseRestController<Comment, Blog
 
     @Override
     protected Map<String, ControllerLinkBuilder> getLinksForGetResource(Integer resourceId, Comment resource) {
-        return null;
+        Map<String, ControllerLinkBuilder> links = new HashMap<>();
+
+        links.put("blogpost", linkTo(methodOn(BlogpostRestController.class).get(resource.getParentId())));
+        links.put("delete", linkTo(methodOn(CommentRestController.class).deleteComment(resource.getParentId(), resource.getId())));
+        links.put("update", linkTo(methodOn(CommentRestController.class).updateComment(resource.getParentId(), resource.getId(), resource)));
+
+        return links;
     }
 }

@@ -58,26 +58,6 @@ public class UserRestController extends BaseRestController<User>{
         this.service = appUserDetailsService;
     }
 
-    @Override
-    protected Map<String, ControllerLinkBuilder> getLinksForGetResourceByName(String name, User resource) {
-        Map<String, ControllerLinkBuilder> links = new HashMap<>();
-
-        links.put("delete", linkTo(methodOn(UserRestController.class).deleteUser(resource.getId())));
-        links.put("update", linkTo(methodOn(UserRestController.class).updateUser(resource.getId(), resource)));
-
-        return links;
-    }
-
-    @Override
-    protected Map<String, ControllerLinkBuilder> getLinksForGetResource(Integer resourceId, User resource) {
-        Map<String, ControllerLinkBuilder> links = new HashMap<>();
-
-        links.put("delete", linkTo(methodOn(UserRestController.class).deleteUser(resource.getId())));
-        links.put("update", linkTo(methodOn(UserRestController.class).updateUser(resource.getId(), resource)));
-
-        return links;
-    }
-
     @GetMapping("/user")
     public ResponseEntity<AppUserDetails> getUser(Principal principal) {
         String username = principal.getName();
@@ -114,5 +94,25 @@ public class UserRestController extends BaseRestController<User>{
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
         return new ResponseEntity<>(passwordEncoder.encode(value), HttpStatus.OK);
+    }
+
+    @Override
+    protected Map<String, ControllerLinkBuilder> getLinksForGetResourceByName(String name, User resource) {
+        Map<String, ControllerLinkBuilder> links = new HashMap<>();
+
+        links.put("delete", linkTo(methodOn(UserRestController.class).deleteUser(resource.getId())));
+        links.put("update", linkTo(methodOn(UserRestController.class).updateUser(resource.getId(), resource)));
+
+        return links;
+    }
+
+    @Override
+    protected Map<String, ControllerLinkBuilder> getLinksForGetResource(Integer resourceId, User resource) {
+        Map<String, ControllerLinkBuilder> links = new HashMap<>();
+
+        links.put("delete", linkTo(methodOn(UserRestController.class).deleteUser(resource.getId())));
+        links.put("update", linkTo(methodOn(UserRestController.class).updateUser(resource.getId(), resource)));
+
+        return links;
     }
 }
