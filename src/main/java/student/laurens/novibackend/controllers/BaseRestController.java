@@ -85,14 +85,7 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         logProcessingStarted(HttpMethod.GET, name);
 
         R r = getService().getResource(name);
-        Resource<R> resource = new Resource<>( r );
-        for (Map.Entry<String, ControllerLinkBuilder> entry : getLinksForGetResourceByName(name, r).entrySet()) {
-            String rel = entry.getKey();
-            ControllerLinkBuilder link = entry.getValue();
-
-            log.info("Adding link ["+link.toString()+"] with rel ["+rel+"] to response. ");
-            resource.add(link.withRel(rel));
-        }
+        Resource<R> resource = resourceWithLinks(r, getLinksForGetResourceByName(name, r));
 
         logProcessingFinished(HttpMethod.GET, name);
         return createSuccessResponseGET(resource);
@@ -111,14 +104,7 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         logProcessingStarted(HttpMethod.GET, resourceId);
 
         R r = getService().getResourceById(resourceId, getConsumer());
-        Resource<R> resource = new Resource<>( r );
-        for (Map.Entry<String, ControllerLinkBuilder> entry : getLinksForGetResource(resourceId, r).entrySet()) {
-            String rel = entry.getKey();
-            ControllerLinkBuilder link = entry.getValue();
-
-            log.info("Adding link ["+link.toString()+"] with rel ["+rel+"] to response. ");
-            resource.add(link.withRel(rel));
-        }
+        Resource<R> resource = resourceWithLinks(r, getLinksForGetResource(resourceId, r));
 
         logProcessingFinished(HttpMethod.GET, resourceId);
         return createSuccessResponseGET(resource);
@@ -211,6 +197,21 @@ public abstract class BaseRestController<R extends AbstractEntity> {
     }
     protected ResponseEntity<R> createSuccessResponseDELETE(){
         return new ResponseEntity(createDeletedMessage(), HttpStatus.ACCEPTED);
+    }
+
+    protected Resource<R> resourceWithLinks(R resource, Map<String, ControllerLinkBuilder> links){
+        return resourceWithLinks(new Resource<R>(resource), links);
+    }
+
+    protected Resource<R> resourceWithLinks(Resource<R> resource, Map<String, ControllerLinkBuilder> links){
+        for (Map.Entry<String, ControllerLinkBuilder> entry : links.entrySet()) {
+            String rel = entry.getKey();
+            ControllerLinkBuilder link = entry.getValue();
+
+            log.info("Adding link ["+link.toString()+"] with rel ["+rel+"] to response. ");
+            resource.add(link.withRel(rel));
+        }
+        return resource;
     }
 
     protected void logProcessingStarted(final HttpMethod method) {

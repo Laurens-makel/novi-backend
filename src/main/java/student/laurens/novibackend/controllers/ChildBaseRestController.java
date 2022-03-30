@@ -1,5 +1,7 @@
 package student.laurens.novibackend.controllers;
 
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import student.laurens.novibackend.entities.*;
@@ -9,6 +11,7 @@ import student.laurens.novibackend.services.AppUserDetailsService;
 import student.laurens.novibackend.services.ChildBaseService;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Base class for RestControllers which expose CRUD methods for {@link AbstractOwnedWithParentEntity}.
@@ -35,11 +38,13 @@ public abstract class ChildBaseRestController<R extends AbstractEntity, P extend
      *
      * @throws ResourceNotFoundException - Thrown when parent resource or resource could not be found.
      * @throws ResourceForbiddenException - Thrown when parent resource or resource is not owned by current consumer of the API.
+     * @return
      */
-    public ResponseEntity<R> get(final Integer parentResourceId, final Integer resourceId) throws ResourceNotFoundException, ResourceForbiddenException {
+    public ResponseEntity<Resource<R>> get(final Integer parentResourceId, final Integer resourceId) throws ResourceNotFoundException, ResourceForbiddenException {
         logProcessingStarted(HttpMethod.GET, parentResourceId, resourceId);
 
-        R resource = getService().getResourceById(parentResourceId, resourceId, getConsumer());
+        R r = getService().getResourceById(parentResourceId, resourceId, getConsumer());
+        Resource<R> resource = resourceWithLinks(r, getLinksForGetResource(resourceId, r));
 
         logProcessingFinished(HttpMethod.GET, parentResourceId, resourceId);
         return createSuccessResponseGET(resource);
