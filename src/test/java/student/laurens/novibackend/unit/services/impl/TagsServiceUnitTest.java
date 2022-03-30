@@ -15,8 +15,9 @@ public class TagsServiceUnitTest extends ServiceUnitTestBase<Tag> {
     @TestConfiguration
     static class TagServiceTestContextConfiguration {
         @Bean
-        public TagService service() {
-            return new TagService();
+        @Autowired
+        public TagService service(TagRepository repository) {
+            return new TagService(repository);
         }
     }
 

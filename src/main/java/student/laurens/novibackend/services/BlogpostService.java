@@ -26,8 +26,11 @@ import java.util.stream.StreamSupport;
 @Qualifier("BlogpostService")
 public class BlogpostService extends ParentBaseService<Blogpost> {
 
-    @Autowired
     private @Getter BlogpostRepository repository;
+
+    public BlogpostService(BlogpostRepository repository){
+        this.repository = repository;
+    }
 
     @Override
     public List<Blogpost> getResources() {

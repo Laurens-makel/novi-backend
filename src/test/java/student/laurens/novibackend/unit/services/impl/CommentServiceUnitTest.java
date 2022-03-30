@@ -20,8 +20,9 @@ public class CommentServiceUnitTest extends ChildServiceUnitTestBase<Comment, Bl
     @TestConfiguration
     static class CommentServiceTestContextConfiguration {
         @Bean
-        public CommentService service() {
-            return new CommentService();
+        @Autowired
+        public CommentService service(CommentRepository repository) {
+            return new CommentService(repository);
         }
     }
 

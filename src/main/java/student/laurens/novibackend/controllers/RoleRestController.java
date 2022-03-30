@@ -6,7 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.Role;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
+import student.laurens.novibackend.services.AppUserDetailsService;
 import student.laurens.novibackend.services.RoleService;
+
+import java.util.List;
 
 /**
  * Rest Controller that exposes CRUD methods for {@link Role}.
@@ -32,11 +35,15 @@ import student.laurens.novibackend.services.RoleService;
 @RequestMapping("/roles")
 public class RoleRestController extends BaseRestController<Role> {
 
-    @Autowired
     private @Getter RoleService service;
 
+    public RoleRestController(AppUserDetailsService appUserDetailsService, RoleService service) {
+        super(appUserDetailsService);
+        this.service = service;
+    }
+
     @GetMapping
-    public ResponseEntity<Iterable<Role>> getRoles() {
+    public ResponseEntity<List<Role>> getRoles() {
         return get();
     }
 

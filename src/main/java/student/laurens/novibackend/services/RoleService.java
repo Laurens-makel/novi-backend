@@ -6,6 +6,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import student.laurens.novibackend.entities.Role;
+import student.laurens.novibackend.repositories.CommentRepository;
 import student.laurens.novibackend.repositories.RoleRepository;
 
 import javax.transaction.Transactional;
@@ -20,6 +21,10 @@ import javax.transaction.Transactional;
 @Component
 @Transactional
 public class RoleService extends BaseService<Role> {
+
+    public RoleService(RoleRepository repository){
+        this.repository = repository;
+    }
 
     @Autowired
     private @Getter RoleRepository repository;
