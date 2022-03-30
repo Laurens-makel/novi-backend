@@ -1,4 +1,4 @@
-package student.laurens.novibackend.controllers;
+package student.laurens.novibackend.integration.controllers;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

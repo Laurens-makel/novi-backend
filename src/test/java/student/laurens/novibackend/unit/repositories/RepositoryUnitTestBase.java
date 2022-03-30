@@ -1,4 +1,4 @@
-package student.laurens.novibackend.repositories;
+package student.laurens.novibackend.unit.repositories;
 
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import student.laurens.novibackend.entities.User;
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @TestPropertySource(locations = "classpath:application-integration-test.properties")
-public abstract class RepositoryIntegrationTestBase {
+public abstract class RepositoryUnitTestBase {
 
     @Autowired
     protected TestEntityManager entityManager;

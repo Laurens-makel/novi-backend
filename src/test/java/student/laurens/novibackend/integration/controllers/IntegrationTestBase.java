@@ -1,4 +1,4 @@
-package student.laurens.novibackend.controllers;
+package student.laurens.novibackend.integration.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -40,7 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = NoviBackendApplication.class)
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-integration-test.properties")
-public abstract class TestBase <R extends AbstractEntity>  {
+public abstract class IntegrationTestBase<R extends AbstractEntity>  {
     protected Logger log = LoggerFactory.getLogger(ControllerIntegrationTestBase.class);
 
     protected final String USER = "DefaultUser";

@@ -1,12 +1,10 @@
-package student.laurens.novibackend.controllers;
+package student.laurens.novibackend.integration.controllers;
 
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
 import student.laurens.novibackend.entities.AbstractOwnedEntity;
-import student.laurens.novibackend.entities.Role;
 import student.laurens.novibackend.entities.User;
 
 /**

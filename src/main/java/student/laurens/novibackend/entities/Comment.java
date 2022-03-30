@@ -21,7 +21,7 @@ public class Comment extends AbstractOwnedWithParentEntity<Blogpost> {
     @Id
     @Column(name = "COMMENT_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private @Getter Integer id;
+    private @Getter @Setter Integer id;
 
     @ManyToOne( cascade = CascadeType.REFRESH )
     @JoinColumn( name = "UID", nullable = false)

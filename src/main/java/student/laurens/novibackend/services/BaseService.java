@@ -46,9 +46,12 @@ public abstract class BaseService<R extends AbstractEntity> {
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
      */
     public boolean exists(final Integer resourceId) throws ResourceNotFoundException {
+        log.info("Checking existence of resource with ID ["+resourceId+"]");
         if(!getRepository().existsById(resourceId)){
+            log.warn("Resource with ID not found! ["+resourceId+"]");
             throw new ResourceNotFoundException(getResourceClass(), resourceId);
         }
+        log.info("Resource with ID ["+resourceId+"] exists.");
         return true;
     }
 
@@ -61,16 +64,21 @@ public abstract class BaseService<R extends AbstractEntity> {
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
      */
     public R getResourceById(final Integer resourceId, final User consumer) throws ResourceNotFoundException {
+        log.info("Processing started for get request for resourceId ["+resourceId+"], request by ["+consumer.getUsername()+"]");
         Optional<R> resource = validateOwnershipOfResource(resourceId, HttpMethod.GET, consumer);
         if(resource.isEmpty()){
+            log.info("Resource with ID ["+resourceId+"] has not yet been found during ownership validation for user ["+consumer.getUsername()+"].");
             return getResourceByIdWithoutValidations(resourceId);
         }
+        log.info("Processing finished with success for get request for resourceId ["+resourceId+"], request by ["+consumer.getUsername()+"]");
         return resource.get();
     }
     protected R getResourceByIdWithoutValidations(final Integer resourceId) throws ResourceNotFoundException {
+        log.info("Processing started for get resource without validations request for resourceId ["+resourceId+"]");
         R found = getRepository().getOne(resourceId);
 
         if(found == null){
+            log.warn("Resource with ID not found! ["+resourceId+"]");
             throw new ResourceNotFoundException(getResourceClass(), resourceId);
         }
 
@@ -90,7 +98,12 @@ public abstract class BaseService<R extends AbstractEntity> {
      * @param resource - The state of the resource to save.
      */
     public R createResource(final R resource){
-        return getRepository().save(resource);
+        log.info("Processing started for create request.");
+
+        R created = getRepository().save(resource);
+
+//        log.info("Processing finished for create request, created resource ID ["+created.getId()+"].");
+        return created;
     };
 
     /**
@@ -104,8 +117,10 @@ public abstract class BaseService<R extends AbstractEntity> {
      * @throws ResourceForbiddenException - Thrown when resource could is not owned by current consumer of service.
      */
     public R updateResourceById(final Integer resourceId, final R resource, final User consumer) throws ResourceNotFoundException, ResourceForbiddenException {
+        log.info("Processing started for update request for resourceId ["+resourceId+"], request by ["+consumer.getUsername()+"]");
         exists(resourceId);
         validateOwnershipOfResource(resourceId, HttpMethod.PUT, consumer);
+        log.info("Processing finished with success for update request for resourceId ["+resourceId+"], request by ["+consumer.getUsername()+"]");
         return getRepository().save(resource);
     }
 
@@ -119,9 +134,11 @@ public abstract class BaseService<R extends AbstractEntity> {
      * @throws ResourceForbiddenException - Thrown when resource could is not owned by current consumer of service.
      */
     public void deleteResourceById(final Integer resourceId, final User consumer) throws ResourceNotFoundException, ResourceForbiddenException {
+        log.info("Processing started for delete request for resourceId ["+resourceId+"], request by ["+consumer.getUsername()+"]");
         exists(resourceId);
         validateOwnershipOfResource(resourceId, HttpMethod.DELETE, consumer);
         getRepository().deleteById(resourceId);
+        log.info("Processing finished with success for delete request for resourceId ["+resourceId+"], request by ["+consumer.getUsername()+"]");
     };
 
     /**
@@ -147,6 +164,7 @@ public abstract class BaseService<R extends AbstractEntity> {
                 throw new ResourceForbiddenException(resourceClass, resourceId);
             }
 
+            log.info("User ["+consumer.getUid()+"] is the owner of resource ["+ownedResource.getOwnerUid()+"]");
             return Optional.of(resource);
         }
         return Optional.empty();
@@ -156,16 +174,21 @@ public abstract class BaseService<R extends AbstractEntity> {
      * @return indication if HttpMethod is protected by ownership.
      */
     protected boolean isMethodOwnershipProtected(final HttpMethod method){
+        boolean isProtected = false;
+        log.info("Checking if method ["+method+"] is protected by resource ownership.");
+
         if(method.equals(HttpMethod.GET)){
-            return isGetOwnershipProtected();
+            isProtected = isGetOwnershipProtected();
         }
-        if(method.equals(HttpMethod.PUT)){
-            return isPutOwnershipProtected();
+        else if(method.equals(HttpMethod.PUT)){
+            isProtected = isPutOwnershipProtected();
         }
-        if(method.equals(HttpMethod.DELETE)){
-            return isDeleteOwnershipProtected();
+        else if(method.equals(HttpMethod.DELETE)){
+            isProtected = isDeleteOwnershipProtected();
         }
-        return false;
+
+        log.info("Finished checking if ["+method+"] is protected by resource ownership, result ["+isProtected+"].");
+        return isProtected;
     }
 
     /**

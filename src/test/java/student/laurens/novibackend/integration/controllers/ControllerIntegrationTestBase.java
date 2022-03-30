@@ -1,4 +1,4 @@
-package student.laurens.novibackend.controllers;
+package student.laurens.novibackend.integration.controllers;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = NoviBackendApplication.class)
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-integration-test.properties")
-public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> extends TestBase<R>{
+public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> extends IntegrationTestBase<R> {
 
     /**
      * Implement this method and provide a value for this specific test case.

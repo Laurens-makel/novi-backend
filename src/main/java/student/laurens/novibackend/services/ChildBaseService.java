@@ -50,8 +50,10 @@ public abstract class ChildBaseService <R extends AbstractEntity, P extends Abst
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
      */
     public R createResource(final Integer parentResourceId, final R resource, final User consumer) throws ResourceNotFoundException {
+        log.info("Processing started for create request for resource with parent ID ["+parentResourceId+"], request by ["+consumer.getUsername()+"]");
         getParentService().exists(parentResourceId);
         validateOwnershipOfResources(parentResourceId, null, HttpMethod.POST, consumer);
+        log.info("Processing finished with success for create request for resource with parent ID ["+parentResourceId+"], request by ["+consumer.getUsername()+"]");
         return getRepository().save(resource);
     }
 
@@ -66,9 +68,11 @@ public abstract class ChildBaseService <R extends AbstractEntity, P extends Abst
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
      */
     public R updateResourceById(final Integer parentResourceId, final Integer resourceId, final R resource, final User consumer) throws ResourceNotFoundException {
+        log.info("Processing started for update request for resourceId ["+resourceId+"] with parentResourceId ["+parentResourceId+"], request by ["+consumer.getUsername()+"]");
         getParentService().exists(parentResourceId);
         exists(resourceId);
         validateOwnershipOfResources(parentResourceId, resourceId, HttpMethod.PUT, consumer);
+        log.info("Processing finished with success for update request for resourceId ["+resourceId+"] with parentResourceId ["+parentResourceId+"], request by ["+consumer.getUsername()+"]");
         return getRepository().save(resource);
     }
 
@@ -83,11 +87,12 @@ public abstract class ChildBaseService <R extends AbstractEntity, P extends Abst
      * @throws ResourceForbiddenException - Thrown when parent or resource could is not owned by current consumer of API.
      */
     public void deleteResourceById(final Integer parentResourceId, final Integer resourceId, final User consumer) throws ResourceNotFoundException, ResourceForbiddenException {
+        log.info("Processing started for delete request for resourceId ["+resourceId+"] with parentResourceId ["+parentResourceId+"], request by ["+consumer.getUsername()+"]");
         getParentService().exists(parentResourceId);
         exists(resourceId);
         validateOwnershipOfResources(parentResourceId, resourceId, HttpMethod.DELETE, consumer);
         getRepository().deleteById(resourceId);
-
+        log.info("Processing finished with success for delete request for resourceId ["+resourceId+"] with parentResourceId ["+parentResourceId+"], request by ["+consumer.getUsername()+"]");
     };
 
     /**
@@ -102,6 +107,7 @@ public abstract class ChildBaseService <R extends AbstractEntity, P extends Abst
      * @throws ResourceForbiddenException - Thrown when parent or resource could is not owned by current consumer of API.
      */
     public void validateOwnershipOfResources(final Integer parentResourceId, final Integer resourceId, final HttpMethod method, final User consumer) throws ResourceNotFoundException, ResourceForbiddenException {
+        log.info("Checking which PermissionPolicy applies for ["+method+"] on resourceId ["+resourceId+"] and parentResourceId ["+parentResourceId+"], request by ["+consumer.getUsername()+"]");
         PermissionPolicy childPolicy;
         switch (method){
             case GET:
@@ -119,6 +125,7 @@ public abstract class ChildBaseService <R extends AbstractEntity, P extends Abst
             default:
                 childPolicy = PermissionPolicy.DENY;
         }
+        log.info("Finished checking, PermissionPolicy ["+childPolicy+"] applies for ["+method+"] on resourceId ["+resourceId+"] and parentResourceId ["+parentResourceId+"], request by ["+consumer.getUsername()+"]");
         validatePermissionPolicy(parentResourceId, resourceId, consumer, childPolicy, method);
     }
 
@@ -164,7 +171,6 @@ public abstract class ChildBaseService <R extends AbstractEntity, P extends Abst
             log.info("Policy ["+policy+"], validation of parent ownership completed.");
         } else if(policy.equals(PermissionPolicy.DENY)){
             log.info("Policy ["+policy+"], access is denied.");
-            // TODO: Change this to resource denied exception
             throw new ResourceForbiddenException(getResourceClass(), resourceId);
         }
     }

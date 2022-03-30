@@ -1,5 +1,9 @@
 package student.laurens.novibackend.entities;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import student.laurens.novibackend.services.BaseService;
+
 /**
  * Base class for entities to implement, required for typing purposes.
  *
@@ -7,6 +11,7 @@ package student.laurens.novibackend.entities;
  * @version 1.0, March 2022
  */
 public abstract class AbstractEntity {
+    protected Logger log = LoggerFactory.getLogger(AbstractEntity.class);
 
     abstract public Integer getId();
 

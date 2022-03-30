@@ -21,8 +21,8 @@ public class CommentService extends ChildBaseService<Comment, Blogpost> {
     private @Getter CommentRepository repository;
 
     @Override
-    public Comment getResource(String string) {
-        return null;
+    public Comment getResource(String title) {
+        return repository.getCommentByTitle(title);
     }
 
     @Override

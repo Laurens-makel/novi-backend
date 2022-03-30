@@ -1,5 +1,6 @@
-package student.laurens.novibackend.services;
+package student.laurens.novibackend.unit.services.impl;
 
+import lombok.Getter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -12,6 +13,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import student.laurens.novibackend.entities.AppUserDetails;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.UserRepository;
+import student.laurens.novibackend.services.AppUserDetailsService;
+import student.laurens.novibackend.unit.services.OwnedServiceUnitTestBase;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Laurens Mäkel
  * @version 1.0, March 2022
  */
-public class AppUserDetailsServiceIntegrationTest extends ServiceIntegrationTestBase {
+public class AppUserDetailsServiceUnitTest extends OwnedServiceUnitTestBase<User> {
 
     @TestConfiguration
     static class EmployeeServiceImplTestContextConfiguration {
@@ -34,16 +37,25 @@ public class AppUserDetailsServiceIntegrationTest extends ServiceIntegrationTest
     }
 
     @Autowired
-    private AppUserDetailsService service;
+    private @Getter AppUserDetailsService service;
 
     @MockBean
-    private UserRepository repository;
+    private @Getter UserRepository repository;
+
+    @Override
+    protected User create() {
+        return consumer();
+    }
+    @Override
+    protected User create(User user) {
+        return user;
+    }
 
     @Before
     public void setup(){
-        User bob = createTestUser("Bob", "Doe", "BOB", "myPass123");
-        User john = createTestUser("John", "Doe", "JOHN", "myPass123");
-        User alex = createTestUser("Alex", "Doe", "ALEX", "myPass123");
+        User bob = createTestUser("Bob", "Doe", "BOB", "myPass123", "USER");
+        User john = createTestUser("John", "Doe", "JOHN", "myPass123","USER");
+        User alex = createTestUser("Alex", "Doe", "ALEX", "myPass123","USER");
 
         List<User> users = Arrays.asList(john, bob, alex);
 
@@ -72,9 +84,9 @@ public class AppUserDetailsServiceIntegrationTest extends ServiceIntegrationTest
 
     @Test
     public void given3Users_whengetAll_thenReturn3Records() {
-        User bob = createTestUser("Bob", "Doe", "BOB", "myPass123");
-        User john = createTestUser("John", "Doe", "JOHN", "myPass123");
-        User alex = createTestUser("Alex", "Doe", "ALEX", "myPass123");
+        User bob = createTestUser("Bob", "Doe", "BOB", "myPass123", "USER");
+        User john = createTestUser("John", "Doe", "JOHN", "myPass123", "USER");
+        User alex = createTestUser("Alex", "Doe", "ALEX", "myPass123", "USER");
 
         Iterable<User> users = service.getResources();
         verifyFindAllUsersIsCalledOnce();
@@ -84,7 +96,7 @@ public class AppUserDetailsServiceIntegrationTest extends ServiceIntegrationTest
 
     @Test
     public void whenAddingUser_ThenRepositorySaveUserIsCalled() {
-        User peter = createTestUser("Peter", "Doe", "PETER", "myPass123");
+        User peter = createTestUser("Peter", "Doe", "PETER", "myPass123", "USER");
 
         service.createResource(peter);
         verifySaveUserIsCalledOnce(peter);

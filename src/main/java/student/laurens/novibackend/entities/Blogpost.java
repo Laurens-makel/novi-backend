@@ -25,7 +25,7 @@ public class Blogpost extends AbstractOwnedEntity implements Serializable {
     @Id
     @Column(name = "BLOGPOST_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private @Getter Integer id;
+    private @Getter @Setter Integer id;
 
     @ManyToOne( cascade = CascadeType.MERGE )
     @JoinColumn( name = "UID", nullable = false)

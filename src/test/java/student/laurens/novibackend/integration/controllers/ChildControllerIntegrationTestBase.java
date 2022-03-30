@@ -1,4 +1,4 @@
-package student.laurens.novibackend.controllers;
+package student.laurens.novibackend.integration.controllers;
 
 import org.junit.After;
 import org.junit.Before;
@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
  * @version 1.0, March 2022
  */
 public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwnedEntity, P extends AbstractOwnedEntity>
-        extends TestBase<R> {
+        extends IntegrationTestBase<R> {
 
 
     abstract protected ResourceRepository<R> getRepository();
