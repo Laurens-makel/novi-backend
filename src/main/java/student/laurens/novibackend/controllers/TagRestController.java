@@ -6,7 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.Tag;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
+import student.laurens.novibackend.services.AppUserDetailsService;
 import student.laurens.novibackend.services.TagService;
+
+import java.util.List;
 
 /**
  * Rest Controller that exposes CRUD methods for {@link Tag}.
@@ -18,11 +21,15 @@ import student.laurens.novibackend.services.TagService;
 @RequestMapping("/tags")
 public class TagRestController extends BaseRestController<Tag> {
 
-    @Autowired
     private @Getter TagService service;
 
+    public TagRestController(AppUserDetailsService appUserDetailsService, TagService service) {
+        super(appUserDetailsService);
+        this.service = service;
+    }
+
     @GetMapping
-    public ResponseEntity<Iterable<Tag>> getTags() {
+    public ResponseEntity<List<Tag>> getTags() {
         return get();
     }
 

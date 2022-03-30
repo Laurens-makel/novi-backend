@@ -8,7 +8,10 @@ import student.laurens.novibackend.entities.Blogpost;
 import student.laurens.novibackend.entities.Comment;
 import student.laurens.novibackend.exceptions.ResourceForbiddenException;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
+import student.laurens.novibackend.services.AppUserDetailsService;
 import student.laurens.novibackend.services.CommentService;
+
+import java.util.List;
 
 /**
  * Rest Controller that exposes CRUD methods for {@link Comment}.
@@ -20,8 +23,12 @@ import student.laurens.novibackend.services.CommentService;
 @RequestMapping("/blogposts/{blogpostId}/comments")
 public class CommentRestController extends ChildBaseRestController<Comment, Blogpost> {
 
-    @Autowired
     private @Getter CommentService service;
+
+    public CommentRestController(AppUserDetailsService appUserDetailsService, CommentService service) {
+        super(appUserDetailsService);
+        this.service = service;
+    }
 
     @GetMapping("/{commentId}")
     public ResponseEntity<Comment> getComments(@PathVariable Integer blogpostId, @PathVariable Integer commentId) throws ResourceNotFoundException {
@@ -29,7 +36,7 @@ public class CommentRestController extends ChildBaseRestController<Comment, Blog
     }
 
     @GetMapping
-    public ResponseEntity<Iterable<Comment>> getComments(@PathVariable Integer blogpostId) throws ResourceNotFoundException {
+    public ResponseEntity<List<Comment>> getComments(@PathVariable Integer blogpostId) throws ResourceNotFoundException {
         return getResources(blogpostId);
     }
 

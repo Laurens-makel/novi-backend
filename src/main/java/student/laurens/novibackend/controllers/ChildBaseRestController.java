@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import student.laurens.novibackend.entities.*;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.exceptions.ResourceForbiddenException;
+import student.laurens.novibackend.services.AppUserDetailsService;
 import student.laurens.novibackend.services.ChildBaseService;
 
 import java.util.List;
@@ -17,6 +18,10 @@ import java.util.List;
  */
 public abstract class ChildBaseRestController<R extends AbstractEntity, P extends AbstractEntity>
         extends BaseRestController<R>{
+
+    public ChildBaseRestController(AppUserDetailsService appUserDetailsService) {
+        super(appUserDetailsService);
+    }
 
     @Override
     abstract protected ChildBaseService<R, P> getService();

@@ -30,8 +30,11 @@ public abstract class BaseRestController<R extends AbstractEntity> {
 
     protected Logger log = LoggerFactory.getLogger(BaseRestController.class);
 
-    @Autowired
     protected @Getter AppUserDetailsService appUserDetailsService;
+
+    public BaseRestController(AppUserDetailsService appUserDetailsService){
+        this.appUserDetailsService = appUserDetailsService;
+    }
 
     private final String DELETED_TEXT = "deleted";
 

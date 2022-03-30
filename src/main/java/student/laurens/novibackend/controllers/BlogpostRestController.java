@@ -6,7 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.Blogpost;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
+import student.laurens.novibackend.services.AppUserDetailsService;
 import student.laurens.novibackend.services.BlogpostService;
+
+import java.util.List;
 
 /**
  * Rest Controller that exposes CRUD methods for {@link Blogpost}.
@@ -29,8 +32,12 @@ import student.laurens.novibackend.services.BlogpostService;
 @RequestMapping("/blogposts")
 public class BlogpostRestController extends BaseRestController<Blogpost> {
 
-    @Autowired
     private @Getter BlogpostService service;
+
+    public BlogpostRestController(AppUserDetailsService appUserDetailsService, BlogpostService service) {
+        super(appUserDetailsService);
+        this.service = service;
+    }
 
     @GetMapping("/{blogpostId}")
     public ResponseEntity<Blogpost> getBlogpost(@PathVariable Integer blogpostId) {
@@ -38,7 +45,7 @@ public class BlogpostRestController extends BaseRestController<Blogpost> {
     }
 
     @GetMapping
-    public ResponseEntity<Iterable<Blogpost>> getBlogposts() {
+    public ResponseEntity<List<Blogpost>> getBlogposts() {
         return get();
     }
 

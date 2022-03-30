@@ -45,8 +45,12 @@ import java.util.List;
 @RestController
 public class UserRestController extends BaseRestController<User>{
 
-    @Autowired
     private @Getter AppUserDetailsService service;
+
+    public UserRestController(AppUserDetailsService appUserDetailsService) {
+        super(appUserDetailsService);
+        this.service = appUserDetailsService;
+    }
 
     @GetMapping("/user")
     public ResponseEntity<AppUserDetails> getUser(Principal principal) {
