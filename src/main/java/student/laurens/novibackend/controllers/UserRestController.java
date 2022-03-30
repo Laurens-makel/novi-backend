@@ -97,7 +97,7 @@ public class UserRestController extends BaseRestController<User>{
     }
 
     @Override
-    protected Map<String, ControllerLinkBuilder> getLinksForGetResourceByName(String name, User resource) {
+    protected Map<String, ControllerLinkBuilder> getLinksForGetResourceByName(final String name, final User resource) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
 
         links.put("delete", linkTo(methodOn(UserRestController.class).deleteUser(resource.getId())));
@@ -107,7 +107,7 @@ public class UserRestController extends BaseRestController<User>{
     }
 
     @Override
-    protected Map<String, ControllerLinkBuilder> getLinksForGetResource(Integer resourceId, User resource) {
+    protected Map<String, ControllerLinkBuilder> getLinksForGetResource(final Integer resourceId, final User resource) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
 
         links.put("delete", linkTo(methodOn(UserRestController.class).deleteUser(resource.getId())));

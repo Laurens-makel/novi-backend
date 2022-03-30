@@ -55,7 +55,7 @@ public class TagRestController extends BaseRestController<Tag> {
     }
 
     @Override
-    protected Map<String, ControllerLinkBuilder> getLinksForGetResourceByName(String name, Tag resource) {
+    protected Map<String, ControllerLinkBuilder> getLinksForGetResourceByName(final String name, final Tag resource) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
 
         links.put("delete", linkTo(methodOn(TagRestController.class).deleteTag(resource.getId())));
@@ -65,7 +65,7 @@ public class TagRestController extends BaseRestController<Tag> {
     }
 
     @Override
-    protected Map<String, ControllerLinkBuilder> getLinksForGetResource(Integer resourceId, Tag resource) {
+    protected Map<String, ControllerLinkBuilder> getLinksForGetResource(final Integer resourceId, final Tag resource) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
 
         links.put("delete", linkTo(methodOn(TagRestController.class).deleteTag(resource.getId())));

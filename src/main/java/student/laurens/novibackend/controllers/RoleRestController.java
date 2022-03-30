@@ -69,7 +69,7 @@ public class RoleRestController extends BaseRestController<Role> {
     }
 
     @Override
-    protected Map<String, ControllerLinkBuilder> getLinksForGetResourceByName(String name, Role resource) {
+    protected Map<String, ControllerLinkBuilder> getLinksForGetResourceByName(final String name, final Role resource) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
 
         links.put("delete", linkTo(methodOn(RoleRestController.class).deleteRole(resource.getId())));
@@ -79,7 +79,7 @@ public class RoleRestController extends BaseRestController<Role> {
     }
 
     @Override
-    protected Map<String, ControllerLinkBuilder> getLinksForGetResource(Integer resourceId, Role resource) {
+    protected Map<String, ControllerLinkBuilder> getLinksForGetResource(final Integer resourceId, final Role resource) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
 
         links.put("delete", linkTo(methodOn(RoleRestController.class).deleteRole(resource.getId())));

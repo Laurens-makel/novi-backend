@@ -74,7 +74,7 @@ public class BlogpostRestController extends BaseRestController<Blogpost> {
     }
 
     @Override
-    protected Map<String, ControllerLinkBuilder> getLinksForGetResourceByName(String name, Blogpost resource) {
+    protected Map<String, ControllerLinkBuilder> getLinksForGetResourceByName(final String name, final Blogpost resource) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
 
         links.put("comments", linkTo(methodOn(CommentRestController.class).getComments(resource.getId())));
@@ -85,7 +85,7 @@ public class BlogpostRestController extends BaseRestController<Blogpost> {
     }
 
     @Override
-    protected Map<String, ControllerLinkBuilder> getLinksForGetResource(Integer resourceId, Blogpost resource) {
+    protected Map<String, ControllerLinkBuilder> getLinksForGetResource(final Integer resourceId, final Blogpost resource) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
 
         links.put("comments", linkTo(methodOn(CommentRestController.class).getComments(resourceId)));

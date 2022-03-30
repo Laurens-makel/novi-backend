@@ -70,7 +70,7 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         return createSuccessResponseGET(resources);
     }
 
-    abstract protected Map<String, ControllerLinkBuilder> getLinksForGetResourceByName(String name, R resource);
+    abstract protected Map<String, ControllerLinkBuilder> getLinksForGetResourceByName(final String name, final R resource);
 
     /**
      * Provides a default way to handle GET requests on {@link student.laurens.novibackend.entities.AbstractEntity} resources.
@@ -91,7 +91,7 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         return createSuccessResponseGET(resource);
     }
 
-    abstract protected Map<String, ControllerLinkBuilder> getLinksForGetResource(Integer resourceId, R resource);
+    abstract protected Map<String, ControllerLinkBuilder> getLinksForGetResource(final Integer resourceId, final R resource);
     /**
      * Provides a default way to handle GET requests on {@link student.laurens.novibackend.entities.AbstractEntity} resources.
      * Should be implemented by resource specific controller classes.
@@ -183,7 +183,7 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         }
     }
 
-    protected ResponseEntity<List<R>> createSuccessResponseGET(List<R> resources){
+    protected ResponseEntity<List<R>> createSuccessResponseGET(final List<R> resources){
         return new ResponseEntity<>(resources, HttpStatus.OK);
     }
     protected ResponseEntity<Resource<R>> createSuccessResponseGET(final Resource<R> resource){
@@ -199,11 +199,11 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         return new ResponseEntity(createDeletedMessage(), HttpStatus.ACCEPTED);
     }
 
-    protected Resource<R> resourceWithLinks(R resource, Map<String, ControllerLinkBuilder> links){
+    protected Resource<R> resourceWithLinks(final R resource, Map<String, ControllerLinkBuilder> links){
         return resourceWithLinks(new Resource<R>(resource), links);
     }
 
-    protected Resource<R> resourceWithLinks(Resource<R> resource, Map<String, ControllerLinkBuilder> links){
+    protected Resource<R> resourceWithLinks(final Resource<R> resource, Map<String, ControllerLinkBuilder> links){
         for (Map.Entry<String, ControllerLinkBuilder> entry : links.entrySet()) {
             String rel = entry.getKey();
             ControllerLinkBuilder link = entry.getValue();
