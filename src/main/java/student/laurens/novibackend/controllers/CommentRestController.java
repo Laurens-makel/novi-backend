@@ -2,6 +2,7 @@ package student.laurens.novibackend.controllers;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.Blogpost;
@@ -11,7 +12,12 @@ import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.services.AppUserDetailsService;
 import student.laurens.novibackend.services.CommentService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 /**
  * Rest Controller that exposes CRUD methods for {@link Comment}.
@@ -55,4 +61,19 @@ public class CommentRestController extends ChildBaseRestController<Comment, Blog
         return delete(blogpostId, commentId);
     }
 
+    @Override
+    protected Map<String, ControllerLinkBuilder> getLinksForGetResourceByName(String name, Comment resource) {
+        Map<String, ControllerLinkBuilder> links = new HashMap<>();
+
+        links.put("blogpost", linkTo(methodOn(BlogpostRestController.class).get(resource.getParentId())));
+        links.put("delete", linkTo(methodOn(CommentRestController.class).deleteComment(resource.getParentId(), resource.getId())));
+        links.put("update", linkTo(methodOn(CommentRestController.class).updateComment(resource.getParentId(), resource.getId(), resource)));
+
+        return links;
+    }
+
+    @Override
+    protected Map<String, ControllerLinkBuilder> getLinksForGetResource(Integer resourceId, Comment resource) {
+        return null;
+    }
 }

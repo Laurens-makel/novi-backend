@@ -2,6 +2,10 @@ package student.laurens.novibackend.controllers;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.Blogpost;
@@ -9,7 +13,12 @@ import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.services.AppUserDetailsService;
 import student.laurens.novibackend.services.BlogpostService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 /**
  * Rest Controller that exposes CRUD methods for {@link Blogpost}.
@@ -40,7 +49,7 @@ public class BlogpostRestController extends BaseRestController<Blogpost> {
     }
 
     @GetMapping("/{blogpostId}")
-    public ResponseEntity<Blogpost> getBlogpost(@PathVariable Integer blogpostId) {
+    public ResponseEntity<Resource<Blogpost>> getBlogpost(@PathVariable Integer blogpostId) {
         return get(blogpostId);
     }
 
@@ -62,5 +71,27 @@ public class BlogpostRestController extends BaseRestController<Blogpost> {
     @DeleteMapping("/{blogpostId}")
     public ResponseEntity deleteBlogpost(@PathVariable Integer blogpostId) throws ResourceNotFoundException {
         return delete(blogpostId);
+    }
+
+    @Override
+    protected Map<String, ControllerLinkBuilder> getLinksForGetResourceByName(String name, Blogpost resource) {
+        Map<String, ControllerLinkBuilder> links = new HashMap<>();
+
+        links.put("comments", linkTo(methodOn(CommentRestController.class).getComments(resource.getId())));
+        links.put("delete", linkTo(methodOn(BlogpostRestController.class).deleteBlogpost(resource.getId())));
+        links.put("update", linkTo(methodOn(BlogpostRestController.class).updateBlogpost(resource.getId(), resource)));
+
+        return links;
+    }
+
+    @Override
+    protected Map<String, ControllerLinkBuilder> getLinksForGetResource(Integer resourceId, Blogpost resource) {
+        Map<String, ControllerLinkBuilder> links = new HashMap<>();
+
+        links.put("comments", linkTo(methodOn(CommentRestController.class).getComments(resourceId)));
+        links.put("delete", linkTo(methodOn(BlogpostRestController.class).deleteBlogpost(resourceId)));
+        links.put("update", linkTo(methodOn(BlogpostRestController.class).updateBlogpost(resourceId, resource)));
+
+        return links;
     }
 }

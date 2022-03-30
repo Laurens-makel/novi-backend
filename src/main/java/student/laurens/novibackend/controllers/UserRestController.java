@@ -2,6 +2,7 @@ package student.laurens.novibackend.controllers;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +14,12 @@ import student.laurens.novibackend.exceptions.UserNotFoundException;
 import student.laurens.novibackend.services.AppUserDetailsService;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 /**
  * Rest Controller that exposes CRUD methods for {@link User}.
@@ -50,6 +56,26 @@ public class UserRestController extends BaseRestController<User>{
     public UserRestController(AppUserDetailsService appUserDetailsService) {
         super(appUserDetailsService);
         this.service = appUserDetailsService;
+    }
+
+    @Override
+    protected Map<String, ControllerLinkBuilder> getLinksForGetResourceByName(String name, User resource) {
+        Map<String, ControllerLinkBuilder> links = new HashMap<>();
+
+        links.put("delete", linkTo(methodOn(UserRestController.class).deleteUser(resource.getId())));
+        links.put("update", linkTo(methodOn(UserRestController.class).updateUser(resource.getId(), resource)));
+
+        return links;
+    }
+
+    @Override
+    protected Map<String, ControllerLinkBuilder> getLinksForGetResource(Integer resourceId, User resource) {
+        Map<String, ControllerLinkBuilder> links = new HashMap<>();
+
+        links.put("delete", linkTo(methodOn(UserRestController.class).deleteUser(resource.getId())));
+        links.put("update", linkTo(methodOn(UserRestController.class).updateUser(resource.getId(), resource)));
+
+        return links;
     }
 
     @GetMapping("/user")

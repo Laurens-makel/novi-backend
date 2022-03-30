@@ -3,7 +3,8 @@ package student.laurens.novibackend.controllers;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,6 +70,8 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         return createSuccessResponseGET(resources);
     }
 
+    abstract protected Map<String, ControllerLinkBuilder> getLinksForGetResourceByName(String name, R resource);
+
     /**
      * Provides a default way to handle GET requests on {@link student.laurens.novibackend.entities.AbstractEntity} resources.
      * Should be implemented by resource specific controller classes.
@@ -76,16 +79,26 @@ public abstract class BaseRestController<R extends AbstractEntity> {
      * @param name - Name of the resource to retrieve.
      *
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
+     * @return
      */
-    public ResponseEntity<R> get(final String name) throws ResourceNotFoundException {
+    public ResponseEntity<Resource<R>> get(final String name) throws ResourceNotFoundException {
         logProcessingStarted(HttpMethod.GET, name);
 
-        R resource = getService().getResource(name);
+        R r = getService().getResource(name);
+        Resource<R> resource = new Resource<>( r );
+        for (Map.Entry<String, ControllerLinkBuilder> entry : getLinksForGetResourceByName(name, r).entrySet()) {
+            String rel = entry.getKey();
+            ControllerLinkBuilder link = entry.getValue();
+
+            log.info("Adding link ["+link.toString()+"] with rel ["+rel+"] to response. ");
+            resource.add(link.withRel(rel));
+        }
 
         logProcessingFinished(HttpMethod.GET, name);
         return createSuccessResponseGET(resource);
     }
 
+    abstract protected Map<String, ControllerLinkBuilder> getLinksForGetResource(Integer resourceId, R resource);
     /**
      * Provides a default way to handle GET requests on {@link student.laurens.novibackend.entities.AbstractEntity} resources.
      * Should be implemented by resource specific controller classes.
@@ -94,10 +107,18 @@ public abstract class BaseRestController<R extends AbstractEntity> {
      *
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
      */
-    public ResponseEntity<R> get(final Integer resourceId) throws ResourceNotFoundException {
+    public ResponseEntity<Resource<R>> get(final Integer resourceId) throws ResourceNotFoundException {
         logProcessingStarted(HttpMethod.GET, resourceId);
 
-        R resource = getService().getResourceById(resourceId, getConsumer());
+        R r = getService().getResourceById(resourceId, getConsumer());
+        Resource<R> resource = new Resource<>( r );
+        for (Map.Entry<String, ControllerLinkBuilder> entry : getLinksForGetResource(resourceId, r).entrySet()) {
+            String rel = entry.getKey();
+            ControllerLinkBuilder link = entry.getValue();
+
+            log.info("Adding link ["+link.toString()+"] with rel ["+rel+"] to response. ");
+            resource.add(link.withRel(rel));
+        }
 
         logProcessingFinished(HttpMethod.GET, resourceId);
         return createSuccessResponseGET(resource);
@@ -179,7 +200,7 @@ public abstract class BaseRestController<R extends AbstractEntity> {
     protected ResponseEntity<List<R>> createSuccessResponseGET(List<R> resources){
         return new ResponseEntity<>(resources, HttpStatus.OK);
     }
-    protected ResponseEntity<R> createSuccessResponseGET(final R resource){
+    protected ResponseEntity<Resource<R>> createSuccessResponseGET(final Resource<R> resource){
         return new ResponseEntity<>(resource, HttpStatus.OK);
     }
     protected ResponseEntity<R> createSuccessResponsePOST(final R resource){
