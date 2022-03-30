@@ -56,7 +56,7 @@ public class BlogpostServiceUnitTest extends ParentServiceUnitTestBase<Blogpost>
     private @Getter BlogpostService service;
 
     @MockBean
-    public @Getter BlogpostRepository repository;
+    private @Getter BlogpostRepository repository;
 
     @Override
     protected Blogpost create() {

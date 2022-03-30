@@ -33,7 +33,7 @@ public class CommentServiceUnitTest extends ChildServiceUnitTestBase<Comment, Bl
     private @Getter BlogpostService parentService;
 
     @MockBean
-    public @Getter CommentRepository repository;
+    private @Getter CommentRepository repository;
 
     @Override
     protected Blogpost createParent() {
