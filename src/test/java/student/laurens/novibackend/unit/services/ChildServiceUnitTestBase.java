@@ -76,18 +76,6 @@ public abstract class ChildServiceUnitTestBase<R extends AbstractEntity,P extend
     }
 
     @Test
-    public void expect_a_valid_resource_class(){
-        // given
-        Class<?> expected = create().getClass();
-
-        // when
-        Class<R> actual = getService().getResourceClass();
-
-        // then
-        assertThat(expected).isEqualTo(actual);
-    }
-
-    @Test
     public void get_resource_owned_parent_owned_admin() {
         // given
         User consumer = consumer(createRole("ADMIN"));

@@ -1,6 +1,7 @@
 package student.laurens.novibackend.unit.services;
 
 import org.junit.After;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.internal.verification.VerificationModeFactory;
@@ -13,6 +14,8 @@ import student.laurens.novibackend.repositories.ResourceRepository;
 import student.laurens.novibackend.services.BaseService;
 
 import java.util.Date;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Base class to provide default methods for testing Service.
@@ -112,6 +115,18 @@ public abstract class UnitTestBase<R extends AbstractEntity> {
     }
     protected void mockResourceGetById(R resource){
         Mockito.when(getRepository().getOne(resource.getId())).thenReturn(resource);
+    }
+
+    @Test
+    public void expect_a_valid_resource_class(){
+        // given
+        Class<?> expected = create().getClass();
+
+        // when
+        Class<R> actual = getService().getResourceClass();
+
+        // then
+        assertThat(expected).isEqualTo(actual);
     }
 
 }
