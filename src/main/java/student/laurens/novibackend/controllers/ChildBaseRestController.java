@@ -1,7 +1,6 @@
 package student.laurens.novibackend.controllers;
 
 import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import student.laurens.novibackend.entities.*;
@@ -11,7 +10,6 @@ import student.laurens.novibackend.services.AppUserDetailsService;
 import student.laurens.novibackend.services.ChildBaseService;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Base class for RestControllers which expose CRUD methods for {@link AbstractOwnedWithParentEntity}.
@@ -73,16 +71,17 @@ public abstract class ChildBaseRestController<R extends AbstractEntity, P extend
      * Should be implemented by resource specific controller classes.
      *
      * @param parentResourceId - Identifier of parent resource of the resource to update.
-     * @param parentResourceId - Identifier of the parent resource of the resource to create.
      * @param resource - New state of the resource.
      *
      * @throws ResourceNotFoundException - Thrown when parent resource or resource could not be found.
      * @throws ResourceForbiddenException - Thrown when parent resource or resource is not owned by current consumer of the API.
+     * @return
      */
-    public ResponseEntity<R> create(final Integer parentResourceId, final R resource) throws ResourceNotFoundException, ResourceForbiddenException {
+    public ResponseEntity<Resource<R>> create(final Integer parentResourceId, final R resource) throws ResourceNotFoundException, ResourceForbiddenException {
         logProcessingStarted(HttpMethod.POST, parentResourceId);
 
-        R created = getService().createResource(parentResourceId, resource, getConsumer());
+        R r = getService().createResource(parentResourceId, resource, getConsumer());
+        Resource<R> created = resourceWithLinks(r, getLinksForPostResource(resource));
 
         logProcessingFinished(HttpMethod.POST, parentResourceId);
         return createSuccessResponsePOST(created);

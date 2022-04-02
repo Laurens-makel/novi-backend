@@ -110,16 +110,18 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         return createSuccessResponseGET(resource);
     }
 
+    abstract protected Map<String, ControllerLinkBuilder> getLinksForPostResource(final R resource);
     /**
      * Provides a default way to handle POST requests on {@link student.laurens.novibackend.entities.AbstractEntity} resources.
      * Should be implemented by resource specific controller classes.
      *
      * @param resource - The new resource to be created.
      */
-    public ResponseEntity<R> create(final R resource) {
+    public ResponseEntity<Resource<R>> create(final R resource) {
         logProcessingStarted(HttpMethod.POST);
 
-        R created = getService().createResource(resource);
+        R r = getService().createResource(resource);
+        Resource<R> created = resourceWithLinks(r, getLinksForPostResource(resource));
 
         logProcessingFinished(HttpMethod.POST);
         return createSuccessResponsePOST(created);
@@ -189,7 +191,7 @@ public abstract class BaseRestController<R extends AbstractEntity> {
     protected ResponseEntity<Resource<R>> createSuccessResponseGET(final Resource<R> resource){
         return new ResponseEntity<>(resource, HttpStatus.OK);
     }
-    protected ResponseEntity<R> createSuccessResponsePOST(final R resource){
+    protected ResponseEntity<Resource<R>> createSuccessResponsePOST(final Resource<R> resource){
         return new ResponseEntity<>(resource, HttpStatus.CREATED);
     }
     protected ResponseEntity<R> createSuccessResponsePUT(final R resource){

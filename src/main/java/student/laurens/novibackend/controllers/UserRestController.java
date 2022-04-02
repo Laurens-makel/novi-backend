@@ -2,6 +2,7 @@ package student.laurens.novibackend.controllers;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -75,7 +76,7 @@ public class UserRestController extends BaseRestController<User>{
     }
 
     @PostMapping("/users")
-    public ResponseEntity<User> addUser(@RequestBody User user){
+    public ResponseEntity<Resource<User>> addUser(@RequestBody User user){
         return create(user);
     }
 
@@ -108,6 +109,16 @@ public class UserRestController extends BaseRestController<User>{
 
     @Override
     protected Map<String, ControllerLinkBuilder> getLinksForGetResource(final Integer resourceId, final User resource) {
+        Map<String, ControllerLinkBuilder> links = new HashMap<>();
+
+        links.put("delete", linkTo(methodOn(UserRestController.class).deleteUser(resource.getId())));
+        links.put("update", linkTo(methodOn(UserRestController.class).updateUser(resource.getId(), resource)));
+
+        return links;
+    }
+
+    @Override
+    protected Map<String, ControllerLinkBuilder> getLinksForPostResource(User resource) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
 
         links.put("delete", linkTo(methodOn(UserRestController.class).deleteUser(resource.getId())));

@@ -2,6 +2,7 @@ package student.laurens.novibackend.controllers;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,7 +55,7 @@ public class RoleRestController extends BaseRestController<Role> {
     }
 
     @PostMapping
-    public ResponseEntity<Role> addRole(@RequestBody Role role){
+    public ResponseEntity<Resource<Role>> addRole(@RequestBody Role role){
         return create(role);
     }
 
@@ -80,6 +81,16 @@ public class RoleRestController extends BaseRestController<Role> {
 
     @Override
     protected Map<String, ControllerLinkBuilder> getLinksForGetResource(final Integer resourceId, final Role resource) {
+        Map<String, ControllerLinkBuilder> links = new HashMap<>();
+
+        links.put("delete", linkTo(methodOn(RoleRestController.class).deleteRole(resource.getId())));
+        links.put("update", linkTo(methodOn(RoleRestController.class).updateRole(resource.getId(), resource)));
+
+        return links;
+    }
+
+    @Override
+    protected Map<String, ControllerLinkBuilder> getLinksForPostResource(Role resource) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
 
         links.put("delete", linkTo(methodOn(RoleRestController.class).deleteRole(resource.getId())));

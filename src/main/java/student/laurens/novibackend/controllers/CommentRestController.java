@@ -48,7 +48,7 @@ public class CommentRestController extends ChildBaseRestController<Comment, Blog
     }
 
     @PostMapping
-    public ResponseEntity<Comment> addComment(@PathVariable Integer blogpostId, @RequestBody Comment comment) throws ResourceNotFoundException, ResourceForbiddenException {
+    public ResponseEntity<Resource<Comment>> addComment(@PathVariable Integer blogpostId, @RequestBody Comment comment) throws ResourceNotFoundException, ResourceForbiddenException {
         return create(blogpostId, comment);
     }
 
@@ -75,6 +75,17 @@ public class CommentRestController extends ChildBaseRestController<Comment, Blog
 
     @Override
     protected Map<String, ControllerLinkBuilder> getLinksForGetResource(final Integer resourceId, final Comment resource) {
+        Map<String, ControllerLinkBuilder> links = new HashMap<>();
+
+        links.put("blogpost", linkTo(methodOn(BlogpostRestController.class).get(resource.getParentId())));
+        links.put("delete", linkTo(methodOn(CommentRestController.class).deleteComment(resource.getParentId(), resource.getId())));
+        links.put("update", linkTo(methodOn(CommentRestController.class).updateComment(resource.getParentId(), resource.getId(), resource)));
+
+        return links;
+    }
+
+    @Override
+    protected Map<String, ControllerLinkBuilder> getLinksForPostResource(Comment resource) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
 
         links.put("blogpost", linkTo(methodOn(BlogpostRestController.class).get(resource.getParentId())));

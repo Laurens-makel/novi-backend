@@ -2,6 +2,7 @@ package student.laurens.novibackend.controllers;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +41,7 @@ public class TagRestController extends BaseRestController<Tag> {
     }
 
     @PostMapping
-    public ResponseEntity<Tag> addTag(@RequestBody Tag tag){
+    public ResponseEntity<Resource<Tag>> addTag(@RequestBody Tag tag){
         return create(tag);
     }
 
@@ -66,6 +67,16 @@ public class TagRestController extends BaseRestController<Tag> {
 
     @Override
     protected Map<String, ControllerLinkBuilder> getLinksForGetResource(final Integer resourceId, final Tag resource) {
+        Map<String, ControllerLinkBuilder> links = new HashMap<>();
+
+        links.put("delete", linkTo(methodOn(TagRestController.class).deleteTag(resource.getId())));
+        links.put("update", linkTo(methodOn(TagRestController.class).updateTag(resource.getId(), resource)));
+
+        return links;
+    }
+
+    @Override
+    protected Map<String, ControllerLinkBuilder> getLinksForPostResource(Tag resource) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
 
         links.put("delete", linkTo(methodOn(TagRestController.class).deleteTag(resource.getId())));
