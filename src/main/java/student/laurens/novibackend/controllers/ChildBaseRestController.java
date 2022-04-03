@@ -1,15 +1,23 @@
 package student.laurens.novibackend.controllers;
 
 import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import student.laurens.novibackend.entities.*;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.exceptions.ResourceForbiddenException;
 import student.laurens.novibackend.services.AppUserDetailsService;
 import student.laurens.novibackend.services.ChildBaseService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 /**
  * Base class for RestControllers which expose CRUD methods for {@link AbstractOwnedWithParentEntity}.
@@ -17,7 +25,7 @@ import java.util.List;
  * @author Laurens Mäkel
  * @version 1.0, March 2022
  */
-public abstract class ChildBaseRestController<R extends AbstractEntity, P extends AbstractEntity>
+public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentEntity, P extends AbstractEntity>
         extends BaseRestController<R>{
 
     public ChildBaseRestController(AppUserDetailsService appUserDetailsService) {
@@ -48,6 +56,18 @@ public abstract class ChildBaseRestController<R extends AbstractEntity, P extend
         return createSuccessResponseGET(resource);
     }
 
+    abstract public ResponseEntity<Resource<R>> GET(final Integer parentResourceId, final Integer resourceId);
+
+    protected Map<String, ControllerLinkBuilder> getLinksForGetResource(final Integer resourceId, final R resource) {
+        Map<String, ControllerLinkBuilder> links = new HashMap<>();
+
+        links.put("POST", linkTo(methodOn(this.getClass()).PUT(resource.getParentId(), resource.getId(), resource)));
+        links.put("PUT", linkTo(methodOn(this.getClass()).PUT(resource.getParentId(), resource.getId(), resource)));
+        links.put("DELETE", linkTo(methodOn(this.getClass()).DELETE(resource.getParentId(), resource.getId())));
+
+        return links;
+    }
+
     /**
      * Provides a default way to handle GET requests on {@link student.laurens.novibackend.entities.AbstractOwnedWithParentEntity} resources.
      * Should be implemented by resource specific controller classes.
@@ -65,6 +85,9 @@ public abstract class ChildBaseRestController<R extends AbstractEntity, P extend
         logProcessingFinished(HttpMethod.GET, parentResourceId);
         return createSuccessResponseGET(resources);
     }
+
+    abstract public ResponseEntity<List<R>> GET(final Integer parentResourceId);
+
 
     /**
      * Provides a default way to handle PUT requests on {@link student.laurens.novibackend.entities.AbstractOwnedWithParentEntity} resources.
@@ -87,6 +110,17 @@ public abstract class ChildBaseRestController<R extends AbstractEntity, P extend
         return createSuccessResponsePOST(created);
     }
 
+    abstract public ResponseEntity<Resource<R>> POST(@PathVariable Integer parentResourceId, @RequestBody R resource);
+
+    protected Map<String, ControllerLinkBuilder> getLinksForPostResource(R resource) {
+        Map<String, ControllerLinkBuilder> links = new HashMap<>();
+
+        links.put("GET", linkTo(methodOn(this.getClass()).GET(resource.getParentId(), resource.getId())));
+        links.put("PUT", linkTo(methodOn(this.getClass()).PUT(resource.getParentId(), resource.getId(), resource)));
+        links.put("DELETE", linkTo(methodOn(this.getClass()).DELETE(resource.getParentId(), resource.getId())));
+
+        return links;
+    }
     /**
      * Provides a default way to handle PUT requests on {@link student.laurens.novibackend.entities.AbstractOwnedWithParentEntity} resources.
      * Should be implemented by resource specific controller classes.
@@ -108,6 +142,18 @@ public abstract class ChildBaseRestController<R extends AbstractEntity, P extend
         return createSuccessResponsePUT(updated);
     }
 
+    abstract public ResponseEntity<Resource<R>> PUT(final Integer parentResourceId, final Integer resourceId, final R resource);
+
+    protected Map<String, ControllerLinkBuilder> getLinksForPutResource(R resource) {
+        Map<String, ControllerLinkBuilder> links = new HashMap<>();
+
+        links.put("GET", linkTo(methodOn(this.getClass()).GET(resource.getParentId(), resource.getId())));
+        links.put("POST", linkTo(methodOn(this.getClass()).POST(resource.getParentId(), resource)));
+        links.put("DELETE", linkTo(methodOn(this.getClass()).DELETE(resource.getParentId(), resource.getId())));
+
+        return links;
+    }
+
     /**
      * Provides a default way to handle DELETE requests on {@link student.laurens.novibackend.entities.AbstractOwnedWithParentEntity} resources.
      * Should be implemented by resource specific controller classes.
@@ -126,6 +172,8 @@ public abstract class ChildBaseRestController<R extends AbstractEntity, P extend
         logProcessingFinished(HttpMethod.DELETE, parentResourceId, resourceId);
         return createSuccessResponseDELETE();
     }
+
+    abstract public ResponseEntity<R> DELETE(final Integer parentResourceId, final Integer resourceId);
 
     protected void logProcessingStarted(final HttpMethod method, final Integer parentResourceId, final Integer resourceId) {
         log.info("Processing ["+method+"] request on resource ["+getService().getResourceClass()+"] with parentResourceId ["+parentResourceId+"] and resourceId ["+resourceId+"] started.");

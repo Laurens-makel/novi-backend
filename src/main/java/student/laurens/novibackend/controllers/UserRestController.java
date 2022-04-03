@@ -50,7 +50,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
  * @version 1.0, March 2022
  */
 @RestController
-public class UserRestController extends BaseRestController<User>{
+public class UserRestController extends ResourceBaseRestController<User>{
 
     private @Getter AppUserDetailsService service;
 
@@ -76,17 +76,17 @@ public class UserRestController extends BaseRestController<User>{
     }
 
     @PostMapping("/users")
-    public ResponseEntity<Resource<User>> addUser(@RequestBody User user){
+    public ResponseEntity<Resource<User>> POST(@RequestBody User user){
         return create(user);
     }
 
     @PutMapping("/users/{uid}")
-    public ResponseEntity<Resource<User>> updateUser(@PathVariable Integer uid, @RequestBody User user) throws UserNotFoundException {
+    public ResponseEntity<Resource<User>> PUT(@PathVariable Integer uid, @RequestBody User user) throws UserNotFoundException {
         return update(uid, user);
     }
 
     @DeleteMapping("/users/{uid}")
-    public ResponseEntity deleteUser(@PathVariable Integer uid) throws UserNotFoundException {
+    public ResponseEntity DELETE(@PathVariable Integer uid) throws UserNotFoundException {
         return delete(uid);
     }
 
@@ -97,42 +97,4 @@ public class UserRestController extends BaseRestController<User>{
         return new ResponseEntity<>(passwordEncoder.encode(value), HttpStatus.OK);
     }
 
-    @Override
-    protected Map<String, ControllerLinkBuilder> getLinksForGetResourceByName(final String name, final User resource) {
-        Map<String, ControllerLinkBuilder> links = new HashMap<>();
-
-        links.put("delete", linkTo(methodOn(UserRestController.class).deleteUser(resource.getId())));
-        links.put("update", linkTo(methodOn(UserRestController.class).updateUser(resource.getId(), resource)));
-
-        return links;
-    }
-
-    @Override
-    protected Map<String, ControllerLinkBuilder> getLinksForGetResource(final Integer resourceId, final User resource) {
-        Map<String, ControllerLinkBuilder> links = new HashMap<>();
-
-        links.put("delete", linkTo(methodOn(UserRestController.class).deleteUser(resource.getId())));
-        links.put("update", linkTo(methodOn(UserRestController.class).updateUser(resource.getId(), resource)));
-
-        return links;
-    }
-
-    @Override
-    protected Map<String, ControllerLinkBuilder> getLinksForPostResource(User resource) {
-        Map<String, ControllerLinkBuilder> links = new HashMap<>();
-
-        links.put("delete", linkTo(methodOn(UserRestController.class).deleteUser(resource.getId())));
-        links.put("update", linkTo(methodOn(UserRestController.class).updateUser(resource.getId(), resource)));
-
-        return links;
-    }
-
-    @Override
-    protected Map<String, ControllerLinkBuilder> getLinksForPutResource(User resource) {
-        Map<String, ControllerLinkBuilder> links = new HashMap<>();
-
-        links.put("delete", linkTo(methodOn(UserRestController.class).deleteUser(resource.getId())));
-
-        return links;
-    }
 }

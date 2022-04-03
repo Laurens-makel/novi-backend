@@ -40,7 +40,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
  */
 @RestController
 @RequestMapping("/roles")
-public class RoleRestController extends BaseRestController<Role> {
+public class RoleRestController extends ResourceBaseRestController<Role> {
 
     private @Getter RoleService service;
 
@@ -55,56 +55,18 @@ public class RoleRestController extends BaseRestController<Role> {
     }
 
     @PostMapping
-    public ResponseEntity<Resource<Role>> addRole(@RequestBody Role role){
+    public ResponseEntity<Resource<Role>> POST(@RequestBody Role role){
         return create(role);
     }
 
     @PutMapping("/{roleId}")
-    public ResponseEntity<Resource<Role>> updateRole(@PathVariable Integer roleId, @RequestBody Role role) throws ResourceNotFoundException{
+    public ResponseEntity<Resource<Role>> PUT(@PathVariable Integer roleId, @RequestBody Role role) throws ResourceNotFoundException{
         return update(roleId, role);
     }
 
     @DeleteMapping("/{roleId}")
-    public ResponseEntity deleteRole(@PathVariable Integer roleId) throws ResourceNotFoundException {
+    public ResponseEntity DELETE(@PathVariable Integer roleId) throws ResourceNotFoundException {
         return delete(roleId);
     }
 
-    @Override
-    protected Map<String, ControllerLinkBuilder> getLinksForGetResourceByName(final String name, final Role resource) {
-        Map<String, ControllerLinkBuilder> links = new HashMap<>();
-
-        links.put("delete", linkTo(methodOn(RoleRestController.class).deleteRole(resource.getId())));
-        links.put("update", linkTo(methodOn(RoleRestController.class).updateRole(resource.getId(), resource)));
-
-        return links;
-    }
-
-    @Override
-    protected Map<String, ControllerLinkBuilder> getLinksForGetResource(final Integer resourceId, final Role resource) {
-        Map<String, ControllerLinkBuilder> links = new HashMap<>();
-
-        links.put("delete", linkTo(methodOn(RoleRestController.class).deleteRole(resource.getId())));
-        links.put("update", linkTo(methodOn(RoleRestController.class).updateRole(resource.getId(), resource)));
-
-        return links;
-    }
-
-    @Override
-    protected Map<String, ControllerLinkBuilder> getLinksForPostResource(Role resource) {
-        Map<String, ControllerLinkBuilder> links = new HashMap<>();
-
-        links.put("delete", linkTo(methodOn(RoleRestController.class).deleteRole(resource.getId())));
-        links.put("update", linkTo(methodOn(RoleRestController.class).updateRole(resource.getId(), resource)));
-
-        return links;
-    }
-
-    @Override
-    protected Map<String, ControllerLinkBuilder> getLinksForPutResource(Role resource) {
-        Map<String, ControllerLinkBuilder> links = new HashMap<>();
-
-        links.put("delete", linkTo(methodOn(RoleRestController.class).deleteRole(resource.getId())));
-
-        return links;
-    }
 }

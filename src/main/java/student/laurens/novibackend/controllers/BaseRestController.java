@@ -11,8 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.entities.User;
-import student.laurens.novibackend.exceptions.ResourceNotFoundException;
-import student.laurens.novibackend.exceptions.ResourceForbiddenException;
 import student.laurens.novibackend.exceptions.UserNotFoundException;
 import student.laurens.novibackend.services.AppUserDetailsService;
 import student.laurens.novibackend.services.BaseService;
@@ -56,115 +54,6 @@ public abstract class BaseRestController<R extends AbstractEntity> {
      * @return Class of R.
      */
     abstract protected BaseService<R> getService();
-
-    /**
-     * Provides a default way to handle GET requests on {@link student.laurens.novibackend.entities.AbstractEntity} resources.
-     * Should be implemented by resource specific controller classes.
-     */
-    public ResponseEntity<List<R>> get() {
-        logProcessingStarted(HttpMethod.GET);
-
-        List<R> resources = getService().getResources();
-
-        logProcessingFinished(HttpMethod.GET);
-        return createSuccessResponseGET(resources);
-    }
-
-    abstract protected Map<String, ControllerLinkBuilder> getLinksForGetResourceByName(final String name, final R resource);
-
-    /**
-     * Provides a default way to handle GET requests on {@link student.laurens.novibackend.entities.AbstractEntity} resources.
-     * Should be implemented by resource specific controller classes.
-     *
-     * @param name - Name of the resource to retrieve.
-     *
-     * @throws ResourceNotFoundException - Thrown when resource could not be found.
-     * @return
-     */
-    public ResponseEntity<Resource<R>> get(final String name) throws ResourceNotFoundException {
-        logProcessingStarted(HttpMethod.GET, name);
-
-        R r = getService().getResource(name);
-        Resource<R> resource = resourceWithLinks(r, getLinksForGetResourceByName(name, r));
-
-        logProcessingFinished(HttpMethod.GET, name);
-        return createSuccessResponseGET(resource);
-    }
-
-    abstract protected Map<String, ControllerLinkBuilder> getLinksForGetResource(final Integer resourceId, final R resource);
-    /**
-     * Provides a default way to handle GET requests on {@link student.laurens.novibackend.entities.AbstractEntity} resources.
-     * Should be implemented by resource specific controller classes.
-     *
-     * @param resourceId - Identifier of the resource to retrieve.
-     *
-     * @throws ResourceNotFoundException - Thrown when resource could not be found.
-     */
-    public ResponseEntity<Resource<R>> get(final Integer resourceId) throws ResourceNotFoundException {
-        logProcessingStarted(HttpMethod.GET, resourceId);
-
-        R r = getService().getResourceById(resourceId, getConsumer());
-        Resource<R> resource = resourceWithLinks(r, getLinksForGetResource(resourceId, r));
-
-        logProcessingFinished(HttpMethod.GET, resourceId);
-        return createSuccessResponseGET(resource);
-    }
-
-    abstract protected Map<String, ControllerLinkBuilder> getLinksForPostResource(final R resource);
-    /**
-     * Provides a default way to handle POST requests on {@link student.laurens.novibackend.entities.AbstractEntity} resources.
-     * Should be implemented by resource specific controller classes.
-     *
-     * @param resource - The new resource to be created.
-     */
-    public ResponseEntity<Resource<R>> create(final R resource) {
-        logProcessingStarted(HttpMethod.POST);
-
-        R r = getService().createResource(resource);
-        Resource<R> created = resourceWithLinks(r, getLinksForPostResource(resource));
-
-        logProcessingFinished(HttpMethod.POST);
-        return createSuccessResponsePOST(created);
-    }
-
-    abstract protected Map<String, ControllerLinkBuilder> getLinksForPutResource(final R resource);
-    /**
-     * Provides a default way to handle PUT requests on {@link student.laurens.novibackend.entities.AbstractEntity} resources.
-     * Should be implemented by resource specific controller classes.
-     *
-     * @param resourceId - Identifier of the resource to update.
-     * @param resource - New state of the resource.
-     *
-     * @throws ResourceNotFoundException - Thrown when resource could not be found.
-     * @throws ResourceForbiddenException - Thrown when resource could is not owned by current consumer of the API.
-     */
-    public ResponseEntity<Resource<R>> update(final Integer resourceId, final R resource) throws ResourceNotFoundException, ResourceForbiddenException {
-        logProcessingStarted(HttpMethod.PUT, resourceId);
-
-        R r = getService().updateResourceById(resourceId, resource, getConsumer());
-        Resource<R> updated = resourceWithLinks(r, getLinksForPutResource(r));
-
-        logProcessingFinished(HttpMethod.PUT, resourceId);
-        return createSuccessResponsePUT(updated);
-    }
-
-    /**
-     * Provides a default way to handle DELETE requests on {@link student.laurens.novibackend.entities.AbstractEntity} resources.
-     * Should be implemented by resource specific controller classes.
-     *
-     * @param resourceId - Identifier of the resource to delete.
-     *
-     * @throws ResourceNotFoundException - Thrown when resource could not be found.
-     * @throws ResourceForbiddenException - Thrown when resource is not owned by current consumer of the API.
-     */
-    public ResponseEntity<R> delete(final Integer resourceId) throws ResourceNotFoundException, ResourceForbiddenException {
-        logProcessingStarted(HttpMethod.DELETE, resourceId);
-
-        getService().deleteResourceById(resourceId, getConsumer());
-
-        logProcessingFinished(HttpMethod.DELETE, resourceId);
-        return createSuccessResponseDELETE();
-    }
 
     /**
      * Uses SecurityContextHolder.getContext().getAuthentication().getName() to retrieve current consumer of the API.

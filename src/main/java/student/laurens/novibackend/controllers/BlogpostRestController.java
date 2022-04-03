@@ -36,7 +36,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
  */
 @RestController
 @RequestMapping("/blogposts")
-public class BlogpostRestController extends BaseRestController<Blogpost> {
+public class BlogpostRestController extends ResourceBaseRestController<Blogpost> {
 
     private @Getter BlogpostService service;
 
@@ -56,60 +56,18 @@ public class BlogpostRestController extends BaseRestController<Blogpost> {
     }
 
     @PostMapping
-    public ResponseEntity<Resource<Blogpost>> addBlogpost(@RequestBody Blogpost blogpost) {
+    public ResponseEntity<Resource<Blogpost>> POST(@RequestBody Blogpost blogpost) {
         return create(blogpost);
     }
 
     @PutMapping("/{blogpostId}")
-    public ResponseEntity<Resource<Blogpost>> updateBlogpost(@PathVariable Integer blogpostId, @RequestBody Blogpost blogpost) throws ResourceNotFoundException {
+    public ResponseEntity<Resource<Blogpost>> PUT(@PathVariable Integer blogpostId, @RequestBody Blogpost blogpost) throws ResourceNotFoundException {
         return update(blogpostId, blogpost);
     }
 
     @DeleteMapping("/{blogpostId}")
-    public ResponseEntity deleteBlogpost(@PathVariable Integer blogpostId) throws ResourceNotFoundException {
+    public ResponseEntity DELETE(@PathVariable Integer blogpostId) throws ResourceNotFoundException {
         return delete(blogpostId);
     }
 
-    @Override
-    protected Map<String, ControllerLinkBuilder> getLinksForGetResourceByName(final String name, final Blogpost resource) {
-        Map<String, ControllerLinkBuilder> links = new HashMap<>();
-
-        links.put("comments", linkTo(methodOn(CommentRestController.class).getComments(resource.getId())));
-        links.put("delete", linkTo(methodOn(BlogpostRestController.class).deleteBlogpost(resource.getId())));
-        links.put("update", linkTo(methodOn(BlogpostRestController.class).updateBlogpost(resource.getId(), resource)));
-
-        return links;
-    }
-
-    @Override
-    protected Map<String, ControllerLinkBuilder> getLinksForGetResource(final Integer resourceId, final Blogpost resource) {
-        Map<String, ControllerLinkBuilder> links = new HashMap<>();
-
-        links.put("comments", linkTo(methodOn(CommentRestController.class).getComments(resourceId)));
-        links.put("delete", linkTo(methodOn(BlogpostRestController.class).deleteBlogpost(resourceId)));
-        links.put("update", linkTo(methodOn(BlogpostRestController.class).updateBlogpost(resourceId, resource)));
-
-        return links;
-    }
-
-    @Override
-    protected Map<String, ControllerLinkBuilder> getLinksForPostResource(Blogpost resource) {
-        Map<String, ControllerLinkBuilder> links = new HashMap<>();
-
-        links.put("comments", linkTo(methodOn(CommentRestController.class).getComments(resource.getId())));
-        links.put("delete", linkTo(methodOn(BlogpostRestController.class).deleteBlogpost(resource.getId())));
-        links.put("update", linkTo(methodOn(BlogpostRestController.class).updateBlogpost(resource.getId(), resource)));
-
-        return links;
-    }
-
-    @Override
-    protected Map<String, ControllerLinkBuilder> getLinksForPutResource(Blogpost resource) {
-        Map<String, ControllerLinkBuilder> links = new HashMap<>();
-
-        links.put("comments", linkTo(methodOn(CommentRestController.class).getComments(resource.getId())));
-        links.put("delete", linkTo(methodOn(BlogpostRestController.class).deleteBlogpost(resource.getId())));
-
-        return links;
-    }
 }

@@ -26,7 +26,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
  */
 @RestController
 @RequestMapping("/tags")
-public class TagRestController extends BaseRestController<Tag> {
+public class TagRestController extends ResourceBaseRestController<Tag> {
 
     private @Getter TagService service;
 
@@ -41,56 +41,18 @@ public class TagRestController extends BaseRestController<Tag> {
     }
 
     @PostMapping
-    public ResponseEntity<Resource<Tag>> addTag(@RequestBody Tag tag){
+    public ResponseEntity<Resource<Tag>> POST(@RequestBody Tag tag){
         return create(tag);
     }
 
     @PutMapping("/{tagId}")
-    public ResponseEntity<Resource<Tag>> updateTag(@PathVariable Integer tagId, @RequestBody Tag tag) throws ResourceNotFoundException {
+    public ResponseEntity<Resource<Tag>> PUT(@PathVariable Integer tagId, @RequestBody Tag tag) throws ResourceNotFoundException {
         return update(tagId, tag);
     }
 
     @DeleteMapping("/{tagId}")
-    public ResponseEntity deleteTag(@PathVariable Integer tagId) throws ResourceNotFoundException {
+    public ResponseEntity DELETE(@PathVariable Integer tagId) throws ResourceNotFoundException {
         return delete(tagId);
     }
 
-    @Override
-    protected Map<String, ControllerLinkBuilder> getLinksForGetResourceByName(final String name, final Tag resource) {
-        Map<String, ControllerLinkBuilder> links = new HashMap<>();
-
-        links.put("delete", linkTo(methodOn(TagRestController.class).deleteTag(resource.getId())));
-        links.put("update", linkTo(methodOn(TagRestController.class).updateTag(resource.getId(), resource)));
-
-        return links;
-    }
-
-    @Override
-    protected Map<String, ControllerLinkBuilder> getLinksForGetResource(final Integer resourceId, final Tag resource) {
-        Map<String, ControllerLinkBuilder> links = new HashMap<>();
-
-        links.put("delete", linkTo(methodOn(TagRestController.class).deleteTag(resource.getId())));
-        links.put("update", linkTo(methodOn(TagRestController.class).updateTag(resource.getId(), resource)));
-
-        return links;
-    }
-
-    @Override
-    protected Map<String, ControllerLinkBuilder> getLinksForPostResource(Tag resource) {
-        Map<String, ControllerLinkBuilder> links = new HashMap<>();
-
-        links.put("delete", linkTo(methodOn(TagRestController.class).deleteTag(resource.getId())));
-        links.put("update", linkTo(methodOn(TagRestController.class).updateTag(resource.getId(), resource)));
-
-        return links;
-    }
-
-    @Override
-    protected Map<String, ControllerLinkBuilder> getLinksForPutResource(Tag resource) {
-        Map<String, ControllerLinkBuilder> links = new HashMap<>();
-
-        links.put("delete", linkTo(methodOn(TagRestController.class).deleteTag(resource.getId())));
-
-        return links;
-    }
 }
