@@ -46,7 +46,7 @@ public class TagRestController extends BaseRestController<Tag> {
     }
 
     @PutMapping("/{tagId}")
-    public ResponseEntity<Tag> updateTag(@PathVariable Integer tagId, @RequestBody Tag tag) throws ResourceNotFoundException {
+    public ResponseEntity<Resource<Tag>> updateTag(@PathVariable Integer tagId, @RequestBody Tag tag) throws ResourceNotFoundException {
         return update(tagId, tag);
     }
 
@@ -81,6 +81,15 @@ public class TagRestController extends BaseRestController<Tag> {
 
         links.put("delete", linkTo(methodOn(TagRestController.class).deleteTag(resource.getId())));
         links.put("update", linkTo(methodOn(TagRestController.class).updateTag(resource.getId(), resource)));
+
+        return links;
+    }
+
+    @Override
+    protected Map<String, ControllerLinkBuilder> getLinksForPutResource(Tag resource) {
+        Map<String, ControllerLinkBuilder> links = new HashMap<>();
+
+        links.put("delete", linkTo(methodOn(TagRestController.class).deleteTag(resource.getId())));
 
         return links;
     }

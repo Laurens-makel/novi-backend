@@ -60,7 +60,7 @@ public class RoleRestController extends BaseRestController<Role> {
     }
 
     @PutMapping("/{roleId}")
-    public ResponseEntity<Role> updateRole(@PathVariable Integer roleId, @RequestBody Role role) throws ResourceNotFoundException{
+    public ResponseEntity<Resource<Role>> updateRole(@PathVariable Integer roleId, @RequestBody Role role) throws ResourceNotFoundException{
         return update(roleId, role);
     }
 
@@ -95,6 +95,15 @@ public class RoleRestController extends BaseRestController<Role> {
 
         links.put("delete", linkTo(methodOn(RoleRestController.class).deleteRole(resource.getId())));
         links.put("update", linkTo(methodOn(RoleRestController.class).updateRole(resource.getId(), resource)));
+
+        return links;
+    }
+
+    @Override
+    protected Map<String, ControllerLinkBuilder> getLinksForPutResource(Role resource) {
+        Map<String, ControllerLinkBuilder> links = new HashMap<>();
+
+        links.put("delete", linkTo(methodOn(RoleRestController.class).deleteRole(resource.getId())));
 
         return links;
     }

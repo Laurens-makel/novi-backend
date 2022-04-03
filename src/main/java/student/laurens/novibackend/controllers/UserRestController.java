@@ -81,7 +81,7 @@ public class UserRestController extends BaseRestController<User>{
     }
 
     @PutMapping("/users/{uid}")
-    public ResponseEntity<User> updateUser(@PathVariable Integer uid, @RequestBody User user) throws UserNotFoundException {
+    public ResponseEntity<Resource<User>> updateUser(@PathVariable Integer uid, @RequestBody User user) throws UserNotFoundException {
         return update(uid, user);
     }
 
@@ -123,6 +123,15 @@ public class UserRestController extends BaseRestController<User>{
 
         links.put("delete", linkTo(methodOn(UserRestController.class).deleteUser(resource.getId())));
         links.put("update", linkTo(methodOn(UserRestController.class).updateUser(resource.getId(), resource)));
+
+        return links;
+    }
+
+    @Override
+    protected Map<String, ControllerLinkBuilder> getLinksForPutResource(User resource) {
+        Map<String, ControllerLinkBuilder> links = new HashMap<>();
+
+        links.put("delete", linkTo(methodOn(UserRestController.class).deleteUser(resource.getId())));
 
         return links;
     }

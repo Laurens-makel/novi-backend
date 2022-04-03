@@ -98,10 +98,11 @@ public abstract class ChildBaseRestController<R extends AbstractEntity, P extend
      * @throws ResourceNotFoundException - Thrown when parent resource or resource could not be found.
      * @throws ResourceForbiddenException - Thrown when parent resource or resource is not owned by current consumer of the API.
      */
-    public ResponseEntity<R> update(final Integer parentResourceId, final Integer resourceId, final R resource) throws ResourceNotFoundException, ResourceForbiddenException {
+    public ResponseEntity<Resource<R>> update(final Integer parentResourceId, final Integer resourceId, final R resource) throws ResourceNotFoundException, ResourceForbiddenException {
         logProcessingStarted(HttpMethod.PUT, parentResourceId, resourceId);
 
-        R updated = getService().updateResourceById(parentResourceId, resourceId, resource, getConsumer());
+        R r = getService().updateResourceById(parentResourceId, resourceId, resource, getConsumer());
+        Resource<R> updated = resourceWithLinks(r, getLinksForPutResource(r));
 
         logProcessingFinished(HttpMethod.PUT, parentResourceId, resourceId);
         return createSuccessResponsePUT(updated);

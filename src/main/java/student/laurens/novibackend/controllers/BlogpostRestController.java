@@ -61,7 +61,7 @@ public class BlogpostRestController extends BaseRestController<Blogpost> {
     }
 
     @PutMapping("/{blogpostId}")
-    public ResponseEntity<Blogpost> updateBlogpost(@PathVariable Integer blogpostId, @RequestBody Blogpost blogpost) throws ResourceNotFoundException {
+    public ResponseEntity<Resource<Blogpost>> updateBlogpost(@PathVariable Integer blogpostId, @RequestBody Blogpost blogpost) throws ResourceNotFoundException {
         return update(blogpostId, blogpost);
     }
 
@@ -99,6 +99,16 @@ public class BlogpostRestController extends BaseRestController<Blogpost> {
         links.put("comments", linkTo(methodOn(CommentRestController.class).getComments(resource.getId())));
         links.put("delete", linkTo(methodOn(BlogpostRestController.class).deleteBlogpost(resource.getId())));
         links.put("update", linkTo(methodOn(BlogpostRestController.class).updateBlogpost(resource.getId(), resource)));
+
+        return links;
+    }
+
+    @Override
+    protected Map<String, ControllerLinkBuilder> getLinksForPutResource(Blogpost resource) {
+        Map<String, ControllerLinkBuilder> links = new HashMap<>();
+
+        links.put("comments", linkTo(methodOn(CommentRestController.class).getComments(resource.getId())));
+        links.put("delete", linkTo(methodOn(BlogpostRestController.class).deleteBlogpost(resource.getId())));
 
         return links;
     }

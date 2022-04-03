@@ -127,6 +127,7 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         return createSuccessResponsePOST(created);
     }
 
+    abstract protected Map<String, ControllerLinkBuilder> getLinksForPutResource(final R resource);
     /**
      * Provides a default way to handle PUT requests on {@link student.laurens.novibackend.entities.AbstractEntity} resources.
      * Should be implemented by resource specific controller classes.
@@ -137,10 +138,11 @@ public abstract class BaseRestController<R extends AbstractEntity> {
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
      * @throws ResourceForbiddenException - Thrown when resource could is not owned by current consumer of the API.
      */
-    public ResponseEntity<R> update(final Integer resourceId, final R resource) throws ResourceNotFoundException, ResourceForbiddenException {
+    public ResponseEntity<Resource<R>> update(final Integer resourceId, final R resource) throws ResourceNotFoundException, ResourceForbiddenException {
         logProcessingStarted(HttpMethod.PUT, resourceId);
 
-        R updated = getService().updateResourceById(resourceId, resource, getConsumer());
+        R r = getService().updateResourceById(resourceId, resource, getConsumer());
+        Resource<R> updated = resourceWithLinks(r, getLinksForPutResource(r));
 
         logProcessingFinished(HttpMethod.PUT, resourceId);
         return createSuccessResponsePUT(updated);
@@ -194,7 +196,7 @@ public abstract class BaseRestController<R extends AbstractEntity> {
     protected ResponseEntity<Resource<R>> createSuccessResponsePOST(final Resource<R> resource){
         return new ResponseEntity<>(resource, HttpStatus.CREATED);
     }
-    protected ResponseEntity<R> createSuccessResponsePUT(final R resource){
+    protected ResponseEntity<Resource<R>> createSuccessResponsePUT(final Resource<R> resource){
         return new ResponseEntity<>(resource, HttpStatus.ACCEPTED);
     }
     protected ResponseEntity<R> createSuccessResponseDELETE(){
