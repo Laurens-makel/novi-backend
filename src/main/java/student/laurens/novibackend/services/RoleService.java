@@ -2,11 +2,9 @@ package student.laurens.novibackend.services;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import student.laurens.novibackend.entities.Role;
-import student.laurens.novibackend.repositories.CommentRepository;
 import student.laurens.novibackend.repositories.RoleRepository;
 
 import javax.transaction.Transactional;

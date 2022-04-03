@@ -1,9 +1,7 @@
 package student.laurens.novibackend.controllers;
 
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +13,7 @@ import student.laurens.novibackend.exceptions.UserNotFoundException;
 import student.laurens.novibackend.services.AppUserDetailsService;
 
 import java.security.Principal;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 /**
  * Rest Controller that exposes CRUD methods for {@link User}.
@@ -52,15 +45,15 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 @RestController
 public class UserRestController extends ResourceBaseRestController<User>{
 
-    private @Getter AppUserDetailsService service;
+    private final @Getter AppUserDetailsService service;
 
-    public UserRestController(AppUserDetailsService appUserDetailsService) {
+    public UserRestController(final AppUserDetailsService appUserDetailsService) {
         super(appUserDetailsService);
         this.service = appUserDetailsService;
     }
 
     @GetMapping("/user")
-    public ResponseEntity<AppUserDetails> getUser(Principal principal) {
+    public ResponseEntity<AppUserDetails> GET(final Principal principal) {
         String username = principal.getName();
         logProcessingStarted(HttpMethod.GET, username);
 
@@ -71,27 +64,27 @@ public class UserRestController extends ResourceBaseRestController<User>{
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getUsers() {
+    public ResponseEntity<List<User>> GET() {
         return get();
     }
 
     @PostMapping("/users")
-    public ResponseEntity<Resource<User>> POST(@RequestBody User user){
+    public ResponseEntity<Resource<User>> POST(@RequestBody final User user){
         return create(user);
     }
 
     @PutMapping("/users/{uid}")
-    public ResponseEntity<Resource<User>> PUT(@PathVariable Integer uid, @RequestBody User user) throws UserNotFoundException {
+    public ResponseEntity<Resource<User>> PUT(@PathVariable final Integer uid, @RequestBody final User user) throws UserNotFoundException {
         return update(uid, user);
     }
 
     @DeleteMapping("/users/{uid}")
-    public ResponseEntity DELETE(@PathVariable Integer uid) throws UserNotFoundException {
+    public ResponseEntity DELETE(@PathVariable final Integer uid) throws UserNotFoundException {
         return delete(uid);
     }
 
     @GetMapping("/password")
-    public ResponseEntity<String> getEncodedPassord(@RequestParam String value) {
+    public ResponseEntity<String> getEncodedPassord(@RequestParam final String value) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
         return new ResponseEntity<>(passwordEncoder.encode(value), HttpStatus.OK);

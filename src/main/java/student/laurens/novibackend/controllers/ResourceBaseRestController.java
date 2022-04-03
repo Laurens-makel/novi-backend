@@ -4,13 +4,9 @@ import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import student.laurens.novibackend.entities.AbstractEntity;
-import student.laurens.novibackend.entities.Tag;
-import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.exceptions.ResourceForbiddenException;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
-import student.laurens.novibackend.exceptions.UserNotFoundException;
 import student.laurens.novibackend.services.AppUserDetailsService;
 
 import java.util.HashMap;
@@ -35,9 +31,10 @@ public abstract class ResourceBaseRestController<R extends AbstractEntity> exten
 
     /**
      * Provides a default way to handle GET requests on {@link AbstractEntity} resources.
-     * Should be implemented by resource specific controller classes.
+     *
+     * @return List of resources.
      */
-    public ResponseEntity<List<R>> get() {
+    protected ResponseEntity<List<R>> get() {
         logProcessingStarted(HttpMethod.GET);
 
         List<R> resources = getService().getResources();
@@ -47,15 +44,23 @@ public abstract class ResourceBaseRestController<R extends AbstractEntity> exten
     }
 
     /**
+     * Should be implemented by child-class, annotated with @GetMapping and call get() to handle GET requests.
+     * Referred to in HATEOAS resource link building.
+     *
+     * @return List of resources.
+     */
+    abstract public ResponseEntity<List<R>> GET();
+
+    /**
      * Provides a default way to handle GET requests on {@link AbstractEntity} resources.
-     * Should be implemented by resource specific controller classes.
      *
      * @param name - Name of the resource to retrieve.
      *
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
-     * @return
+     *
+     * @return Persisted resource, specified by name.
      */
-    public ResponseEntity<Resource<R>> get(final String name) throws ResourceNotFoundException {
+    protected ResponseEntity<Resource<R>> get(final String name) throws ResourceNotFoundException {
         logProcessingStarted(HttpMethod.GET, name);
 
         R r = getService().getResource(name);
@@ -81,8 +86,10 @@ public abstract class ResourceBaseRestController<R extends AbstractEntity> exten
      * @param resourceId - Identifier of the resource to retrieve.
      *
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
+     *
+     * @return Persisted resource, specified by identifier.
      */
-    public ResponseEntity<Resource<R>> get(final Integer resourceId) throws ResourceNotFoundException {
+    protected ResponseEntity<Resource<R>> get(final Integer resourceId) throws ResourceNotFoundException {
         logProcessingStarted(HttpMethod.GET, resourceId);
 
         R r = getService().getResourceById(resourceId, getConsumer());
@@ -92,21 +99,25 @@ public abstract class ResourceBaseRestController<R extends AbstractEntity> exten
         return createSuccessResponseGET(resource);
     }
 
+//    abstract public ResponseEntity<Resource<R>> GET(final Integer resourceId);
+
     protected Map<String, ControllerLinkBuilder> getLinksForGetResource(final Integer resourceId, final R resource) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
 
-        links.put("DELETEa", linkTo(methodOn(this.getClass()).DELETE(resource.getId())));
+        links.put("DELETE", linkTo(methodOn(this.getClass()).DELETE(resource.getId())));
         links.put("PUT", linkTo(methodOn(this.getClass()).PUT(resource.getId(), resource)));
 
         return links;
     }
+
     /**
      * Provides a default way to handle POST requests on {@link AbstractEntity} resources.
-     * Should be implemented by resource specific controller classes.
      *
      * @param resource - The new resource to be created.
+     *
+     * @return Confirmation message.
      */
-    public ResponseEntity<Resource<R>> create(final R resource) {
+    protected ResponseEntity<Resource<R>> create(final R resource) {
         logProcessingStarted(HttpMethod.POST);
 
         R r = getService().createResource(resource);
@@ -116,6 +127,14 @@ public abstract class ResourceBaseRestController<R extends AbstractEntity> exten
         return createSuccessResponsePOST(created);
     }
 
+    /**
+     * Should be implemented by child-class, annotated with @PostMapping and call create(resource) to handle POST requests.
+     * Referred to in HATEOAS resource link building.
+     *
+     * @param resource - The new resource to be created.
+     *
+     * @return Confirmation message.
+     */
     abstract public ResponseEntity<Resource<R>> POST(final R resource);
 
     protected Map<String, ControllerLinkBuilder> getLinksForPostResource(final R resource) {
@@ -129,15 +148,16 @@ public abstract class ResourceBaseRestController<R extends AbstractEntity> exten
 
     /**
      * Provides a default way to handle PUT requests on {@link AbstractEntity} resources.
-     * Should be implemented by resource specific controller classes.
      *
      * @param resourceId - Identifier of the resource to update.
      * @param resource - New state of the resource.
      *
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
      * @throws ResourceForbiddenException - Thrown when resource could is not owned by current consumer of the API.
+     *
+     * @return Confirmation message.
      */
-    public ResponseEntity<Resource<R>> update(final Integer resourceId, final R resource) throws ResourceNotFoundException, ResourceForbiddenException {
+    protected ResponseEntity<Resource<R>> update(final Integer resourceId, final R resource) throws ResourceNotFoundException, ResourceForbiddenException {
         logProcessingStarted(HttpMethod.PUT, resourceId);
 
         R r = getService().updateResourceById(resourceId, resource, getConsumer());
@@ -147,7 +167,19 @@ public abstract class ResourceBaseRestController<R extends AbstractEntity> exten
         return createSuccessResponsePUT(updated);
     }
 
-    abstract public ResponseEntity<Resource<R>> PUT(final Integer resourceId, final R resource);
+    /**
+     * Should be implemented by child-class, annotated with @PutMapping and call update(resourceId, resource) to handle PUT requests.
+     * Referred to in HATEOAS resource link building.
+     *
+     * @param resourceId - Identifier of the resource to update.
+     * @param resource - New state of the resource.
+     *
+     * @throws ResourceNotFoundException - Thrown when resource could not be found.
+     * @throws ResourceForbiddenException - Thrown when resource could is not owned by current consumer of the API.
+     *
+     * @return Confirmation message.
+     */
+    abstract public ResponseEntity<Resource<R>> PUT(final Integer resourceId, final R resource) throws ResourceNotFoundException, ResourceForbiddenException;
 
     protected Map<String, ControllerLinkBuilder> getLinksForPutResource(R resource) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
@@ -156,16 +188,18 @@ public abstract class ResourceBaseRestController<R extends AbstractEntity> exten
 
         return links;
     }
+
     /**
      * Provides a default way to handle DELETE requests on {@link AbstractEntity} resources.
-     * Should be implemented by resource specific controller classes.
      *
      * @param resourceId - Identifier of the resource to delete.
      *
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
      * @throws ResourceForbiddenException - Thrown when resource is not owned by current consumer of the API.
+     *
+     * @return Confirmation message.
      */
-    public ResponseEntity<R> delete(final Integer resourceId) throws ResourceNotFoundException, ResourceForbiddenException {
+    protected ResponseEntity<R> delete(final Integer resourceId) throws ResourceNotFoundException, ResourceForbiddenException {
         logProcessingStarted(HttpMethod.DELETE, resourceId);
 
         getService().deleteResourceById(resourceId, getConsumer());
@@ -174,6 +208,17 @@ public abstract class ResourceBaseRestController<R extends AbstractEntity> exten
         return createSuccessResponseDELETE();
     }
 
-    abstract public ResponseEntity<R> DELETE(final Integer resourceId);
+    /**
+     * Should be implemented by child-class, annotated with @DeleteMapping and call delete(resourceId) to handle DELETE requests.
+     * Referred to in HATEOAS resource link building.
+     *
+     * @param resourceId - Identifier of the resource to delete.
+     *
+     * @throws ResourceNotFoundException - Thrown when resource could not be found.
+     * @throws ResourceForbiddenException - Thrown when resource could is not owned by current consumer of the API.
+     *
+     * @return Confirmation message.
+     */
+    abstract public ResponseEntity<R> DELETE(final Integer resourceId) throws ResourceNotFoundException, ResourceForbiddenException;
 
 }

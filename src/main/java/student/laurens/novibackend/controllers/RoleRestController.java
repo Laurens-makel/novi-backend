@@ -1,9 +1,7 @@
 package student.laurens.novibackend.controllers;
 
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.Role;
@@ -11,12 +9,7 @@ import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.services.AppUserDetailsService;
 import student.laurens.novibackend.services.RoleService;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 /**
  * Rest Controller that exposes CRUD methods for {@link Role}.
@@ -42,7 +35,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 @RequestMapping("/roles")
 public class RoleRestController extends ResourceBaseRestController<Role> {
 
-    private @Getter RoleService service;
+    private final @Getter RoleService service;
 
     public RoleRestController(AppUserDetailsService appUserDetailsService, RoleService service) {
         super(appUserDetailsService);
@@ -50,7 +43,7 @@ public class RoleRestController extends ResourceBaseRestController<Role> {
     }
 
     @GetMapping
-    public ResponseEntity<List<Role>> getRoles() {
+    public ResponseEntity<List<Role>> GET() {
         return get();
     }
 

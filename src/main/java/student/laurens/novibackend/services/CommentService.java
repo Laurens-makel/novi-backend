@@ -5,10 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.entities.Blogpost;
 import student.laurens.novibackend.entities.Comment;
-import student.laurens.novibackend.repositories.BlogpostRepository;
 import student.laurens.novibackend.repositories.CommentRepository;
 
 import javax.transaction.Transactional;

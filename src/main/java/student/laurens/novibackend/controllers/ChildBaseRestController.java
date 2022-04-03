@@ -4,8 +4,6 @@ import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import student.laurens.novibackend.entities.*;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.exceptions.ResourceForbiddenException;
@@ -37,14 +35,14 @@ public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentE
 
     /**
      * Provides a default way to handle GET requests on {@link student.laurens.novibackend.entities.AbstractOwnedWithParentEntity} resources.
-     * Should be implemented by resource specific controller classes.
      *
      * @param parentResourceId - Identifier of parent resource of the resource to retrieve.
      * @param resourceId - Identifier of the resource to retrieve.
      *
      * @throws ResourceNotFoundException - Thrown when parent resource or resource could not be found.
      * @throws ResourceForbiddenException - Thrown when parent resource or resource is not owned by current consumer of the API.
-     * @return
+     *
+     * @return Persisted resource, specified by identifier.
      */
     public ResponseEntity<Resource<R>> get(final Integer parentResourceId, final Integer resourceId) throws ResourceNotFoundException, ResourceForbiddenException {
         logProcessingStarted(HttpMethod.GET, parentResourceId, resourceId);
@@ -70,12 +68,13 @@ public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentE
 
     /**
      * Provides a default way to handle GET requests on {@link student.laurens.novibackend.entities.AbstractOwnedWithParentEntity} resources.
-     * Should be implemented by resource specific controller classes.
      *
      * @param parentResourceId - Identifier of parent resource of the resource to retrieve.
      *
      * @throws ResourceNotFoundException - Thrown when parent resource or resource could not be found.
      * @throws ResourceForbiddenException - Thrown when parent resource or resource is not owned by current consumer of the API.
+     *
+     * @return List of resources.
      */
     public ResponseEntity<List<R>> getResources(final Integer parentResourceId) throws ResourceNotFoundException, ResourceForbiddenException {
         logProcessingStarted(HttpMethod.GET, parentResourceId);
@@ -86,19 +85,30 @@ public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentE
         return createSuccessResponseGET(resources);
     }
 
-    abstract public ResponseEntity<List<R>> GET(final Integer parentResourceId);
-
-
     /**
-     * Provides a default way to handle PUT requests on {@link student.laurens.novibackend.entities.AbstractOwnedWithParentEntity} resources.
-     * Should be implemented by resource specific controller classes.
+     * Should be implemented by child-class, annotated with @GetMapping and call get() to handle GET requests.
+     * Referred to in HATEOAS resource link building.
      *
-     * @param parentResourceId - Identifier of parent resource of the resource to update.
-     * @param resource - New state of the resource.
+     * @param parentResourceId - Identifier of parent resource of the resource to retrieve.
      *
      * @throws ResourceNotFoundException - Thrown when parent resource or resource could not be found.
      * @throws ResourceForbiddenException - Thrown when parent resource or resource is not owned by current consumer of the API.
-     * @return
+     *
+     * @return List of resources.
+     */
+    abstract public ResponseEntity<List<R>> GET(final Integer parentResourceId) throws ResourceNotFoundException, ResourceForbiddenException;
+
+
+    /**
+     * Provides a default way to handle POST requests on {@link student.laurens.novibackend.entities.AbstractOwnedWithParentEntity} resources.
+     *
+     * @param parentResourceId - The identifier of the parent resource to create a child for.
+     * @param resource - The new resource to be created.
+     *
+     * @throws ResourceNotFoundException - Thrown when parent resource or resource could not be found.
+     * @throws ResourceForbiddenException - Thrown when parent resource or resource is not owned by current consumer of the API.
+     *
+     * @return Confirmation message.
      */
     public ResponseEntity<Resource<R>> create(final Integer parentResourceId, final R resource) throws ResourceNotFoundException, ResourceForbiddenException {
         logProcessingStarted(HttpMethod.POST, parentResourceId);
@@ -110,7 +120,16 @@ public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentE
         return createSuccessResponsePOST(created);
     }
 
-    abstract public ResponseEntity<Resource<R>> POST(@PathVariable Integer parentResourceId, @RequestBody R resource);
+    /**
+     * Should be implemented by child-class, annotated with @PostMapping and call create(parentResourceId, resource) to handle POST requests.
+     * Referred to in HATEOAS resource link building.
+     *
+     * @param parentResourceId - The identifier of the parent resource to create a child for.
+     * @param resource - The new resource to be created.
+     *
+     * @return Confirmation message.
+     */
+    abstract public ResponseEntity<Resource<R>> POST(final Integer parentResourceId, final R resource);
 
     protected Map<String, ControllerLinkBuilder> getLinksForPostResource(R resource) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
@@ -121,9 +140,9 @@ public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentE
 
         return links;
     }
+
     /**
      * Provides a default way to handle PUT requests on {@link student.laurens.novibackend.entities.AbstractOwnedWithParentEntity} resources.
-     * Should be implemented by resource specific controller classes.
      *
      * @param parentResourceId - Identifier of parent resource of the resource to update.
      * @param resourceId - Identifier of the resource to update.
@@ -131,6 +150,8 @@ public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentE
      *
      * @throws ResourceNotFoundException - Thrown when parent resource or resource could not be found.
      * @throws ResourceForbiddenException - Thrown when parent resource or resource is not owned by current consumer of the API.
+     *
+     * @return Confirmation message.
      */
     public ResponseEntity<Resource<R>> update(final Integer parentResourceId, final Integer resourceId, final R resource) throws ResourceNotFoundException, ResourceForbiddenException {
         logProcessingStarted(HttpMethod.PUT, parentResourceId, resourceId);
@@ -142,7 +163,20 @@ public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentE
         return createSuccessResponsePUT(updated);
     }
 
-    abstract public ResponseEntity<Resource<R>> PUT(final Integer parentResourceId, final Integer resourceId, final R resource);
+    /**
+     * Should be implemented by child-class, annotated with @PutMapping and call update(parentResourceId, resourceId, resource) to handle PUT requests.
+     * Referred to in HATEOAS resource link building.
+     *
+     * @param parentResourceId - Identifier of parent resource of the resource to update.
+     * @param resourceId - Identifier of the resource to update.
+     * @param resource - New state of the resource.
+     *
+     * @throws ResourceNotFoundException - Thrown when resource could not be found.
+     * @throws ResourceForbiddenException - Thrown when resource could is not owned by current consumer of the API.
+     *
+     * @return Confirmation message.
+     */
+    abstract public ResponseEntity<Resource<R>> PUT(final Integer parentResourceId, final Integer resourceId, final R resource) throws ResourceNotFoundException, ResourceForbiddenException;
 
     protected Map<String, ControllerLinkBuilder> getLinksForPutResource(R resource) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
@@ -156,13 +190,14 @@ public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentE
 
     /**
      * Provides a default way to handle DELETE requests on {@link student.laurens.novibackend.entities.AbstractOwnedWithParentEntity} resources.
-     * Should be implemented by resource specific controller classes.
      *
      * @param parentResourceId - Identifier of parent resource of the resource to delete.
      * @param resourceId - Identifier of the resource to delete.
      *
      * @throws ResourceNotFoundException - Thrown when parent resource or resource could not be found.
      * @throws ResourceForbiddenException - Thrown when parent resource or resource is not owned by current consumer of the API.
+     *
+     * @return Confirmation message.
      */
     public ResponseEntity<R> delete(final Integer parentResourceId, final Integer resourceId) throws ResourceNotFoundException, ResourceForbiddenException {
         logProcessingStarted(HttpMethod.DELETE, parentResourceId, resourceId);
@@ -173,12 +208,23 @@ public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentE
         return createSuccessResponseDELETE();
     }
 
-    abstract public ResponseEntity<R> DELETE(final Integer parentResourceId, final Integer resourceId);
+    /**
+     * Should be implemented by child-class, annotated with @DeleteMapping and call delete(parentResourceId, resourceId) to handle DELETE requests.
+     * Referred to in HATEOAS resource link building.
+     *
+     * @param parentResourceId - Identifier of parent resource of the resource to delete.
+     * @param resourceId - Identifier of the resource to delete.
+     *
+     * @throws ResourceNotFoundException - Thrown when resource could not be found.
+     * @throws ResourceForbiddenException - Thrown when resource could is not owned by current consumer of the API.
+     *
+     * @return Confirmation message.
+     */
+    abstract public ResponseEntity<R> DELETE(final Integer parentResourceId, final Integer resourceId) throws ResourceNotFoundException, ResourceForbiddenException;
 
     protected void logProcessingStarted(final HttpMethod method, final Integer parentResourceId, final Integer resourceId) {
         log.info("Processing ["+method+"] request on resource ["+getService().getResourceClass()+"] with parentResourceId ["+parentResourceId+"] and resourceId ["+resourceId+"] started.");
     }
-
     protected void logProcessingFinished(final HttpMethod method, final Integer parentResourceId, final Integer resourceId) {
         log.info("Processing ["+method+"] request on resource ["+getService().getResourceClass()+"] with parentResourceId ["+parentResourceId+"] and resourceId ["+resourceId+"] successfully finished.");
     }

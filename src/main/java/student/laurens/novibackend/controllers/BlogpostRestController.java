@@ -2,20 +2,15 @@ package student.laurens.novibackend.controllers;
 
 import lombok.Getter;
 import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.Blogpost;
+import student.laurens.novibackend.exceptions.ResourceForbiddenException;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.services.AppUserDetailsService;
 import student.laurens.novibackend.services.BlogpostService;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 /**
  * Rest Controller that exposes CRUD methods for {@link Blogpost}.
@@ -38,35 +33,35 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 @RequestMapping("/blogposts")
 public class BlogpostRestController extends ResourceBaseRestController<Blogpost> {
 
-    private @Getter BlogpostService service;
+    private final @Getter BlogpostService service;
 
-    public BlogpostRestController(AppUserDetailsService appUserDetailsService, BlogpostService service) {
+    public BlogpostRestController(final AppUserDetailsService appUserDetailsService, final BlogpostService service) {
         super(appUserDetailsService);
         this.service = service;
     }
 
     @GetMapping("/{blogpostId}")
-    public ResponseEntity<Resource<Blogpost>> getBlogpost(@PathVariable Integer blogpostId) {
+    public ResponseEntity<Resource<Blogpost>> GET(@PathVariable final Integer blogpostId) throws ResourceNotFoundException {
         return get(blogpostId);
     }
 
     @GetMapping
-    public ResponseEntity<List<Blogpost>> getBlogposts() {
+    public ResponseEntity<List<Blogpost>> GET() throws ResourceNotFoundException {
         return get();
     }
 
     @PostMapping
-    public ResponseEntity<Resource<Blogpost>> POST(@RequestBody Blogpost blogpost) {
+    public ResponseEntity<Resource<Blogpost>> POST(@RequestBody final Blogpost blogpost) {
         return create(blogpost);
     }
 
     @PutMapping("/{blogpostId}")
-    public ResponseEntity<Resource<Blogpost>> PUT(@PathVariable Integer blogpostId, @RequestBody Blogpost blogpost) throws ResourceNotFoundException {
+    public ResponseEntity<Resource<Blogpost>> PUT(@PathVariable final Integer blogpostId, @RequestBody final Blogpost blogpost) throws ResourceNotFoundException, ResourceForbiddenException {
         return update(blogpostId, blogpost);
     }
 
     @DeleteMapping("/{blogpostId}")
-    public ResponseEntity DELETE(@PathVariable Integer blogpostId) throws ResourceNotFoundException {
+    public ResponseEntity DELETE(@PathVariable Integer blogpostId) throws ResourceNotFoundException, ResourceForbiddenException {
         return delete(blogpostId);
     }
 
