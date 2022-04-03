@@ -25,7 +25,7 @@ import java.util.stream.StreamSupport;
 @Qualifier("BlogpostService")
 public class BlogpostService extends ParentBaseService<Blogpost> {
 
-    private @Getter BlogpostRepository repository;
+    private final @Getter BlogpostRepository repository;
 
     public BlogpostService(BlogpostRepository repository){
         this.repository = repository;

@@ -59,7 +59,7 @@ public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentE
     protected Map<String, ControllerLinkBuilder> getLinksForGetResource(final Integer resourceId, final R resource) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
 
-        links.put("POST", linkTo(methodOn(this.getClass()).PUT(resource.getParentId(), resource.getId(), resource)));
+        links.put("POST", linkTo(methodOn(this.getClass()).POST(resource.getParentId(), resource)));
         links.put("PUT", linkTo(methodOn(this.getClass()).PUT(resource.getParentId(), resource.getId(), resource)));
         links.put("DELETE", linkTo(methodOn(this.getClass()).DELETE(resource.getParentId(), resource.getId())));
 

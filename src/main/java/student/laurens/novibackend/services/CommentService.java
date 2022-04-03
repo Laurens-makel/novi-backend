@@ -21,7 +21,7 @@ public class CommentService extends ChildBaseService<Comment, Blogpost> {
     }
 
     @Autowired
-    private @Getter CommentRepository repository;
+    private final @Getter CommentRepository repository;
 
     @Override
     public Comment getResource(String title) {

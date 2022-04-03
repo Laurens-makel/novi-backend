@@ -19,7 +19,7 @@ public class TagService extends BaseService<Tag> {
     }
 
     @Autowired
-    private @Getter TagRepository repository;
+    private final @Getter TagRepository repository;
 
     public Tag getResource(final String title) {
         return repository.getTagByTitle(title);

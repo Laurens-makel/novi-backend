@@ -12,6 +12,6 @@ public class ResourceForbiddenException extends ResourceException {
 
     @Override
     protected HttpStatus getHttpStatus() {
-        return HttpStatus.FORBIDDEN;
+        return this.getClass().getAnnotation(ResponseStatus.class).value();
     }
 }
