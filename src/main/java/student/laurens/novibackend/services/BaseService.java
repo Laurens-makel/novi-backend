@@ -68,24 +68,20 @@ public abstract class BaseService<R extends AbstractEntity> {
      */
     public R getResourceById(final Integer resourceId, final User consumer) throws ResourceNotFoundException {
         log.info("Processing started for get request for resourceId ["+resourceId+"], request by ["+consumer.getUsername()+"]");
-        Optional<R> resource = validateOwnershipOfResource(resourceId, HttpMethod.GET, consumer);
-        if(resource.isEmpty()){
-            log.info("Resource with ID ["+resourceId+"] has not yet been found during ownership validation for user ["+consumer.getUsername()+"].");
-            return getResourceByIdWithoutValidations(resourceId);
-        }
+
+        R resource = validateOwnershipOfResource(resourceId, HttpMethod.GET, consumer)
+                .orElseGet(() -> {
+                    log.info("Resource with ID [" + resourceId + "] has not yet been found during ownership validation for user [" + consumer.getUsername() + "].");
+                    return getResourceByIdWithoutValidations(resourceId);
+                });
+
         log.info("Processing finished with success for get request for resourceId ["+resourceId+"], request by ["+consumer.getUsername()+"]");
-        return resource.get();
+        return resource;
     }
     protected R getResourceByIdWithoutValidations(final Integer resourceId) throws ResourceNotFoundException {
         log.info("Processing started for get resource without validations request for resourceId ["+resourceId+"]");
-        R found = getRepository().getOne(resourceId);
-
-        if(found == null){
-            log.warn("Resource with ID not found! ["+resourceId+"]");
-            throw new ResourceNotFoundException(getResourceClass(), resourceId);
-        }
-
-        return found;
+        return getRepository().findById(resourceId)
+                .orElseThrow(() -> new ResourceNotFoundException(getResourceClass(), resourceId));
     }
 
     /**
@@ -157,8 +153,9 @@ public abstract class BaseService<R extends AbstractEntity> {
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
      * @throws ResourceForbiddenException - Thrown when resource could is not owned by current consumer of service.
      */
-    public  Optional<R> validateOwnershipOfResource(final Integer resourceId, final HttpMethod method, final User consumer) throws ResourceNotFoundException, ResourceForbiddenException {
+    public Optional<R> validateOwnershipOfResource(final Integer resourceId, final HttpMethod method, final User consumer) throws ResourceNotFoundException, ResourceForbiddenException {
         Class<R> resourceClass = getResourceClass();
+        log.info("Validate ownership of resource called, method ["+method+"] on AbstractOwnedEntity ["+resourceClass+"] with identifier ["+resourceId+"]");
 
         if(AbstractOwnedEntity.class.isAssignableFrom(resourceClass) && isMethodOwnershipProtected(method)){
             log.info("Checking if allowed to ["+method+"] AbstractOwnedEntity ["+resourceClass+"] with identifier ["+resourceId+"]");
@@ -173,6 +170,8 @@ public abstract class BaseService<R extends AbstractEntity> {
             log.info("User ["+consumer.getUid()+"] is the owner of resource ["+ownedResource.getOwnerUid()+"]");
             return Optional.of(resource);
         }
+
+        log.info("Validate ownership of resource skipped, method ["+method+"] on AbstractOwnedEntity ["+resourceClass+"] is not protected.");
         return Optional.empty();
     }
 
