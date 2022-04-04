@@ -14,6 +14,9 @@ import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.entities.Role;
 import student.laurens.novibackend.entities.User;
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -166,6 +169,9 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_JSON_ACCEPT_VALUE);
 
         validator.validate();
+        if(expectedStatus.equals(HttpStatus.OK)){
+            validateJsonArrayLengthGreaterThan(mvc, 1);
+        }
     }
 
     @Test
@@ -179,6 +185,9 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_XML_ACCEPT_UTF8_VALUE);
 
         validator.validate();
+        if(expectedStatus.equals(HttpStatus.OK)){
+            validateXmlArrayLengthGreaterThan(mvc, 1);
+        }
     }
 
     @Test
@@ -187,11 +196,14 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForGetAsContentCreator();
-        ResultActions mvc = defaultJsonTestForGet();
+        ResultActions mvc = defaultJsonTestForGet().andDo(print());
 
         ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_JSON_ACCEPT_VALUE);
 
         validator.validate();
+        if(expectedStatus.equals(HttpStatus.OK)){
+            validateJsonArrayLengthGreaterThan(mvc, 1);
+        }
     }
 
     @Test
@@ -205,6 +217,9 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_XML_ACCEPT_UTF8_VALUE);
 
         validator.validate();
+        if(expectedStatus.equals(HttpStatus.OK)){
+            validateXmlArrayLengthGreaterThan(mvc, 1);
+        }
     }
 
     @Test
@@ -218,6 +233,10 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_JSON_ACCEPT_VALUE);
 
         validator.validate();
+        if(expectedStatus.equals(HttpStatus.OK)){
+            validateJsonArrayLengthGreaterThan(mvc, 1);
+        }
+
     }
 
     @Test
@@ -231,6 +250,9 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_XML_ACCEPT_UTF8_VALUE);
 
         validator.validate();
+        if(expectedStatus.equals(HttpStatus.OK)){
+            validateXmlArrayLengthGreaterThan(mvc, 1);
+        }
     }
 
     @Test
@@ -244,6 +266,9 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_JSON_ACCEPT_VALUE);
 
         validator.validate();
+        if(expectedStatus.equals(HttpStatus.OK)){
+            validateJsonArrayLengthGreaterThan(mvc, 1);
+        }
     }
 
     @Test
@@ -257,6 +282,9 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_XML_ACCEPT_UTF8_VALUE);
 
         validator.validate();
+        if(expectedStatus.equals(HttpStatus.OK)){
+            validateXmlArrayLengthGreaterThan(mvc, 1);
+        }
     }
 
     @Test

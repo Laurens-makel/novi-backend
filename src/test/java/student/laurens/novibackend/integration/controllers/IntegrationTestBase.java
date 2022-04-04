@@ -26,9 +26,11 @@ import student.laurens.novibackend.repositories.UserRepository;
 
 import java.util.Date;
 
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Base class to provide default methods for testing RestControllers.
@@ -85,13 +87,6 @@ public abstract class IntegrationTestBase<R extends AbstractEntity>  {
 
         userRepository.deleteAll();
     }
-//
-//    @Before
-//    public void base_before(){
-//        log.debug("Deleting all users from repository.");
-//
-//        userRepository.deleteAll();
-//    }
 
     @Autowired
     protected RoleRepository roleRepository;
@@ -166,6 +161,7 @@ public abstract class IntegrationTestBase<R extends AbstractEntity>  {
      * @return ResultActions instance which contains the response of the GET call.
      */
     public ResultActions defaultJsonTestForGet() throws Exception {
+        save(create());
         return getAsJson();
     }
 
@@ -175,6 +171,7 @@ public abstract class IntegrationTestBase<R extends AbstractEntity>  {
      * @return ResultActions instance which contains the response of the GET call.
      */
     public ResultActions defaultXmlTestForGet() throws Exception {
+        save(create());
         return getAsXml();
     }
 
@@ -438,6 +435,13 @@ public abstract class IntegrationTestBase<R extends AbstractEntity>  {
         new ResponseValidator(mvc, expectedStatus, contentType).validate();
     }
 
+    protected void validateJsonArrayLengthGreaterThan(final ResultActions mvc, final int expectedMinimumLength) throws Exception {
+        mvc.andExpect(jsonPath("$", hasSize(greaterThan(expectedMinimumLength - 1))));
+    }
+    protected void validateXmlArrayLengthGreaterThan(final ResultActions mvc, final int expectedMinimumLength) throws Exception {
+        mvc.andExpect(xpath("count(//item) > " + (expectedMinimumLength-1)).booleanValue(true));
+    }
+
     protected String unique(String text){
         return text + new Date().getTime();
     }
@@ -448,6 +452,7 @@ public abstract class IntegrationTestBase<R extends AbstractEntity>  {
         blogpost.setTitle("Example blogpost");
         blogpost.setContent("Lorem ipsum");
         blogpost.setAuthor(author);
+        blogpost.setPublished(true);
 
         return blogpost;
     }
