@@ -1,9 +1,11 @@
 package student.laurens.novibackend.controllers;
 
 import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.Resources;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import student.laurens.novibackend.entities.*;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.exceptions.ResourceForbiddenException;
@@ -76,12 +78,13 @@ public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentE
      *
      * @return List of resources.
      */
-    public ResponseEntity<List<R>> getResources(final Integer parentResourceId) throws ResourceNotFoundException, ResourceForbiddenException {
+    public ResponseEntity<Resources<R>> getResources(final Integer parentResourceId) throws ResourceNotFoundException, ResourceForbiddenException {
         logProcessingStarted(HttpMethod.GET, parentResourceId);
 
-        List<R> resources = getService().getResources(parentResourceId, getConsumer());
-
+        List<R> r = getService().getResources(parentResourceId, getConsumer());
+        Resources resources = resourcesWithLinks(r, getLinksForGetResources(r));
         logProcessingFinished(HttpMethod.GET, parentResourceId);
+
         return createSuccessResponseGET(resources);
     }
 
@@ -96,8 +99,17 @@ public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentE
      *
      * @return List of resources.
      */
-    abstract public ResponseEntity<List<R>> GET(final Integer parentResourceId) throws ResourceNotFoundException, ResourceForbiddenException;
+    abstract public ResponseEntity<Resources<R>>  GET(final Integer parentResourceId) throws ResourceNotFoundException, ResourceForbiddenException;
 
+    protected Map<String, ControllerLinkBuilder> getLinksForGetResources(final List<R> resources) {
+        Map<String, ControllerLinkBuilder> links = new HashMap<>();
+
+        for(R resource : resources){
+            links.put("GET " , linkTo(methodOn(this.getClass()).GET(resource.getParentId(), resource.getId())));
+        }
+
+        return links;
+    }
 
     /**
      * Provides a default way to handle POST requests on {@link student.laurens.novibackend.entities.AbstractOwnedWithParentEntity} resources.

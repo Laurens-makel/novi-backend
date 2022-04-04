@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.Resources;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import student.laurens.novibackend.exceptions.UserNotFoundException;
 import student.laurens.novibackend.services.AppUserDetailsService;
 import student.laurens.novibackend.services.BaseService;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,27 +77,47 @@ public abstract class BaseRestController<R extends AbstractEntity> {
             throw new UserNotFoundException(username);
         }
     }
-
+    protected ResponseEntity<Resources<R>> createSuccessResponseGET(final Resources<R> resources){
+        log.info("Creating ResponseEntity for GET resources on resource class ["+getService().getResourceClass()+"] with size of ["+resources.getContent().size()+"]");
+        return new ResponseEntity(resources, HttpStatus.OK);
+    }
     protected ResponseEntity<List<R>> createSuccessResponseGET(final List<R> resources){
         return new ResponseEntity<>(resources, HttpStatus.OK);
     }
     protected ResponseEntity<Resource<R>> createSuccessResponseGET(final Resource<R> resource){
+        log.info("Creating ResponseEntity for GET resource on resource class ["+getService().getResourceClass()+"] with id ["+resource.getContent().getId()+"]");
         return new ResponseEntity<>(resource, HttpStatus.OK);
     }
     protected ResponseEntity<Resource<R>> createSuccessResponsePOST(final Resource<R> resource){
+        log.info("Creating ResponseEntity for POST resource on resource class ["+getService().getResourceClass()+"].");
         return new ResponseEntity<>(resource, HttpStatus.CREATED);
     }
     protected ResponseEntity<Resource<R>> createSuccessResponsePUT(final Resource<R> resource){
+        log.info("Creating ResponseEntity for PUT resource on resource class ["+getService().getResourceClass()+"].");
         return new ResponseEntity<>(resource, HttpStatus.ACCEPTED);
     }
     protected ResponseEntity<R> createSuccessResponseDELETE(){
+        log.info("Creating ResponseEntity for DELETE resource on resource class ["+getService().getResourceClass()+"].");
         return new ResponseEntity(createDeletedMessage(), HttpStatus.ACCEPTED);
+    }
+    protected Resources<R> resourcesWithLinks(final List<R> resources, Map<String, ControllerLinkBuilder> links){
+        return resourceWithLinks(new Resources<>(Collections.singleton(resources)), links);
+    }
+
+    private Resources<R> resourceWithLinks(Resources resources, Map<String, ControllerLinkBuilder> links) {
+        for (Map.Entry<String, ControllerLinkBuilder> entry : links.entrySet()) {
+            String rel = entry.getKey();
+            ControllerLinkBuilder link = entry.getValue();
+
+            log.info("Adding link ["+link.toString()+"] with rel ["+rel+"] to response. ");
+            resources.add(link.withRel(rel));
+        }
+        return resources;
     }
 
     protected Resource<R> resourceWithLinks(final R resource, Map<String, ControllerLinkBuilder> links){
         return resourceWithLinks(new Resource<R>(resource), links);
     }
-
     protected Resource<R> resourceWithLinks(final Resource<R> resource, Map<String, ControllerLinkBuilder> links){
         for (Map.Entry<String, ControllerLinkBuilder> entry : links.entrySet()) {
             String rel = entry.getKey();

@@ -436,10 +436,10 @@ public abstract class IntegrationTestBase<R extends AbstractEntity>  {
     }
 
     protected void validateJsonArrayLengthGreaterThan(final ResultActions mvc, final int expectedMinimumLength) throws Exception {
-        mvc.andExpect(jsonPath("$", hasSize(greaterThan(expectedMinimumLength - 1))));
+        mvc.andExpect(jsonPath("$._embedded[*]", hasSize(greaterThan(expectedMinimumLength - 1))));
     }
     protected void validateXmlArrayLengthGreaterThan(final ResultActions mvc, final int expectedMinimumLength) throws Exception {
-        mvc.andExpect(xpath("count(//item) > " + (expectedMinimumLength-1)).booleanValue(true));
+        mvc.andExpect(xpath("count(/Resources/content/content) > " + (expectedMinimumLength-1)).booleanValue(true));
     }
 
     protected String unique(String text){

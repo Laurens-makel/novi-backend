@@ -2,14 +2,13 @@ package student.laurens.novibackend.controllers;
 
 import lombok.Getter;
 import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.Resources;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.Tag;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.services.AppUserDetailsService;
 import student.laurens.novibackend.services.TagService;
-
-import java.util.List;
 
 /**
  * Rest Controller that exposes CRUD methods for {@link Tag}.
@@ -29,22 +28,27 @@ public class TagRestController extends ResourceBaseRestController<Tag> {
     }
 
     @GetMapping
-    public ResponseEntity<List<Tag>> GET() {
-        return get();
+    public ResponseEntity<Resources<Tag>> GET() {
+        return getResources();
+    }
+
+    @GetMapping("/{tagId}")
+    public ResponseEntity<Resource<Tag>> GET(@PathVariable final Integer tagId) {
+        return get(tagId);
     }
 
     @PostMapping
-    public ResponseEntity<Resource<Tag>> POST(@RequestBody Tag tag){
+    public ResponseEntity<Resource<Tag>> POST(@RequestBody final Tag tag){
         return create(tag);
     }
 
     @PutMapping("/{tagId}")
-    public ResponseEntity<Resource<Tag>> PUT(@PathVariable Integer tagId, @RequestBody Tag tag) throws ResourceNotFoundException {
+    public ResponseEntity<Resource<Tag>> PUT(@PathVariable final Integer tagId, @RequestBody final Tag tag) throws ResourceNotFoundException {
         return update(tagId, tag);
     }
 
     @DeleteMapping("/{tagId}")
-    public ResponseEntity DELETE(@PathVariable Integer tagId) throws ResourceNotFoundException {
+    public ResponseEntity DELETE(@PathVariable final Integer tagId) throws ResourceNotFoundException {
         return delete(tagId);
     }
 

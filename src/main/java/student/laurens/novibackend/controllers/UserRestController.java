@@ -2,6 +2,7 @@ package student.laurens.novibackend.controllers;
 
 import lombok.Getter;
 import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +14,6 @@ import student.laurens.novibackend.exceptions.UserNotFoundException;
 import student.laurens.novibackend.services.AppUserDetailsService;
 
 import java.security.Principal;
-import java.util.List;
 
 /**
  * Rest Controller that exposes CRUD methods for {@link User}.
@@ -64,8 +64,13 @@ public class UserRestController extends ResourceBaseRestController<User>{
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<User>> GET() {
-        return get();
+    public ResponseEntity<Resources<User>> GET() {
+        return getResources();
+    }
+
+    @GetMapping("/users/(uid)")
+    public ResponseEntity<Resource<User>> GET(@PathVariable final Integer uid) {
+        return get(uid);
     }
 
     @PostMapping("/users")

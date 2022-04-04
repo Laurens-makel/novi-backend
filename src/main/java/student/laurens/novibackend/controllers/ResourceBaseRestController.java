@@ -1,6 +1,7 @@
 package student.laurens.novibackend.controllers;
 
 import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.Resources;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -34,10 +35,11 @@ public abstract class ResourceBaseRestController<R extends AbstractEntity> exten
      *
      * @return List of resources.
      */
-    protected ResponseEntity<List<R>> get() {
+    protected ResponseEntity<Resources<R>> getResources() {
         logProcessingStarted(HttpMethod.GET);
 
-        List<R> resources = getService().getResources();
+        List<R> r = getService().getResources();
+        Resources resources = resourcesWithLinks(r, getLinksForGetResources(r));
 
         logProcessingFinished(HttpMethod.GET);
         return createSuccessResponseGET(resources);
@@ -49,8 +51,17 @@ public abstract class ResourceBaseRestController<R extends AbstractEntity> exten
      *
      * @return List of resources.
      */
-    abstract public ResponseEntity<List<R>> GET();
+    abstract public ResponseEntity<Resources<R>> GET();
 
+    protected Map<String, ControllerLinkBuilder> getLinksForGetResources(final List<R> resources) {
+        Map<String, ControllerLinkBuilder> links = new HashMap<>();
+
+        for(R resource : resources){
+            links.put("GET " , linkTo(methodOn(this.getClass()).GET(resource.getId())));
+        }
+
+        return links;
+    }
     /**
      * Provides a default way to handle GET requests on {@link AbstractEntity} resources.
      *
@@ -99,7 +110,7 @@ public abstract class ResourceBaseRestController<R extends AbstractEntity> exten
         return createSuccessResponseGET(resource);
     }
 
-//    abstract public ResponseEntity<Resource<R>> GET(final Integer resourceId);
+    abstract public ResponseEntity<Resource<R>> GET(final Integer resourceId);
 
     protected Map<String, ControllerLinkBuilder> getLinksForGetResource(final Integer resourceId, final R resource) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
