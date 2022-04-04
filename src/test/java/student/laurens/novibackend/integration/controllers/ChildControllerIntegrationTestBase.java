@@ -35,15 +35,6 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         userRepository.deleteAll();
     }
 
-    @Before
-    public void base_before(){
-        log.debug("Deleting all users from repository.");
-        getRepository().deleteAll();
-        getParentRepository().deleteAll();
-
-        userRepository.deleteAll();
-    }
-
     @Override
     protected String getUrlForGet () {
         return getUrlForGetWithParent(createParent());
@@ -413,6 +404,9 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         ResultActions mvc = defaultJsonTestForGetAll(true, false, user);
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.equals(HttpStatus.OK)){
+            validateJsonArrayLengthGreaterThan(mvc, 1);
+        }
     }
 
     @Test
@@ -424,6 +418,9 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         ResultActions mvc = defaultJsonTestForGetAll(true, false, user);
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.equals(HttpStatus.OK)){
+            validateJsonArrayLengthGreaterThan(mvc, 1);
+        }
     }
 
     @Test
@@ -435,6 +432,9 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         ResultActions mvc = defaultJsonTestForGetAll(true, false, user);
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.equals(HttpStatus.OK)){
+            validateJsonArrayLengthGreaterThan(mvc, 1);
+        }
     }
 
     @Test
@@ -446,6 +446,9 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         ResultActions mvc = defaultJsonTestForGetAll(true, false, user);
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.equals(HttpStatus.OK)){
+            validateJsonArrayLengthGreaterThan(mvc, 1);
+        }
     }
 
     @Test
