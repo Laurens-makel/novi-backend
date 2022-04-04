@@ -15,6 +15,7 @@ import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.exceptions.UserNotFoundException;
 import student.laurens.novibackend.services.AppUserDetailsService;
 import student.laurens.novibackend.services.BaseService;
+import student.laurens.novibackend.services.ResourceBaseService;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -51,7 +52,7 @@ public abstract class BaseRestController<R extends AbstractEntity> {
     }
 
     /**
-     * Retrieve the specific {@link BaseService} implementation class of R.
+     * Retrieve the specific {@link ResourceBaseService} implementation class of R.
      *
      * @return Class of R.
      */
@@ -100,11 +101,11 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         log.info("Creating ResponseEntity for DELETE resource on resource class ["+getService().getResourceClass()+"].");
         return new ResponseEntity(createDeletedMessage(), HttpStatus.ACCEPTED);
     }
-    protected Resources<R> resourcesWithLinks(final List<R> resources, Map<String, ControllerLinkBuilder> links){
+    protected Resources<R> resourcesWithLinks(final List<R> resources, final Map<String, ControllerLinkBuilder> links){
         return resourceWithLinks(new Resources<>(Collections.singleton(resources)), links);
     }
 
-    private Resources<R> resourceWithLinks(Resources resources, Map<String, ControllerLinkBuilder> links) {
+    private Resources<R> resourceWithLinks(final Resources resources, final Map<String, ControllerLinkBuilder> links) {
         for (Map.Entry<String, ControllerLinkBuilder> entry : links.entrySet()) {
             String rel = entry.getKey();
             ControllerLinkBuilder link = entry.getValue();

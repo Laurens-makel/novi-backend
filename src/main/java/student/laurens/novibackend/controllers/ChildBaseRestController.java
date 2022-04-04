@@ -5,12 +5,12 @@ import org.springframework.hateoas.Resources;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import student.laurens.novibackend.entities.*;
+import student.laurens.novibackend.exceptions.ResourceDuplicateException;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.exceptions.ResourceForbiddenException;
 import student.laurens.novibackend.services.AppUserDetailsService;
-import student.laurens.novibackend.services.ChildBaseService;
+import student.laurens.novibackend.services.ChildResourceBaseService;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +33,7 @@ public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentE
     }
 
     @Override
-    abstract protected ChildBaseService<R, P> getService();
+    abstract protected ChildResourceBaseService<R, P> getService();
 
     /**
      * Provides a default way to handle GET requests on {@link student.laurens.novibackend.entities.AbstractOwnedWithParentEntity} resources.
@@ -119,10 +119,11 @@ public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentE
      *
      * @throws ResourceNotFoundException - Thrown when parent resource or resource could not be found.
      * @throws ResourceForbiddenException - Thrown when parent resource or resource is not owned by current consumer of the API.
+     * @throws ResourceNotFoundException - Thrown when to be created resource is a duplicate.
      *
      * @return Confirmation message.
      */
-    public ResponseEntity<Resource<R>> create(final Integer parentResourceId, final R resource) throws ResourceNotFoundException, ResourceForbiddenException {
+    public ResponseEntity<Resource<R>> create(final Integer parentResourceId, final R resource) throws ResourceNotFoundException, ResourceForbiddenException, ResourceDuplicateException {
         logProcessingStarted(HttpMethod.POST, parentResourceId);
 
         R r = getService().createResource(parentResourceId, resource, getConsumer());
@@ -139,9 +140,11 @@ public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentE
      * @param parentResourceId - The identifier of the parent resource to create a child for.
      * @param resource - The new resource to be created.
      *
+     * @throws ResourceNotFoundException - Thrown when to be created resource is a duplicate.
+     *
      * @return Confirmation message.
      */
-    abstract public ResponseEntity<Resource<R>> POST(final Integer parentResourceId, final R resource);
+    abstract public ResponseEntity<Resource<R>> POST(final Integer parentResourceId, final R resource) throws ResourceDuplicateException;
 
     protected Map<String, ControllerLinkBuilder> getLinksForPostResource(R resource) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();

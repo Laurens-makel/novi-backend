@@ -67,7 +67,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         logger.info("Parsing accept header.");
 
         String accept = request.getHeader(HttpHeaders.ACCEPT);
-        String result = accept == null ? DEFAULT_CONTENT_TYPE : accept;
+        String result = (accept == null  || accept.equals(MediaType.ALL_VALUE)) ? DEFAULT_CONTENT_TYPE : accept;
 
         logger.info("Consumer provided ["+accept+"], determined to use ["+result+"].");
         return result;

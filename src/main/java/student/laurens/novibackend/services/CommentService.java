@@ -14,7 +14,7 @@ import javax.transaction.Transactional;
 @Service
 @Component
 @Transactional
-public class CommentService extends ChildBaseService<Comment, Blogpost> {
+public class CommentService extends ChildResourceBaseService<Comment, Blogpost> {
 
     public CommentService(CommentRepository repository){
         this.repository = repository;
@@ -33,6 +33,7 @@ public class CommentService extends ChildBaseService<Comment, Blogpost> {
 
     @Autowired
     @Qualifier("BlogpostService")
-    private @Getter BlogpostService parentService;
+    private @Getter
+    BlogpostService parentService;
 
 }

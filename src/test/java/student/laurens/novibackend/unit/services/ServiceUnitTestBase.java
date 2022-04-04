@@ -3,6 +3,8 @@ package student.laurens.novibackend.unit.services;
 import org.junit.Test;
 import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.entities.User;
+import student.laurens.novibackend.services.ChildResourceBaseService;
+import student.laurens.novibackend.services.ResourceBaseService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -13,6 +15,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @version 1.0, March 2022
  */
 public abstract class ServiceUnitTestBase<R extends AbstractEntity> extends UnitTestBase<R> {
+
+    abstract protected ResourceBaseService<R> getService();
 
     @Test
     public void get_resource() {

@@ -4,6 +4,7 @@ import org.springframework.http.HttpMethod;
 import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.entities.AbstractOwnedEntity;
 import student.laurens.novibackend.entities.User;
+import student.laurens.novibackend.exceptions.ResourceDuplicateException;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.exceptions.ResourceForbiddenException;
 
@@ -12,9 +13,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public abstract class ChildBaseService <R extends AbstractEntity, P extends AbstractEntity> extends BaseService<R> {
+public abstract class ChildResourceBaseService<R extends AbstractEntity, P extends AbstractEntity> extends BaseService<R> {
 
-    abstract protected ParentBaseService<P> getParentService();
+    abstract protected ParentResourceBaseService<P> getParentService();
 
     /**
      * Retrieves a resource from repository, specified by resource id.
@@ -62,12 +63,13 @@ public abstract class ChildBaseService <R extends AbstractEntity, P extends Abst
      *
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
      */
-    public R createResource(final Integer parentResourceId, final R resource, final User consumer) throws ResourceNotFoundException {
+    public R createResource(final Integer parentResourceId, final R resource, final User consumer) throws ResourceNotFoundException, ResourceDuplicateException {
         log.info("Processing started for create request for resource with parent ID ["+parentResourceId+"], request by ["+consumer.getUsername()+"]");
         getParentService().exists(parentResourceId);
         validateOwnershipOfResources(parentResourceId, null, HttpMethod.POST, consumer);
+        R created = create(resource);
         log.info("Processing finished with success for create request for resource with parent ID ["+parentResourceId+"], request by ["+consumer.getUsername()+"]");
-        return getRepository().save(resource);
+        return created;
     }
 
     /**

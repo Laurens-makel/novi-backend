@@ -6,6 +6,7 @@ import org.springframework.hateoas.Resources;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.Tag;
+import student.laurens.novibackend.exceptions.ResourceDuplicateException;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.services.AppUserDetailsService;
 import student.laurens.novibackend.services.TagService;
@@ -38,7 +39,7 @@ public class TagRestController extends ResourceBaseRestController<Tag> {
     }
 
     @PostMapping
-    public ResponseEntity<Resource<Tag>> POST(@RequestBody final Tag tag){
+    public ResponseEntity<Resource<Tag>> POST(@RequestBody final Tag tag) throws ResourceDuplicateException {
         return create(tag);
     }
 

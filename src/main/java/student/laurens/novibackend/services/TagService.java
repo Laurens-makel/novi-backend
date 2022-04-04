@@ -12,7 +12,7 @@ import javax.transaction.Transactional;
 @Service
 @Component
 @Transactional
-public class TagService extends BaseService<Tag> {
+public class TagService extends ResourceBaseService<Tag> {
 
     public TagService(TagRepository repository){
         this.repository = repository;

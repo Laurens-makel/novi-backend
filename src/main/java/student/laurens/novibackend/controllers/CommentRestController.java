@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.Blogpost;
 import student.laurens.novibackend.entities.Comment;
+import student.laurens.novibackend.exceptions.ResourceDuplicateException;
 import student.laurens.novibackend.exceptions.ResourceForbiddenException;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.services.AppUserDetailsService;
@@ -40,7 +41,7 @@ public class CommentRestController extends ChildBaseRestController<Comment, Blog
     }
 
     @PostMapping
-    public ResponseEntity<Resource<Comment>> POST(@PathVariable final Integer blogpostId, @RequestBody final Comment comment) throws ResourceNotFoundException, ResourceForbiddenException {
+    public ResponseEntity<Resource<Comment>> POST(@PathVariable final Integer blogpostId, @RequestBody final Comment comment) throws ResourceNotFoundException, ResourceForbiddenException, ResourceDuplicateException {
         return create(blogpostId, comment);
     }
 

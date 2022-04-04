@@ -16,7 +16,7 @@ public abstract class ResourceException extends RuntimeException {
     protected Class resourceClass;
     protected Object identifier;
 
-    protected HttpStatus getHttpStatus() {
+    public HttpStatus getHttpStatus() {
         return this.getClass().getAnnotation(ResponseStatus.class).value();
     }
 

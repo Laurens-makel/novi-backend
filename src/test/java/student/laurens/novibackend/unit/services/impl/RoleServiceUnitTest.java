@@ -38,7 +38,8 @@ public class RoleServiceUnitTest extends ServiceUnitTestBase<Role> {
     }
 
     @Autowired
-    private @Getter RoleService service;
+    private @Getter
+    RoleService service;
 
     @MockBean
     private @Getter RoleRepository repository;

@@ -23,7 +23,7 @@ import java.util.stream.StreamSupport;
 @Component
 @Transactional
 @Qualifier("BlogpostService")
-public class BlogpostService extends ParentBaseService<Blogpost> {
+public class BlogpostService extends ParentResourceBaseService<Blogpost> {
 
     private final @Getter BlogpostRepository repository;
 

@@ -24,8 +24,4 @@ public class ResourceNotFoundException extends ResourceException {
         super("Unable to find resource with provided name ["+username+"]", resourceClass, username );
     }
 
-    @Override
-    protected HttpStatus getHttpStatus() {
-        return HttpStatus.NOT_FOUND;
-    }
 }

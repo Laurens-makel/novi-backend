@@ -6,9 +6,12 @@ import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import student.laurens.novibackend.entities.AbstractEntity;
+import student.laurens.novibackend.exceptions.ResourceDuplicateException;
 import student.laurens.novibackend.exceptions.ResourceForbiddenException;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.services.AppUserDetailsService;
+import student.laurens.novibackend.services.BaseService;
+import student.laurens.novibackend.services.ResourceBaseService;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +32,8 @@ public abstract class ResourceBaseRestController<R extends AbstractEntity> exten
         super(appUserDetailsService);
         this.appUserDetailsService = appUserDetailsService;
     }
+
+    abstract protected ResourceBaseService<R> getService();
 
     /**
      * Provides a default way to handle GET requests on {@link AbstractEntity} resources.
@@ -126,9 +131,11 @@ public abstract class ResourceBaseRestController<R extends AbstractEntity> exten
      *
      * @param resource - The new resource to be created.
      *
+     * @throws ResourceNotFoundException - Thrown when to be created resource is a duplicate.
+     *
      * @return Confirmation message.
      */
-    protected ResponseEntity<Resource<R>> create(final R resource) {
+    protected ResponseEntity<Resource<R>> create(final R resource) throws ResourceDuplicateException {
         logProcessingStarted(HttpMethod.POST);
 
         R r = getService().createResource(resource);
@@ -144,9 +151,11 @@ public abstract class ResourceBaseRestController<R extends AbstractEntity> exten
      *
      * @param resource - The new resource to be created.
      *
+     * @throws ResourceNotFoundException - Thrown when to be created resource is a duplicate.
+     *
      * @return Confirmation message.
      */
-    abstract public ResponseEntity<Resource<R>> POST(final R resource);
+    abstract public ResponseEntity<Resource<R>> POST(final R resource) throws ResourceDuplicateException;
 
     protected Map<String, ControllerLinkBuilder> getLinksForPostResource(final R resource) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();

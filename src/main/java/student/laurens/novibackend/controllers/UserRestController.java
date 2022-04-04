@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.AppUserDetails;
 import student.laurens.novibackend.entities.User;
+import student.laurens.novibackend.exceptions.ResourceDuplicateException;
 import student.laurens.novibackend.exceptions.UserNotFoundException;
 import student.laurens.novibackend.services.AppUserDetailsService;
 
@@ -74,7 +75,7 @@ public class UserRestController extends ResourceBaseRestController<User>{
     }
 
     @PostMapping("/users")
-    public ResponseEntity<Resource<User>> POST(@RequestBody final User user){
+    public ResponseEntity<Resource<User>> POST(@RequestBody final User user) throws ResourceDuplicateException {
         return create(user);
     }
 

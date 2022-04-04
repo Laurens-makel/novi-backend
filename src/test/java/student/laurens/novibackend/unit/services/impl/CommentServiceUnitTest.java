@@ -27,10 +27,12 @@ public class CommentServiceUnitTest extends ChildServiceUnitTestBase<Comment, Bl
     }
 
     @Autowired
-    private @Getter CommentService service;
+    private @Getter
+    CommentService service;
 
     @MockBean
-    private @Getter BlogpostService parentService;
+    private @Getter
+    BlogpostService parentService;
 
     @MockBean
     private @Getter CommentRepository repository;

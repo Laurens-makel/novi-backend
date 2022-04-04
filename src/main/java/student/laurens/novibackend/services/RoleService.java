@@ -18,7 +18,7 @@ import javax.transaction.Transactional;
 @Service
 @Component
 @Transactional
-public class RoleService extends BaseService<Role> {
+public class RoleService extends ResourceBaseService<Role> {
 
     public RoleService(RoleRepository repository){
         this.repository = repository;

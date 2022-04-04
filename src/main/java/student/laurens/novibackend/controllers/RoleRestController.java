@@ -6,6 +6,7 @@ import org.springframework.hateoas.Resources;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.Role;
+import student.laurens.novibackend.exceptions.ResourceDuplicateException;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.services.AppUserDetailsService;
 import student.laurens.novibackend.services.RoleService;
@@ -52,7 +53,7 @@ public class RoleRestController extends ResourceBaseRestController<Role> {
     }
 
     @PostMapping
-    public ResponseEntity<Resource<Role>> POST(@RequestBody final Role role){
+    public ResponseEntity<Resource<Role>> POST(@RequestBody final Role role) throws ResourceDuplicateException {
         return create(role);
     }
 

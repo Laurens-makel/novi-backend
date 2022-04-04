@@ -22,7 +22,7 @@ import javax.transaction.Transactional;
 @Service
 @Component
 @Transactional
-public class AppUserDetailsService extends BaseService<User> implements UserDetailsService {
+public class AppUserDetailsService extends ResourceBaseService<User> implements UserDetailsService {
 
     @Autowired
     private @Getter UserRepository repository;

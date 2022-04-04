@@ -6,6 +6,7 @@ import org.springframework.hateoas.Resources;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.Blogpost;
+import student.laurens.novibackend.exceptions.ResourceDuplicateException;
 import student.laurens.novibackend.exceptions.ResourceForbiddenException;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.services.AppUserDetailsService;
@@ -50,7 +51,7 @@ public class BlogpostRestController extends ResourceBaseRestController<Blogpost>
     }
 
     @PostMapping
-    public ResponseEntity<Resource<Blogpost>> POST(@RequestBody final Blogpost blogpost) {
+    public ResponseEntity<Resource<Blogpost>> POST(@RequestBody final Blogpost blogpost) throws ResourceDuplicateException {
         return create(blogpost);
     }
 
