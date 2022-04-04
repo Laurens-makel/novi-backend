@@ -36,12 +36,6 @@ public class BlogpostRestControllerIntegrationTest extends OwnedControllerIntegr
         userRepository.deleteAll();
     }
 
-    @Before
-    public void before(){
-        repository.deleteAll();
-        userRepository.deleteAll();
-    }
-
     @Override
     protected String getUrlForGet() {
         return "/blogposts";
