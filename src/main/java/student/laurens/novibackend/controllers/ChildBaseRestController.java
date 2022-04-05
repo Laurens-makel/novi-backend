@@ -105,7 +105,7 @@ public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentE
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
 
         for(R resource : resources){
-            links.put("GET " , linkTo(methodOn(this.getClass()).GET(resource.getParentId(), resource.getId())));
+            links.put("GET" , linkTo(methodOn(this.getClass()).GET(resource.getParentId(), resource.getId())));
         }
 
         return links;

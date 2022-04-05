@@ -18,7 +18,6 @@ import student.laurens.novibackend.services.BaseService;
 import student.laurens.novibackend.services.ResourceBaseService;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,19 +35,6 @@ public abstract class BaseRestController<R extends AbstractEntity> {
 
     public BaseRestController(AppUserDetailsService appUserDetailsService){
         this.appUserDetailsService = appUserDetailsService;
-    }
-
-    private final String DELETED_TEXT = "deleted";
-
-    protected Map<String, String> createDeletedMessage(){
-        return createMessage(DELETED_TEXT);
-    }
-
-    protected Map<String, String> createMessage(final String text){
-        final Map<String, String> message = new HashMap<>();
-        message.put("message", text);
-
-        return message;
     }
 
     /**
