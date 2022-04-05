@@ -82,9 +82,6 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         log.info("Creating ResponseEntity for GET resources on resource class ["+getService().getResourceClass()+"] with size of ["+resources.getContent().size()+"]");
         return new ResponseEntity(resources, HttpStatus.OK);
     }
-    protected ResponseEntity<List<R>> createSuccessResponseGET(final List<R> resources){
-        return new ResponseEntity<>(resources, HttpStatus.OK);
-    }
     protected ResponseEntity<Resource<R>> createSuccessResponseGET(final Resource<R> resource){
         log.info("Creating ResponseEntity for GET resource on resource class ["+getService().getResourceClass()+"] with id ["+resource.getContent().getId()+"]");
         return new ResponseEntity<>(resource, HttpStatus.OK);
@@ -97,9 +94,9 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         log.info("Creating ResponseEntity for PUT resource on resource class ["+getService().getResourceClass()+"].");
         return new ResponseEntity<>(resource, HttpStatus.ACCEPTED);
     }
-    protected ResponseEntity<R> createSuccessResponseDELETE(){
+    protected ResponseEntity<R> createSuccessResponseDELETE(final Resource resource){
         log.info("Creating ResponseEntity for DELETE resource on resource class ["+getService().getResourceClass()+"].");
-        return new ResponseEntity(createDeletedMessage(), HttpStatus.ACCEPTED);
+        return new ResponseEntity(resource, HttpStatus.ACCEPTED);
     }
     protected Resources<R> resourcesWithLinks(final List<R> resources, final Map<String, ControllerLinkBuilder> links){
         return resourceWithLinks(new Resources<>(Collections.singleton(resources)), links);
@@ -119,7 +116,7 @@ public abstract class BaseRestController<R extends AbstractEntity> {
     protected Resource<R> resourceWithLinks(final R resource, Map<String, ControllerLinkBuilder> links){
         return resourceWithLinks(new Resource<R>(resource), links);
     }
-    protected Resource<R> resourceWithLinks(final Resource<R> resource, Map<String, ControllerLinkBuilder> links){
+    protected Resource resourceWithLinks(final Resource resource, Map<String, ControllerLinkBuilder> links){
         for (Map.Entry<String, ControllerLinkBuilder> entry : links.entrySet()) {
             String rel = entry.getKey();
             ControllerLinkBuilder link = entry.getValue();

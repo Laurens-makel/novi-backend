@@ -223,9 +223,10 @@ public abstract class ResourceBaseRestController<R extends AbstractEntity> exten
         logProcessingStarted(HttpMethod.DELETE, resourceId);
 
         getService().deleteResourceById(resourceId, getConsumer());
+        Resource resource = resourceWithLinks(new Resource("Successfully deleted resource."), getLinksForDeleteResource());
 
         logProcessingFinished(HttpMethod.DELETE, resourceId);
-        return createSuccessResponseDELETE();
+        return createSuccessResponseDELETE(resource);
     }
 
     /**
@@ -240,5 +241,13 @@ public abstract class ResourceBaseRestController<R extends AbstractEntity> exten
      * @return Confirmation message.
      */
     abstract public ResponseEntity<R> DELETE(final Integer resourceId) throws ResourceNotFoundException, ResourceForbiddenException;
+
+    protected Map<String, ControllerLinkBuilder> getLinksForDeleteResource() {
+        Map<String, ControllerLinkBuilder> links = new HashMap<>();
+
+        links.put("GET All", linkTo(methodOn(this.getClass()).GET()));
+
+        return links;
+    }
 
 }

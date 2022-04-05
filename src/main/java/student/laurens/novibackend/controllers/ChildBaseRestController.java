@@ -218,9 +218,10 @@ public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentE
         logProcessingStarted(HttpMethod.DELETE, parentResourceId, resourceId);
 
         getService().deleteResourceById(parentResourceId, resourceId, getConsumer());
+        Resource resource = resourceWithLinks(new Resource("Successfully deleted resource."), getLinksForDeleteResource(parentResourceId));
 
         logProcessingFinished(HttpMethod.DELETE, parentResourceId, resourceId);
-        return createSuccessResponseDELETE();
+        return createSuccessResponseDELETE(resource);
     }
 
     /**
@@ -236,6 +237,14 @@ public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentE
      * @return Confirmation message.
      */
     abstract public ResponseEntity<R> DELETE(final Integer parentResourceId, final Integer resourceId) throws ResourceNotFoundException, ResourceForbiddenException;
+
+    protected Map<String, ControllerLinkBuilder> getLinksForDeleteResource(final Integer parentResourceId) {
+        Map<String, ControllerLinkBuilder> links = new HashMap<>();
+
+        links.put("GET All", linkTo(methodOn(this.getClass()).GET(parentResourceId)));
+
+        return links;
+    }
 
     protected void logProcessingStarted(final HttpMethod method, final Integer parentResourceId, final Integer resourceId) {
         log.info("Processing ["+method+"] request on resource ["+getService().getResourceClass()+"] with parentResourceId ["+parentResourceId+"] and resourceId ["+resourceId+"] started.");
