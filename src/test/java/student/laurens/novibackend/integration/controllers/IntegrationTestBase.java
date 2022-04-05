@@ -26,8 +26,7 @@ import student.laurens.novibackend.repositories.UserRepository;
 
 import java.util.Date;
 
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -440,6 +439,10 @@ public abstract class IntegrationTestBase<R extends AbstractEntity>  {
     }
     protected void validateXmlArrayLengthGreaterThan(final ResultActions mvc, final int expectedMinimumLength) throws Exception {
         mvc.andExpect(xpath("count(/Resources/content/content) > " + (expectedMinimumLength-1)).booleanValue(true));
+    }
+
+    protected void validateJsonLink(final ResultActions mvc, final String name, final String url) throws Exception {
+        mvc.andExpect(jsonPath("$._links."+name+".href", endsWith(url)));
     }
 
     protected String unique(String text){

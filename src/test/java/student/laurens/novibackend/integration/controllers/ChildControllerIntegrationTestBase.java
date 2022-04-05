@@ -1,8 +1,8 @@
 package student.laurens.novibackend.integration.controllers;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -226,11 +226,15 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
 
         return getAsXml(parentResource);
     }
-    public ResultActions defaultJsonTestForGetAll(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+    public Pair<ResultActions, Pair<R, P>>  defaultJsonTestForGetAll(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
         R resource = save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) );
+        Pair<R, P> resources = Pair.of(resource, parentResource);
 
-        return getAsJson(parentResource);
+        ResultActions mvc = getAsJson(parentResource);
+        validateJsonLink(mvc, "GET", getUrlForGetWithParent(parentResource, resource));
+
+        return Pair.of(mvc, resources);
     }
     public ResultActions defaultXmlTestForGet(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
@@ -401,11 +405,15 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForGetAsUser();
-        ResultActions mvc = defaultJsonTestForGetAll(true, false, user);
+        Pair<ResultActions, Pair<R,P>> result = defaultJsonTestForGetAll(true, false, user);
+        ResultActions mvc = result.getFirst();
+        R resource = result.getSecond().getFirst();
+        P parent = result.getSecond().getSecond();
 
         validateJsonResponse(mvc, expectedStatus);
         if(expectedStatus.equals(HttpStatus.OK)){
             validateJsonArrayLengthGreaterThan(mvc, 1);
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
         }
     }
 
@@ -415,11 +423,15 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForGetAsContentCreator();
-        ResultActions mvc = defaultJsonTestForGetAll(true, false, user);
+        Pair<ResultActions, Pair<R,P>> result = defaultJsonTestForGetAll(true, false, user);
+        ResultActions mvc = result.getFirst();
+        R resource = result.getSecond().getFirst();
+        P parent = result.getSecond().getSecond();
 
         validateJsonResponse(mvc, expectedStatus);
         if(expectedStatus.equals(HttpStatus.OK)){
             validateJsonArrayLengthGreaterThan(mvc, 1);
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
         }
     }
 
@@ -429,11 +441,15 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForGetAsModerator();
-        ResultActions mvc = defaultJsonTestForGetAll(true, false, user);
+        Pair<ResultActions, Pair<R,P>> result = defaultJsonTestForGetAll(true, false, user);
+        ResultActions mvc = result.getFirst();
+        R resource = result.getSecond().getFirst();
+        P parent = result.getSecond().getSecond();
 
         validateJsonResponse(mvc, expectedStatus);
         if(expectedStatus.equals(HttpStatus.OK)){
             validateJsonArrayLengthGreaterThan(mvc, 1);
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
         }
     }
 
@@ -443,11 +459,15 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForGetAsAdmin();
-        ResultActions mvc = defaultJsonTestForGetAll(true, false, user);
+        Pair<ResultActions, Pair<R,P>> result = defaultJsonTestForGetAll(true, false, user);
+        ResultActions mvc = result.getFirst();
+        R resource = result.getSecond().getFirst();
+        P parent = result.getSecond().getSecond();
 
         validateJsonResponse(mvc, expectedStatus);
         if(expectedStatus.equals(HttpStatus.OK)){
             validateJsonArrayLengthGreaterThan(mvc, 1);
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
         }
     }
 
