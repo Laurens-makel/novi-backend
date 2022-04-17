@@ -155,7 +155,9 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
 
     @Test
     public void getIsUnAuthorized() throws Exception {
-        defaultJsonTestForGet().andExpect(status().isUnauthorized());
+        TestResults<R> results = defaultJsonTestForGet();
+        ResultActions mvc = results.getMvc();
+        mvc.andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -164,13 +166,16 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForGetAsUser();
-        ResultActions mvc = defaultJsonTestForGet();
+        TestResults<R> results = defaultJsonTestForGet();
+        ResultActions mvc = results.getMvc();
 
         ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_JSON_ACCEPT_VALUE);
 
         validator.validate();
-        if(expectedStatus.equals(HttpStatus.OK)){
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = results.getResource();
             validateJsonArrayLengthGreaterThan(mvc, 1);
+            validateJsonLink(mvc, "GET " + resource.getId(), getUrlForGet(resource));
         }
     }
 
@@ -180,13 +185,17 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForGetAsUser();
-        ResultActions mvc = defaultXmlTestForGet();
+        TestResults<R> results = defaultXmlTestForGet();
+        ResultActions mvc = results.getMvc();
 
         ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_XML_ACCEPT_UTF8_VALUE);
 
         validator.validate();
-        if(expectedStatus.equals(HttpStatus.OK)){
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = results.getResource();
+
             validateXmlArrayLengthGreaterThan(mvc, 1);
+            validateXmlLink(mvc, "GET " + resource.getId(), getUrlForGet(resource));
         }
     }
 
@@ -196,13 +205,16 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForGetAsContentCreator();
-        ResultActions mvc = defaultJsonTestForGet().andDo(print());
+        TestResults<R> results = defaultJsonTestForGet();
+        ResultActions mvc = results.getMvc();
 
         ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_JSON_ACCEPT_VALUE);
 
         validator.validate();
-        if(expectedStatus.equals(HttpStatus.OK)){
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = results.getResource();
             validateJsonArrayLengthGreaterThan(mvc, 1);
+            validateJsonLink(mvc, "GET " + resource.getId(), getUrlForGet(resource));
         }
     }
 
@@ -212,13 +224,17 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForGetAsContentCreator();
-        ResultActions mvc = defaultXmlTestForGet();
+        TestResults<R> results = defaultXmlTestForGet();
+        ResultActions mvc = results.getMvc();
 
         ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_XML_ACCEPT_UTF8_VALUE);
 
         validator.validate();
-        if(expectedStatus.equals(HttpStatus.OK)){
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = results.getResource();
+
             validateXmlArrayLengthGreaterThan(mvc, 1);
+            validateXmlLink(mvc, "GET " + resource.getId(), getUrlForGet(resource));
         }
     }
 
@@ -228,15 +244,17 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForGetAsModerator();
-        ResultActions mvc = defaultJsonTestForGet();
+        TestResults<R> results = defaultJsonTestForGet();
+        ResultActions mvc = results.getMvc();
 
         ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_JSON_ACCEPT_VALUE);
 
         validator.validate();
-        if(expectedStatus.equals(HttpStatus.OK)){
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = results.getResource();
             validateJsonArrayLengthGreaterThan(mvc, 1);
+            validateJsonLink(mvc, "GET " + resource.getId(), getUrlForGet(resource));
         }
-
     }
 
     @Test
@@ -245,13 +263,17 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForGetAsModerator();
-        ResultActions mvc = defaultXmlTestForGet();
+        TestResults<R> results = defaultXmlTestForGet();
+        ResultActions mvc = results.getMvc();
 
         ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_XML_ACCEPT_UTF8_VALUE);
 
         validator.validate();
-        if(expectedStatus.equals(HttpStatus.OK)){
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = results.getResource();
+
             validateXmlArrayLengthGreaterThan(mvc, 1);
+            validateXmlLink(mvc, "GET " + resource.getId(), getUrlForGet(resource));
         }
     }
 
@@ -261,13 +283,16 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForGetAsAdmin();
-        ResultActions mvc = defaultJsonTestForGet();
+        TestResults<R> results = defaultJsonTestForGet();
+        ResultActions mvc = results.getMvc();
 
         ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_JSON_ACCEPT_VALUE);
 
         validator.validate();
-        if(expectedStatus.equals(HttpStatus.OK)){
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = results.getResource();
             validateJsonArrayLengthGreaterThan(mvc, 1);
+            validateJsonLink(mvc, "GET " + resource.getId(), getUrlForGet(resource));
         }
     }
 
@@ -277,13 +302,17 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForGetAsAdmin();
-        ResultActions mvc = defaultXmlTestForGet();
+        TestResults<R> results = defaultXmlTestForGet();
+        ResultActions mvc = results.getMvc();
 
         ResponseValidator validator = new ResponseValidator(mvc, expectedStatus, DEFAULT_XML_ACCEPT_UTF8_VALUE);
 
         validator.validate();
-        if(expectedStatus.equals(HttpStatus.OK)){
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = results.getResource();
+
             validateXmlArrayLengthGreaterThan(mvc, 1);
+            validateXmlLink(mvc, "GET " + resource.getId(), getUrlForGet(resource));
         }
     }
 
@@ -293,9 +322,18 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForPostAsUser();
-        ResultActions mvc = defaultJsonTestForPost();
+        TestResults<R> results = defaultJsonTestForPost();
+        ResultActions mvc = results.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = results.getResource();
+            resource.setId(extractJsonId(mvc));
+
+            validateJsonLink(mvc, "GET", getUrlForGet(resource));
+            validateJsonLink(mvc, "PUT", getUrlForPut(resource));
+            validateJsonLink(mvc, "DELETE", getUrlForDelete(resource));
+        }
     }
 
     @Test
@@ -304,9 +342,18 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForPostAsUser();
-        ResultActions mvc = defaultXmlTestForPost();
+        TestResults<R> results = defaultXmlTestForPost();
+        ResultActions mvc = results.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = results.getResource();
+            resource.setId(extractXmlId(mvc));
+
+            validateXmlLink(mvc, "GET", getUrlForGet(resource));
+            validateXmlLink(mvc, "PUT", getUrlForPut(resource));
+            validateXmlLink(mvc, "DELETE", getUrlForDelete(resource));
+        }
     }
 
 
@@ -316,9 +363,18 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForPostAsContentCreator();
-        ResultActions mvc = defaultXmlTestForPost();
+        TestResults<R> results = defaultXmlTestForPost();
+        ResultActions mvc = results.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = results.getResource();
+            resource.setId(extractXmlId(mvc));
+
+            validateXmlLink(mvc, "GET", getUrlForGet(resource));
+            validateXmlLink(mvc, "PUT", getUrlForPut(resource));
+            validateXmlLink(mvc, "DELETE", getUrlForDelete(resource));
+        }
     }
 
     @Test
@@ -327,9 +383,18 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForPostAsContentCreator();
-        ResultActions mvc = defaultJsonTestForPost();
+        TestResults<R> results = defaultJsonTestForPost();
+        ResultActions mvc = results.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = results.getResource();
+            resource.setId(extractJsonId(mvc));
+
+            validateJsonLink(mvc, "GET", getUrlForGet(resource));
+            validateJsonLink(mvc, "PUT", getUrlForPut(resource));
+            validateJsonLink(mvc, "DELETE", getUrlForDelete(resource));
+        }
     }
 
     @Test
@@ -338,9 +403,18 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForPostAsModerator();
-        ResultActions mvc = defaultXmlTestForPost();
+        TestResults<R> results = defaultXmlTestForPost();
+        ResultActions mvc = results.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = results.getResource();
+            resource.setId(extractXmlId(mvc));
+
+            validateXmlLink(mvc, "GET", getUrlForGet(resource));
+            validateXmlLink(mvc, "PUT", getUrlForPut(resource));
+            validateXmlLink(mvc, "DELETE", getUrlForDelete(resource));
+        }
     }
 
     @Test
@@ -349,9 +423,18 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForPostAsModerator();
-        ResultActions mvc = defaultJsonTestForPost();
+        TestResults<R> results = defaultJsonTestForPost();
+        ResultActions mvc = results.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = results.getResource();
+            resource.setId(extractJsonId(mvc));
+
+            validateJsonLink(mvc, "GET", getUrlForGet(resource));
+            validateJsonLink(mvc, "PUT", getUrlForPut(resource));
+            validateJsonLink(mvc, "DELETE", getUrlForDelete(resource));
+        }
     }
 
     @Test
@@ -360,9 +443,18 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForPostAsAdmin();
-        ResultActions mvc = defaultJsonTestForPost();
+        TestResults<R> results = defaultJsonTestForPost();
+        ResultActions mvc = results.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = results.getResource();
+            resource.setId(extractJsonId(mvc));
+
+            validateJsonLink(mvc, "GET", getUrlForGet(resource));
+            validateJsonLink(mvc, "PUT", getUrlForPut(resource));
+            validateJsonLink(mvc, "DELETE", getUrlForDelete(resource));
+        }
     }
 
     @Test
@@ -371,9 +463,18 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForPostAsAdmin();
-        ResultActions mvc = defaultXmlTestForPost();
+        TestResults<R> results = defaultXmlTestForPost();
+        ResultActions mvc = results.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = results.getResource();
+            resource.setId(extractXmlId(mvc));
+
+            validateXmlLink(mvc, "GET", getUrlForGet(resource));
+            validateXmlLink(mvc, "PUT", getUrlForPut(resource));
+            validateXmlLink(mvc, "DELETE", getUrlForDelete(resource));
+        }
     }
 
     @Test
@@ -382,9 +483,17 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForPutAsUser();
-        ResultActions mvc = defaultJsonTestForPut();
+        TestResults<R> results = defaultJsonTestForPut();
+        ResultActions mvc = results.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = results.getResource();
+
+            validateJsonLink(mvc, "GET", getUrlForGet(resource));
+            validateJsonLink(mvc, "POST", getUrlForPost());
+            validateJsonLink(mvc, "DELETE", getUrlForDelete(resource));
+        }
     }
 
     @Test
@@ -393,9 +502,17 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForPutAsUser();
-        ResultActions mvc = defaultXmlTestForPut();
+        TestResults<R> results = defaultXmlTestForPut();
+        ResultActions mvc = results.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = results.getResource();
+
+            validateXmlLink(mvc, "GET", getUrlForGet(resource));
+            validateXmlLink(mvc, "POST", getUrlForPost());
+            validateXmlLink(mvc, "DELETE", getUrlForDelete(resource));
+        }
     }
 
     @Test
@@ -404,9 +521,17 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsContentCreator();
-        ResultActions mvc = defaultJsonTestForPut();
+        TestResults<R> results = defaultJsonTestForPut();
+        ResultActions mvc = results.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = results.getResource();
+
+            validateJsonLink(mvc, "GET", getUrlForGet(resource));
+            validateJsonLink(mvc, "POST", getUrlForPost());
+            validateJsonLink(mvc, "DELETE", getUrlForDelete(resource));
+        }
     }
 
     @Test
@@ -415,9 +540,17 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsContentCreator();
-        ResultActions mvc = defaultXmlTestForPut();
+        TestResults<R> results = defaultXmlTestForPut();
+        ResultActions mvc = results.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = results.getResource();
+
+            validateXmlLink(mvc, "GET", getUrlForGet(resource));
+            validateXmlLink(mvc, "POST", getUrlForPost());
+            validateXmlLink(mvc, "DELETE", getUrlForDelete(resource));
+        }
     }
 
     @Test
@@ -426,9 +559,17 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsModerator();
-        ResultActions mvc = defaultJsonTestForPut();
+        TestResults<R> results = defaultJsonTestForPut();
+        ResultActions mvc = results.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = results.getResource();
+
+            validateJsonLink(mvc, "GET", getUrlForGet(resource));
+            validateJsonLink(mvc, "POST", getUrlForPost());
+            validateJsonLink(mvc, "DELETE", getUrlForDelete(resource));
+        }
     }
 
     @Test
@@ -437,9 +578,17 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsModerator();
-        ResultActions mvc = defaultXmlTestForPut();
+        TestResults<R> results = defaultXmlTestForPut();
+        ResultActions mvc = results.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = results.getResource();
+
+            validateXmlLink(mvc, "GET", getUrlForGet(resource));
+            validateXmlLink(mvc, "POST", getUrlForPost());
+            validateXmlLink(mvc, "DELETE", getUrlForDelete(resource));
+        }
     }
 
     @Test
@@ -448,9 +597,17 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForPutAsAdmin();
-        ResultActions mvc = defaultJsonTestForPut();
+        TestResults<R> results = defaultJsonTestForPut();
+        ResultActions mvc = results.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = results.getResource();
+
+            validateJsonLink(mvc, "GET", getUrlForGet(resource));
+            validateJsonLink(mvc, "POST", getUrlForPost());
+            validateJsonLink(mvc, "DELETE", getUrlForDelete(resource));
+        }
     }
 
     @Test
@@ -459,9 +616,17 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForPutAsAdmin();
-        ResultActions mvc = defaultXmlTestForPut();
+        TestResults<R> results = defaultXmlTestForPut();
+        ResultActions mvc = results.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = results.getResource();
+
+            validateXmlLink(mvc, "GET", getUrlForGet(resource));
+            validateXmlLink(mvc, "POST", getUrlForPost());
+            validateXmlLink(mvc, "DELETE", getUrlForDelete(resource));
+        }
     }
 
     @Test
@@ -470,9 +635,13 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsUser();
-        ResultActions mvc = defaultJsonTestForDelete();
+        TestResults<R> results = defaultJsonTestForDelete();
+        ResultActions mvc = results.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            validateJsonLink(mvc, "GET All", getUrlForGet());
+        }
     }
 
     @Test
@@ -481,9 +650,13 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsUser();
-        ResultActions mvc = defaultXmlTestForDelete();
+        TestResults<R> results = defaultXmlTestForDelete();
+        ResultActions mvc = results.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            validateXmlLink(mvc, "GET All", getUrlForGet());
+        }
     }
 
     @Test
@@ -492,9 +665,13 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsUserResourceNotExists();
-        ResultActions mvc = defaultJsonTestForDeleteNonExistingResource();
+        TestResults<R> results = defaultJsonTestForDeleteNonExistingResource();
+        ResultActions mvc = results.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            validateJsonLink(mvc, "GET All", getUrlForGet());
+        }
     }
 
     @Test
@@ -503,9 +680,13 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsUserResourceNotExists();
-        ResultActions mvc = defaultXmlTestForDeleteNonExistingResource();
+        TestResults<R> results = defaultXmlTestForDeleteNonExistingResource();
+        ResultActions mvc = results.getMvc();
 
         validateXmlResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            validateXmlLink(mvc, "GET All", getUrlForGet());
+        }
     }
 
     @Test
@@ -514,9 +695,13 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsContentCreator();
-        ResultActions mvc = defaultJsonTestForDelete();
+        TestResults<R> results = defaultJsonTestForDelete();
+        ResultActions mvc = results.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            validateJsonLink(mvc, "GET All", getUrlForGet());
+        }
     }
 
     @Test
@@ -525,9 +710,13 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsContentCreator();
-        ResultActions mvc = defaultXmlTestForDelete();
+        TestResults<R> results = defaultXmlTestForDelete();
+        ResultActions mvc = results.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            validateXmlLink(mvc, "GET All", getUrlForGet());
+        }
     }
 
     @Test
@@ -536,9 +725,13 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsContentCreatorResourceNotExists();
-        ResultActions mvc = defaultJsonTestForDeleteNonExistingResource();
+        TestResults<R> results = defaultJsonTestForDeleteNonExistingResource();
+        ResultActions mvc = results.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            validateJsonLink(mvc, "GET All", getUrlForGet());
+        }
     }
 
     @Test
@@ -547,9 +740,13 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsContentCreatorResourceNotExists();
-        ResultActions mvc = defaultXmlTestForDeleteNonExistingResource();
+        TestResults<R> results = defaultXmlTestForDeleteNonExistingResource();
+        ResultActions mvc = results.getMvc();
 
         validateXmlResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            validateXmlLink(mvc, "GET All", getUrlForGet());
+        }
     }
 
     @Test
@@ -558,9 +755,13 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsModerator();
-        ResultActions mvc = defaultJsonTestForDelete();
+        TestResults<R> results = defaultJsonTestForDelete();
+        ResultActions mvc = results.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            validateJsonLink(mvc, "GET All", getUrlForGet());
+        }
     }
 
     @Test
@@ -569,9 +770,13 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsModerator();
-        ResultActions mvc = defaultXmlTestForDelete();
+        TestResults<R> results = defaultXmlTestForDelete();
+        ResultActions mvc = results.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            validateXmlLink(mvc, "GET All", getUrlForGet());
+        }
     }
 
     @Test
@@ -580,9 +785,13 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsModeratorResourceNotExists();
-        ResultActions mvc = defaultJsonTestForDeleteNonExistingResource();
+        TestResults<R> results = defaultJsonTestForDeleteNonExistingResource();
+        ResultActions mvc = results.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            validateJsonLink(mvc, "GET All", getUrlForGet());
+        }
     }
 
     @Test
@@ -591,9 +800,13 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsModeratorResourceNotExists();
-        ResultActions mvc = defaultXmlTestForDeleteNonExistingResource();
+        TestResults<R> results = defaultXmlTestForDeleteNonExistingResource();
+        ResultActions mvc = results.getMvc();
 
         validateXmlResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            validateXmlLink(mvc, "GET All", getUrlForGet());
+        }
     }
 
     @Test
@@ -602,9 +815,13 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsAdmin();
-        ResultActions mvc = defaultJsonTestForDelete();
+        TestResults<R> results = defaultJsonTestForDelete();
+        ResultActions mvc = results.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            validateJsonLink(mvc, "GET All", getUrlForGet());
+        }
     }
 
     @Test
@@ -613,9 +830,13 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsAdmin();
-        ResultActions mvc = defaultXmlTestForDelete();
+        TestResults<R> results = defaultXmlTestForDelete();
+        ResultActions mvc = results.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            validateXmlLink(mvc, "GET All", getUrlForGet());
+        }
     }
 
     @Test
@@ -624,9 +845,13 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsAdminResourceNotExists();
-        ResultActions mvc = defaultJsonTestForDeleteNonExistingResource();
+        TestResults<R> results = defaultJsonTestForDeleteNonExistingResource();
+        ResultActions mvc = results.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            validateJsonLink(mvc, "GET All", getUrlForGet());
+        }
     }
 
     @Test
@@ -635,9 +860,13 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
         saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsAdminResourceNotExists();
-        ResultActions mvc = defaultXmlTestForDeleteNonExistingResource();
+        TestResults<R> results = defaultXmlTestForDeleteNonExistingResource();
+        ResultActions mvc = results.getMvc();
 
         validateXmlResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            validateXmlLink(mvc, "GET All", getUrlForGet());
+        }
     }
 
 }

@@ -62,7 +62,8 @@ public abstract class ResourceBaseRestController<R extends AbstractEntity> exten
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
 
         for(R resource : resources){
-            links.put("GET " , linkTo(methodOn(this.getClass()).GET(resource.getId())));
+            Integer resourceId = resource.getId();
+            links.put(HttpMethod.GET.name() + " " + resourceId, linkTo(methodOn(this.getClass()).GET(resourceId)));
         }
 
         return links;
@@ -89,8 +90,8 @@ public abstract class ResourceBaseRestController<R extends AbstractEntity> exten
     protected Map<String, ControllerLinkBuilder> getLinksForGetResourceByName(final String name, final R resource) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
 
-        links.put("DELETE", linkTo(methodOn(this.getClass()).DELETE(resource.getId())));
-        links.put("PUT", linkTo(methodOn(this.getClass()).PUT(resource.getId(), resource)));
+        links.put(HttpMethod.DELETE.name(), linkTo(methodOn(this.getClass()).DELETE(resource.getId())));
+        links.put(HttpMethod.PUT.name(), linkTo(methodOn(this.getClass()).PUT(resource.getId(), resource)));
 
         return links;
     }
@@ -120,8 +121,8 @@ public abstract class ResourceBaseRestController<R extends AbstractEntity> exten
     protected Map<String, ControllerLinkBuilder> getLinksForGetResource(final Integer resourceId, final R resource) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
 
-        links.put("DELETE", linkTo(methodOn(this.getClass()).DELETE(resource.getId())));
-        links.put("PUT", linkTo(methodOn(this.getClass()).PUT(resource.getId(), resource)));
+        links.put(HttpMethod.DELETE.name(), linkTo(methodOn(this.getClass()).DELETE(resource.getId())));
+        links.put(HttpMethod.PUT.name(), linkTo(methodOn(this.getClass()).PUT(resource.getId(), resource)));
 
         return links;
     }
@@ -160,8 +161,9 @@ public abstract class ResourceBaseRestController<R extends AbstractEntity> exten
     protected Map<String, ControllerLinkBuilder> getLinksForPostResource(final R resource) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
 
-        links.put("DELETE", linkTo(methodOn(this.getClass()).DELETE(resource.getId())));
-        links.put("PUT", linkTo(methodOn(this.getClass()).PUT(resource.getId(), resource)));
+        links.put(HttpMethod.GET.name(), linkTo(methodOn(this.getClass()).GET(resource.getId())));
+        links.put(HttpMethod.DELETE.name(), linkTo(methodOn(this.getClass()).DELETE(resource.getId())));
+        links.put(HttpMethod.PUT.name(), linkTo(methodOn(this.getClass()).PUT(resource.getId(), resource)));
 
         return links;
     }
@@ -204,7 +206,9 @@ public abstract class ResourceBaseRestController<R extends AbstractEntity> exten
     protected Map<String, ControllerLinkBuilder> getLinksForPutResource(R resource) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
 
-        links.put("DELETE", linkTo(methodOn(this.getClass()).DELETE(resource.getId())));
+        links.put(HttpMethod.GET.name(), linkTo(methodOn(this.getClass()).GET(resource.getId())));
+        links.put(HttpMethod.POST.name(), linkTo(methodOn(this.getClass()).POST(resource)));
+        links.put(HttpMethod.DELETE.name(), linkTo(methodOn(this.getClass()).DELETE(resource.getId())));
 
         return links;
     }

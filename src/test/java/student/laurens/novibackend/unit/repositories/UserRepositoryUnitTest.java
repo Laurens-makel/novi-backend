@@ -33,7 +33,7 @@ public class UserRepositoryUnitTest extends RepositoryUnitTestBase {
         User found = repository.getUserByUsername(user.getUsername());
 
         // then
-        assertThat(found.getUid()).isEqualTo(user.getUid());
+        assertThat(found.getId()).isEqualTo(user.getId());
         assertThat(found.getFirstName()).isEqualTo(user.getFirstName());
         assertThat(found.getLastName()).isEqualTo(user.getLastName());
         assertThat(found.getUsername()).isEqualTo(user.getUsername());

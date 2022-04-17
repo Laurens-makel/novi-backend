@@ -47,9 +47,9 @@ public class RoleRestController extends ResourceBaseRestController<Role> {
         return getResources();
     }
 
-    @GetMapping("/roleId")
-    public ResponseEntity<Resource<Role>> GET(@PathVariable final Integer resourceId) {
-        return get(resourceId);
+    @GetMapping("/{roleId}")
+    public ResponseEntity<Resource<Role>> GET(@PathVariable final Integer roleId) {
+        return get(roleId);
     }
 
     @PostMapping

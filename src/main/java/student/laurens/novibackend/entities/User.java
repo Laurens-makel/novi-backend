@@ -31,7 +31,7 @@ public class User extends AbstractOwnedEntity {
     @Id
     @Column(name = "UID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private @Getter @Setter Integer uid;
+    private @Getter @Setter Integer id;
 
     @Column(name = "USERNAME", nullable = false, unique = true)
     private @Getter @Setter String username;
@@ -64,13 +64,8 @@ public class User extends AbstractOwnedEntity {
     }
 
     @Override
-    public Integer getId() {
-        return getUid();
-    }
-
-    @Override
     public Integer getOwnerUid() {
-        return getUid();
+        return getId();
     }
 }
 

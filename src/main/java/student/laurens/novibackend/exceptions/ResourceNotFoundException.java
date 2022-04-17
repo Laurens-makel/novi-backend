@@ -2,7 +2,6 @@ package student.laurens.novibackend.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import student.laurens.novibackend.entities.User;
 
 /**
  * Default exception when a resource could not by find by the system, used by {@link RestExceptionHandler} to format these

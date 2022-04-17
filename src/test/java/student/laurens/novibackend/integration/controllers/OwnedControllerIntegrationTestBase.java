@@ -3,7 +3,6 @@ package student.laurens.novibackend.integration.controllers;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.ResultActions;
 import student.laurens.novibackend.entities.AbstractOwnedEntity;
 import student.laurens.novibackend.entities.User;
 
@@ -64,8 +63,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
      *
      * @return ResultActions instance which contains the response of the DELETE call.
      */
-    public ResultActions defaultJsonTestForGet(boolean isOwned, User user) throws Exception {
-        return getAsJson(save( isOwned ? createOwned(user) : createNotOwned() ));
+    public TestResults<R> defaultJsonTestForGet(final boolean isOwned, final User user) throws Exception {
+        R resource = save( isOwned ? createOwned(user) : createNotOwned() );
+        return new TestResults<>(getAsJson(resource), resource);
     }
 
     /**
@@ -73,8 +73,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
      *
      * @return ResultActions instance which contains the response of the DELETE call.
      */
-    public ResultActions defaultXmlTestForGet(boolean isOwned, User user) throws Exception {
-        return getAsXml(save( isOwned ? createOwned(user) : createNotOwned() ));
+    public TestResults<R> defaultXmlTestForGet(final boolean isOwned, final User user) throws Exception {
+        R resource = save( isOwned ? createOwned(user) : createNotOwned() );
+        return new TestResults<>(getAsXml(resource), resource);
     }
 
     /**
@@ -82,8 +83,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
      *
      * @return ResultActions instance which contains the response of the DELETE call.
      */
-    public ResultActions defaultJsonTestForPut(boolean isOwned, User user) throws Exception {
-        return updateAsJson(modify(save( isOwned ? createOwned(user) : createNotOwned() )));
+    public TestResults<R> defaultJsonTestForPut(final boolean isOwned, final User user) throws Exception {
+        R resource = modify(save( isOwned ? createOwned(user) : createNotOwned() ));
+        return new TestResults<>(updateAsJson(resource), resource);
     }
 
     /**
@@ -91,8 +93,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
      *
      * @return ResultActions instance which contains the response of the DELETE call.
      */
-    public ResultActions defaultXmlTestForPut(boolean isOwned, User user) throws Exception {
-        return updateAsXml(modify(save( isOwned ? createOwned(user) : createNotOwned() )));
+    public TestResults<R> defaultXmlTestForPut(final boolean isOwned, final User user) throws Exception {
+        R resource = modify(save( isOwned ? createOwned(user) : createNotOwned() ));
+        return new TestResults<>(updateAsXml(resource), resource);
     }
 
     /**
@@ -100,8 +103,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
      *
      * @return ResultActions instance which contains the response of the DELETE call.
      */
-    public ResultActions defaultJsonTestForDelete(final boolean isOwned, final User user) throws Exception {
-        return deleteAsJson(modify(save( isOwned ? createOwned(user) : createNotOwned() )));
+    public TestResults<R> defaultJsonTestForDelete(final boolean isOwned, final User user) throws Exception {
+        R resource = modify(save( isOwned ? createOwned(user) : createNotOwned() ));
+        return new TestResults<>(deleteAsJson(resource), resource);
     }
 
     /**
@@ -109,8 +113,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
      *
      * @return ResultActions instance which contains the response of the DELETE call.
      */
-    public ResultActions defaultXmlTestForDelete(final boolean isOwned, final User user) throws Exception {
-        return deleteAsXml(modify(save( isOwned ? createOwned(user) : createNotOwned() )));
+    public TestResults<R> defaultXmlTestForDelete(final boolean isOwned, final User user) throws Exception {
+        R resource = modify(save( isOwned ? createOwned(user) : createNotOwned() ));
+        return new TestResults<>(deleteAsXml(resource), resource);
     }
 
     @Test
@@ -119,9 +124,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForGetAsUserResourceNotOwned();
-        ResultActions mvc = defaultXmlTestForGet(false, user);
+        TestResults<R> results = defaultXmlTestForGet(false, user);
 
-        validateXmlUtf8Response(mvc, expectedStatus);
+        validateXmlUtf8Response(results.getMvc(), expectedStatus);;
     }
 
     @Test
@@ -130,9 +135,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForGetAsUserResourceNotOwned();
-        ResultActions mvc = defaultJsonTestForGet(false, user);
+        TestResults<R> results = defaultJsonTestForGet(false, user);
 
-        validateJsonResponse(mvc, expectedStatus);
+        validateJsonResponse(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -141,9 +146,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForGetAsUserResourceOwned();
-        ResultActions mvc = defaultXmlTestForGet(true, user);
+        TestResults<R> results = defaultXmlTestForGet(true, user);
 
-        validateXmlUtf8Response(mvc, expectedStatus);
+        validateXmlUtf8Response(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -152,9 +157,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForGetAsUserResourceOwned();
-        ResultActions mvc = defaultJsonTestForGet(true, user);
+        TestResults<R> results = defaultJsonTestForGet(true, user);
 
-        validateJsonResponse(mvc, expectedStatus);
+        validateJsonResponse(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -163,9 +168,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForGetAsContentCreatorResourceNotOwned();
-        ResultActions mvc = defaultXmlTestForGet(false, user);
+        TestResults<R> results = defaultXmlTestForGet(false, user);
 
-        validateXmlUtf8Response(mvc, expectedStatus);
+        validateXmlUtf8Response(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -174,9 +179,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForGetAsContentCreatorResourceNotOwned();
-        ResultActions mvc = defaultJsonTestForGet(false, user);
+        TestResults<R> results = defaultJsonTestForGet(false, user);
 
-        validateJsonResponse(mvc, expectedStatus);
+        validateJsonResponse(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -185,9 +190,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForGetAsContentCreatorResourceOwned();
-        ResultActions mvc = defaultXmlTestForGet(true, user);
+        TestResults<R> results = defaultXmlTestForGet(true, user);
 
-        validateXmlUtf8Response(mvc, expectedStatus);
+        validateXmlUtf8Response(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -196,9 +201,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForGetAsContentCreatorResourceOwned();
-        ResultActions mvc = defaultJsonTestForGet(true, user);
+        TestResults<R> results = defaultJsonTestForGet(true, user);
 
-        validateJsonResponse(mvc, expectedStatus);
+        validateJsonResponse(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -207,9 +212,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForGetAsModeratorResourceNotOwned();
-        ResultActions mvc = defaultXmlTestForGet(false, user);
+        TestResults<R> results = defaultXmlTestForGet(false, user);
 
-        validateXmlUtf8Response(mvc, expectedStatus);
+        validateXmlUtf8Response(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -218,9 +223,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForGetAsModeratorResourceNotOwned();
-        ResultActions mvc = defaultJsonTestForGet(false, user);
+        TestResults<R> results = defaultJsonTestForGet(false, user);
 
-        validateJsonResponse(mvc, expectedStatus);
+        validateJsonResponse(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -229,9 +234,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForGetAsModeratorResourceOwned();
-        ResultActions mvc = defaultXmlTestForGet(true, user);
+        TestResults<R> results = defaultXmlTestForGet(true, user);
 
-        validateXmlUtf8Response(mvc, expectedStatus);
+        validateXmlUtf8Response(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -240,9 +245,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForGetAsModeratorResourceOwned();
-        ResultActions mvc = defaultJsonTestForGet(true, user);
+        TestResults<R> results = defaultJsonTestForGet(true, user);
 
-        validateJsonResponse(mvc, expectedStatus);
+        validateJsonResponse(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -251,9 +256,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForGetAsAdminResourceNotOwned();
-        ResultActions mvc = defaultXmlTestForGet(false, user);
+        TestResults<R> results = defaultXmlTestForGet(false, user);
 
-        validateXmlUtf8Response(mvc, expectedStatus);
+        validateXmlUtf8Response(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -262,9 +267,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForGetAsAdminResourceNotOwned();
-        ResultActions mvc = defaultJsonTestForGet(false, user);
+        TestResults<R> results = defaultJsonTestForGet(false, user);
 
-        validateJsonResponse(mvc, expectedStatus);
+        validateJsonResponse(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -273,9 +278,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForGetAsAdminResourceOwned();
-        ResultActions mvc = defaultXmlTestForGet(true, user);
+        TestResults<R> results = defaultXmlTestForGet(true, user);
 
-        validateXmlUtf8Response(mvc, expectedStatus);
+        validateXmlUtf8Response(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -284,9 +289,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForGetAsAdminResourceOwned();
-        ResultActions mvc = defaultJsonTestForGet(true, user);
+        TestResults<R> results = defaultJsonTestForGet(true, user);
 
-        validateJsonResponse(mvc, expectedStatus);
+        validateJsonResponse(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -295,9 +300,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForPutAsAdminResourceOwned();
-        ResultActions mvc = defaultJsonTestForPut(true, user);
+        TestResults<R> results = defaultJsonTestForPut(true, user);
 
-        validateJsonResponse(mvc, expectedStatus);
+        validateJsonResponse(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -306,9 +311,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForPutAsAdminResourceOwned();
-        ResultActions mvc = defaultXmlTestForPut(true, user);
+        TestResults<R> results = defaultXmlTestForPut(true, user);
 
-        validateXmlUtf8Response(mvc, expectedStatus);
+        validateXmlUtf8Response(results.getMvc(), expectedStatus);
     }
 
 
@@ -318,9 +323,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForPutAsAdminResourceNotOwned();
-        ResultActions mvc = defaultJsonTestForPut(false, user);
+        TestResults<R> results = defaultJsonTestForPut(false, user);
 
-        validateJsonResponse(mvc, expectedStatus);
+        validateJsonResponse(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -329,9 +334,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForPutAsAdminResourceNotOwned();
-        ResultActions mvc = defaultXmlTestForPut(false, user);
+        TestResults<R> results = defaultXmlTestForPut(false, user);
 
-        validateXmlUtf8Response(mvc, expectedStatus);
+        validateXmlUtf8Response(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -340,9 +345,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsAdminResourceOwned();
-        ResultActions mvc = defaultJsonTestForDelete(true, user);
+        TestResults<R> results = defaultJsonTestForDelete(true, user);
 
-        validateJsonResponse(mvc, expectedStatus);
+        validateJsonResponse(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -351,9 +356,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsAdminResourceOwned();
-        ResultActions mvc = defaultXmlTestForDelete(true, user);
+        TestResults<R> results = defaultXmlTestForDelete(true, user);
 
-        validateXmlUtf8Response(mvc, expectedStatus);
+        validateXmlUtf8Response(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -362,9 +367,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsAdminResourceNotOwned();
-        ResultActions mvc = defaultJsonTestForDelete(false, user);
+        TestResults<R> results = defaultJsonTestForDelete(false, user);
 
-        validateJsonResponse(mvc, expectedStatus);
+        validateJsonResponse(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -373,9 +378,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsAdminResourceNotOwned();
-        ResultActions mvc = defaultXmlTestForDelete(false, user);
+        TestResults<R> results = defaultXmlTestForDelete(false, user);
 
-        validateXmlUtf8Response(mvc, expectedStatus);
+        validateXmlUtf8Response(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -384,9 +389,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsContentCreatorResourceOwned();
-        ResultActions mvc = defaultJsonTestForPut(true, user);
+        TestResults<R> results = defaultJsonTestForPut(true, user);
 
-        validateJsonResponse(mvc, expectedStatus);
+        validateJsonResponse(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -395,9 +400,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsContentCreatorResourceOwned();
-        ResultActions mvc = defaultXmlTestForPut(true, user);
+        TestResults<R> results = defaultXmlTestForPut(true, user);
 
-        validateXmlUtf8Response(mvc, expectedStatus);
+        validateXmlUtf8Response(results.getMvc(), expectedStatus);
     }
 
 
@@ -407,9 +412,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsContentCreatorResourceNotOwned();
-        ResultActions mvc = defaultJsonTestForPut(false, user);
+        TestResults<R> results = defaultJsonTestForPut(false, user);
 
-        validateJsonResponse(mvc, expectedStatus);
+        validateJsonResponse(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -418,9 +423,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsContentCreatorResourceNotOwned();
-        ResultActions mvc = defaultXmlTestForPut(false, user);
+        TestResults<R> results = defaultXmlTestForPut(false, user);
 
-        validateXmlUtf8Response(mvc, expectedStatus);
+        validateJsonResponse(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -429,9 +434,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsContentCreatorResourceOwned();
-        ResultActions mvc = defaultJsonTestForDelete(true, user);
+        TestResults<R> results = defaultJsonTestForDelete(true, user);
 
-        validateJsonResponse(mvc, expectedStatus);
+        validateJsonResponse(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -440,9 +445,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsContentCreatorResourceOwned();
-        ResultActions mvc = defaultXmlTestForDelete(true, user);
+        TestResults<R> results = defaultXmlTestForDelete(true, user);
 
-        validateXmlUtf8Response(mvc, expectedStatus);
+        validateXmlUtf8Response(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -451,9 +456,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsContentCreatorResourceNotOwned();
-        ResultActions mvc = defaultJsonTestForDelete(false, user);
+        TestResults<R> results = defaultJsonTestForDelete(false, user);
 
-        validateJsonResponse(mvc, expectedStatus);
+        validateJsonResponse(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -462,9 +467,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsContentCreatorResourceNotOwned();
-        ResultActions mvc = defaultXmlTestForDelete(false, user);
+        TestResults<R> results = defaultXmlTestForDelete(false, user);
 
-        validateXmlUtf8Response(mvc, expectedStatus);
+        validateXmlUtf8Response(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -473,9 +478,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsModeratorResourceOwned();
-        ResultActions mvc = defaultJsonTestForPut(true, user);
+        TestResults<R> results = defaultJsonTestForPut(true, user);
 
-        validateJsonResponse(mvc, expectedStatus);
+        validateJsonResponse(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -484,9 +489,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsModeratorResourceOwned();
-        ResultActions mvc = defaultXmlTestForPut(true, user);
+        TestResults<R> results = defaultXmlTestForPut(true, user);
 
-        validateXmlUtf8Response(mvc, expectedStatus);
+        validateXmlUtf8Response(results.getMvc(), expectedStatus);
     }
 
 
@@ -496,9 +501,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsModeratorResourceNotOwned();
-        ResultActions mvc = defaultJsonTestForPut(false, user);
+        TestResults<R> results = defaultJsonTestForPut(false, user);
 
-        validateJsonResponse(mvc, expectedStatus);
+        validateJsonResponse(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -507,9 +512,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsModeratorResourceNotOwned();
-        ResultActions mvc = defaultXmlTestForPut(false, user);
+        TestResults<R> results = defaultXmlTestForPut(false, user);
 
-        validateXmlUtf8Response(mvc, expectedStatus);
+        validateJsonResponse(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -518,9 +523,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsModeratorResourceOwned();
-        ResultActions mvc = defaultJsonTestForDelete(true, user);
+        TestResults<R> results = defaultJsonTestForDelete(true, user);
 
-        validateJsonResponse(mvc, expectedStatus);
+        validateJsonResponse(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -529,9 +534,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsModeratorResourceOwned();
-        ResultActions mvc = defaultXmlTestForDelete(true, user);
+        TestResults<R> results = defaultXmlTestForDelete(true, user);
 
-        validateXmlUtf8Response(mvc, expectedStatus);
+        validateXmlUtf8Response(results.getMvc(), expectedStatus);
     }
 
 
@@ -541,9 +546,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsModeratorResourceNotOwned();
-        ResultActions mvc = defaultJsonTestForDelete(false, user);
+        TestResults<R> results = defaultJsonTestForDelete(false, user);
 
-        validateJsonResponse(mvc, expectedStatus);
+        validateJsonResponse(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -552,9 +557,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsModeratorResourceNotOwned();
-        ResultActions mvc = defaultXmlTestForDelete(false, user);
+        TestResults<R> results = defaultXmlTestForDelete(false, user);
 
-        validateXmlUtf8Response(mvc, expectedStatus);
+        validateXmlUtf8Response(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -563,9 +568,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForPutAsUserResourceOwned();
-        ResultActions mvc = defaultJsonTestForPut(true, user);
+        TestResults<R> results = defaultJsonTestForPut(true, user);
 
-        validateJsonResponse(mvc, expectedStatus);
+        validateJsonResponse(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -574,9 +579,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForPutAsUserResourceOwned();
-        ResultActions mvc = defaultXmlTestForPut(true, user);
+        TestResults<R> results = defaultXmlTestForPut(true, user);
 
-        validateXmlUtf8Response(mvc, expectedStatus);
+        validateXmlUtf8Response(results.getMvc(), expectedStatus);
     }
 
 
@@ -586,9 +591,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForPutAsUserResourceNotOwned();
-        ResultActions mvc = defaultJsonTestForPut(false, user);
+        TestResults<R> results = defaultJsonTestForPut(false, user);
 
-        validateJsonResponse(mvc, expectedStatus);
+        validateJsonResponse(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -597,9 +602,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForPutAsUserResourceNotOwned();
-        ResultActions mvc = defaultXmlTestForPut(false, user);
+        TestResults<R> results = defaultXmlTestForPut(false, user);
 
-        validateXmlUtf8Response(mvc, expectedStatus);
+        validateJsonResponse(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -608,9 +613,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsUserResourceOwned();
-        ResultActions mvc = defaultJsonTestForDelete(true, user);
+        TestResults<R> results = defaultJsonTestForDelete(true, user);
 
-        validateJsonResponse(mvc, expectedStatus);
+        validateJsonResponse(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -619,9 +624,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsUserResourceOwned();
-        ResultActions mvc = defaultXmlTestForDelete(true, user);
+        TestResults<R> results = defaultXmlTestForDelete(true, user);
 
-        validateXmlUtf8Response(mvc, expectedStatus);
+        validateXmlUtf8Response(results.getMvc(), expectedStatus);
     }
 
 
@@ -631,9 +636,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsUserResourceNotOwned();
-        ResultActions mvc = defaultJsonTestForDelete(false, user);
+        TestResults<R> results = defaultJsonTestForDelete(false, user);
 
-        validateJsonResponse(mvc, expectedStatus);
+        validateJsonResponse(results.getMvc(), expectedStatus);
     }
 
     @Test
@@ -642,9 +647,9 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsUserResourceNotOwned();
-        ResultActions mvc = defaultXmlTestForDelete(false, user);
+        TestResults<R> results = defaultXmlTestForDelete(false, user);
 
-        validateXmlUtf8Response(mvc, expectedStatus);
+        validateXmlUtf8Response(results.getMvc(), expectedStatus);
     }
 }
 

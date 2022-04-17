@@ -13,5 +13,5 @@ public abstract class AbstractEntity {
     protected Logger log = LoggerFactory.getLogger(AbstractEntity.class);
 
     abstract public Integer getId();
-
+    abstract public void setId(Integer id);
 }

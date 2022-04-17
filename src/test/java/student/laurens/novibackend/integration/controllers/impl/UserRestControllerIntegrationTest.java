@@ -32,12 +32,14 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
 
     @Override
     protected String getUrlForGet(User resource) {
-        return "/user";
+        Integer id = resource.getId();
+
+        return "/users/" + (id == null ? 9999 : id);
     }
 
     @Override
     protected String getUrlForPut(User resource) {
-        Integer id = resource.getUid();
+        Integer id = resource.getId();
 
         return "/users/" + (id == null ? 9999 : id);
     }
@@ -49,7 +51,7 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
 
     @Override
     protected String getUrlForDelete(User resource) {
-        Integer id = resource.getUid();
+        Integer id = resource.getId();
 
         return "/users/" + (id == null ? 9999 : id);
     }
@@ -290,10 +292,10 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     @Test
     public void getCurrentUser_isUnauthorized() throws Exception {
         // given
-        saveUser(createDefaultUser());
+        User user = saveUser(createDefaultUser());
 
         // when
-        getAsJson(null)
+        getAsJson(user)
 
         // then
          .andExpect(status().isUnauthorized());
@@ -303,10 +305,10 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     @WithMockUser(value = USER, roles = {USER_ROLE} )
     public void getCurrentUser_AsUser_JSON_Ok() throws Exception {
         // given
-        saveUser(createDefaultUser());
+        User user = saveUser(createDefaultUser());
 
         // when
-        ResultActions mvc = getAsJson(null)
+        ResultActions mvc = getAsJson(user)
 
         // then
         .andExpect(status().isOk());
@@ -318,10 +320,10 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     @WithMockUser(value = USER, roles = {USER_ROLE} )
     public void getCurrentUser_AsUser_XML_Ok() throws Exception {
         // given
-        saveUser(createDefaultUser());
+        User user = saveUser(createDefaultUser());
 
         // when
-        ResultActions mvc = getAsXml(null)
+        ResultActions mvc = getAsXml(user)
 
         // then
         .andExpect(status().isOk());
@@ -333,10 +335,10 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
     public void getCurrentUser_AsContentCreator_JSON_Ok() throws Exception {
         // given
-        saveUser(createDefaultContentCreator());
+        User user = saveUser(createDefaultContentCreator());
 
         // when
-        ResultActions mvc = getAsJson(null)
+        ResultActions mvc = getAsJson(user)
 
         // then
         .andExpect(status().isOk());
@@ -348,10 +350,10 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
     public void getCurrentUser_AsContentCreator_XML_Ok() throws Exception {
         // given
-        saveUser(createDefaultContentCreator());
+        User user = saveUser(createDefaultContentCreator());
 
         // when
-        ResultActions mvc = getAsXml(null)
+        ResultActions mvc = getAsXml(user)
 
         // then
         .andExpect(status().isOk());
@@ -363,10 +365,10 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
     public void getCurrentUser_AsModerator_JSON_Ok() throws Exception {
         // given
-        saveUser(createDefaultModerator());
+        User user = saveUser(createDefaultModerator());
 
         // when
-        ResultActions mvc = getAsJson(null)
+        ResultActions mvc = getAsJson(user)
 
         // then
         .andExpect(status().isOk());
@@ -378,10 +380,10 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
     public void getCurrentUser_AsModerator_XML_Ok() throws Exception {
         // given
-        saveUser(createDefaultModerator());
+        User user = saveUser(createDefaultModerator());
 
         // when
-        ResultActions mvc = getAsXml(null)
+        ResultActions mvc = getAsXml(user)
 
         // then
         .andExpect(status().isOk());
@@ -393,10 +395,10 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void getCurrentUser_AsAdmin_JSON_Ok() throws Exception {
         // given
-        saveUser(createDefaultAdmin());
+        User user = saveUser(createDefaultAdmin());
 
         // when
-        ResultActions mvc = getAsJson(null)
+        ResultActions mvc = getAsJson(user)
 
         // then
         .andExpect(status().isOk());
@@ -408,10 +410,10 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void getCurrentUser_AsAdmin_XML_Ok() throws Exception {
         // given
-        saveUser(createDefaultAdmin());
+        User user = saveUser(createDefaultAdmin());
 
         // when
-        ResultActions mvc = getAsXml(null)
+        ResultActions mvc = getAsXml(user)
 
         // then
         .andExpect(status().isOk());

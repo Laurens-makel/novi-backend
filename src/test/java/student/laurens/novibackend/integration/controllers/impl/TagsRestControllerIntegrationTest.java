@@ -18,7 +18,8 @@ public class TagsRestControllerIntegrationTest extends ControllerIntegrationTest
 
     @Override
     protected String getUrlForGet(Tag resource) {
-        return "/tags";
+        Integer id = resource.getId();
+        return "/tags/" + (id == null ? 9999 : id);
     }
 
     @Override

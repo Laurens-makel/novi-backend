@@ -27,7 +27,8 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
 
     @Override
     protected String getUrlForGet(Role resource) {
-        return null;
+        Integer id = resource.getId();
+        return "/roles/" + (id == null ? 9999 : id);
     }
 
     @Override

@@ -2,6 +2,7 @@ package student.laurens.novibackend.integration.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.jayway.jsonpath.JsonPath;
 import org.junit.After;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.xml.sax.InputSource;
 import student.laurens.novibackend.NoviBackendApplication;
 import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.entities.Blogpost;
@@ -24,6 +26,11 @@ import student.laurens.novibackend.repositories.BlogpostRepository;
 import student.laurens.novibackend.repositories.RoleRepository;
 import student.laurens.novibackend.repositories.UserRepository;
 
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 import static org.hamcrest.Matchers.*;
@@ -159,9 +166,9 @@ public abstract class IntegrationTestBase<R extends AbstractEntity>  {
      *
      * @return ResultActions instance which contains the response of the GET call.
      */
-    public ResultActions defaultJsonTestForGet() throws Exception {
-        save(create());
-        return getAsJson();
+    public TestResults<R> defaultJsonTestForGet() throws Exception {
+        R resource = save(create());
+        return new TestResults<>(getAsJson(), resource);
     }
 
     /**
@@ -169,9 +176,9 @@ public abstract class IntegrationTestBase<R extends AbstractEntity>  {
      *
      * @return ResultActions instance which contains the response of the GET call.
      */
-    public ResultActions defaultXmlTestForGet() throws Exception {
-        save(create());
-        return getAsXml();
+    public TestResults<R> defaultXmlTestForGet() throws Exception {
+        R resource = save(create());
+        return new TestResults<>(getAsXml(), resource);
     }
 
 
@@ -180,8 +187,9 @@ public abstract class IntegrationTestBase<R extends AbstractEntity>  {
      *
      * @return ResultActions instance which contains the response of the POST call.
      */
-    public ResultActions defaultJsonTestForPost() throws Exception {
-        return postAsJson(create());
+    public TestResults<R> defaultJsonTestForPost() throws Exception {
+        R resource = create();
+        return new TestResults<>(postAsJson(resource), resource);
     }
 
     /**
@@ -189,8 +197,9 @@ public abstract class IntegrationTestBase<R extends AbstractEntity>  {
      *
      * @return ResultActions instance which contains the response of the POST call.
      */
-    public ResultActions defaultXmlTestForPost() throws Exception {
-        return postAsXml(create());
+    public TestResults<R> defaultXmlTestForPost() throws Exception {
+        R resource = create();
+        return new TestResults<>(postAsXml(resource), resource);
     }
 
 
@@ -199,8 +208,9 @@ public abstract class IntegrationTestBase<R extends AbstractEntity>  {
      *
      * @return ResultActions instance which contains the response of the PUT call.
      */
-    public ResultActions defaultJsonTestForPut() throws Exception {
-        return updateAsJson(modify(save(create())));
+    public TestResults<R> defaultJsonTestForPut() throws Exception {
+        R resource = modify(save(create()));
+        return new TestResults<>(updateAsJson(resource), resource);
     }
 
     /**
@@ -208,8 +218,9 @@ public abstract class IntegrationTestBase<R extends AbstractEntity>  {
      *
      * @return ResultActions instance which contains the response of the PUT call.
      */
-    public ResultActions defaultXmlTestForPut() throws Exception {
-        return updateAsXml(modify(save(create())));
+    public TestResults<R> defaultXmlTestForPut() throws Exception {
+        R resource = modify(save(create()));
+        return new TestResults<>(updateAsXml(resource), resource);
     }
 
     /**
@@ -217,8 +228,9 @@ public abstract class IntegrationTestBase<R extends AbstractEntity>  {
      *
      * @return ResultActions instance which contains the response of the DELETE call.
      */
-    public ResultActions defaultJsonTestForDelete() throws Exception {
-        return deleteAsJson(modify(save(create())));
+    public TestResults<R> defaultJsonTestForDelete() throws Exception {
+        R resource = modify(save(create()));
+        return new TestResults<>(deleteAsJson(resource), resource);
     }
 
     /**
@@ -226,8 +238,9 @@ public abstract class IntegrationTestBase<R extends AbstractEntity>  {
      *
      * @return ResultActions instance which contains the response of the DELETE call.
      */
-    public ResultActions defaultXmlTestForDelete() throws Exception {
-        return deleteAsXml(save(create()));
+    public TestResults<R> defaultXmlTestForDelete() throws Exception {
+        R resource = save(create());
+        return new TestResults<>(deleteAsXml(resource), resource);
     }
 
     /**
@@ -236,8 +249,9 @@ public abstract class IntegrationTestBase<R extends AbstractEntity>  {
      *
      * @return ResultActions instance which contains the response of the DELETE call.
      */
-    public ResultActions defaultJsonTestForDeleteNonExistingResource() throws Exception {
-        return deleteAsJson(modify(create()));
+    public TestResults<R> defaultJsonTestForDeleteNonExistingResource() throws Exception {
+        R resource = modify(create());
+        return new TestResults<>(deleteAsJson(resource), resource);
     }
 
     /**
@@ -245,8 +259,9 @@ public abstract class IntegrationTestBase<R extends AbstractEntity>  {
      *
      * @return ResultActions instance which contains the response of the DELETE call.
      */
-    public ResultActions defaultXmlTestForDeleteNonExistingResource() throws Exception {
-        return deleteAsXml(modify(create()));
+    public TestResults<R> defaultXmlTestForDeleteNonExistingResource() throws Exception {
+        R resource = modify(create());
+        return new TestResults<>(deleteAsXml(resource), resource);
     }
 
     /* Request body parsing */
@@ -442,14 +457,31 @@ public abstract class IntegrationTestBase<R extends AbstractEntity>  {
     }
 
     protected void validateJsonLink(final ResultActions mvc, final String name, final String url) throws Exception {
-        mvc.andExpect(jsonPath("$._links."+name+".href", endsWith(url)));
+        mvc.andExpect(jsonPath("$._links['"+name+"'].href", endsWith(url)));
+    }
+    protected void validateXmlLink(final ResultActions mvc, final String name, final String url) throws Exception {
+        mvc.andExpect(xpath("//links/links[rel = '"+name+"']/href").string(endsWith(url)));
     }
 
-    protected String unique(String text){
+    protected Integer extractJsonId(final ResultActions mvc) throws UnsupportedEncodingException {
+        String response = mvc.andReturn().getResponse().getContentAsString();
+        return Integer.valueOf(JsonPath.parse(response).read("$.id").toString());
+    }
+    protected Integer extractXmlId(final ResultActions mvc) throws UnsupportedEncodingException, XPathExpressionException {
+        String response = mvc.andReturn().getResponse().getContentAsString();
+
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        InputSource inputXML = new InputSource(new StringReader(response));
+        String result = xpath.evaluate("//id[1]", inputXML);
+
+        return Integer.valueOf(result);
+    }
+
+    protected String unique(final String text){
         return text + new Date().getTime();
     }
 
-    protected Blogpost createDefaultBlogpost(User author){
+    protected Blogpost createDefaultBlogpost(final User author){
         Blogpost blogpost = new Blogpost();
 
         blogpost.setTitle("Example blogpost");

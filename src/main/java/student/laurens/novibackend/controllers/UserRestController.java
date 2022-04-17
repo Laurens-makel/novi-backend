@@ -69,7 +69,7 @@ public class UserRestController extends ResourceBaseRestController<User>{
         return getResources();
     }
 
-    @GetMapping("/users/(uid)")
+    @GetMapping("/users/{uid}")
     public ResponseEntity<Resource<User>> GET(@PathVariable final Integer uid) {
         return get(uid);
     }

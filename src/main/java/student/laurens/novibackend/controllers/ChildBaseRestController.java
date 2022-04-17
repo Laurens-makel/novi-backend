@@ -61,9 +61,9 @@ public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentE
     protected Map<String, ControllerLinkBuilder> getLinksForGetResource(final Integer resourceId, final R resource) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
 
-        links.put("POST", linkTo(methodOn(this.getClass()).POST(resource.getParentId(), resource)));
-        links.put("PUT", linkTo(methodOn(this.getClass()).PUT(resource.getParentId(), resource.getId(), resource)));
-        links.put("DELETE", linkTo(methodOn(this.getClass()).DELETE(resource.getParentId(), resource.getId())));
+        links.put(HttpMethod.POST.name(), linkTo(methodOn(this.getClass()).POST(resource.getParentId(), resource)));
+        links.put(HttpMethod.PUT.name(), linkTo(methodOn(this.getClass()).PUT(resource.getParentId(), resource.getId(), resource)));
+        links.put(HttpMethod.DELETE.name(), linkTo(methodOn(this.getClass()).DELETE(resource.getParentId(), resource.getId())));
 
         return links;
     }
@@ -105,7 +105,7 @@ public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentE
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
 
         for(R resource : resources){
-            links.put("GET" , linkTo(methodOn(this.getClass()).GET(resource.getParentId(), resource.getId())));
+            links.put(HttpMethod.GET.name(), linkTo(methodOn(this.getClass()).GET(resource.getParentId(), resource.getId())));
         }
 
         return links;
@@ -149,9 +149,9 @@ public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentE
     protected Map<String, ControllerLinkBuilder> getLinksForPostResource(R resource) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
 
-        links.put("GET", linkTo(methodOn(this.getClass()).GET(resource.getParentId(), resource.getId())));
-        links.put("PUT", linkTo(methodOn(this.getClass()).PUT(resource.getParentId(), resource.getId(), resource)));
-        links.put("DELETE", linkTo(methodOn(this.getClass()).DELETE(resource.getParentId(), resource.getId())));
+        links.put(HttpMethod.GET.name(), linkTo(methodOn(this.getClass()).GET(resource.getParentId(), resource.getId())));
+        links.put(HttpMethod.PUT.name(), linkTo(methodOn(this.getClass()).PUT(resource.getParentId(), resource.getId(), resource)));
+        links.put(HttpMethod.DELETE.name(), linkTo(methodOn(this.getClass()).DELETE(resource.getParentId(), resource.getId())));
 
         return links;
     }
@@ -196,9 +196,9 @@ public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentE
     protected Map<String, ControllerLinkBuilder> getLinksForPutResource(R resource) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
 
-        links.put("GET", linkTo(methodOn(this.getClass()).GET(resource.getParentId(), resource.getId())));
-        links.put("POST", linkTo(methodOn(this.getClass()).POST(resource.getParentId(), resource)));
-        links.put("DELETE", linkTo(methodOn(this.getClass()).DELETE(resource.getParentId(), resource.getId())));
+        links.put(HttpMethod.GET.name(), linkTo(methodOn(this.getClass()).GET(resource.getParentId(), resource.getId())));
+        links.put(HttpMethod.POST.name(), linkTo(methodOn(this.getClass()).POST(resource.getParentId(), resource)));
+        links.put(HttpMethod.DELETE.name(), linkTo(methodOn(this.getClass()).DELETE(resource.getParentId(), resource.getId())));
 
         return links;
     }

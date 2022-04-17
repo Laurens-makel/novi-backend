@@ -57,7 +57,7 @@ public class Blogpost extends AbstractOwnedEntity implements Serializable {
 
     @Override
     public Integer getOwnerUid() {
-        return getAuthor().getUid();
+        return getAuthor().getId();
     }
 
 }
