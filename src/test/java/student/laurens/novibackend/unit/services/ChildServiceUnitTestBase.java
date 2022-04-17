@@ -7,8 +7,8 @@ import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.entities.AbstractOwnedEntity;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.exceptions.ResourceForbiddenException;
-import student.laurens.novibackend.services.ChildBaseService;
-import student.laurens.novibackend.services.ParentBaseService;
+import student.laurens.novibackend.services.ChildResourceBaseService;
+import student.laurens.novibackend.services.ParentResourceBaseService;
 import student.laurens.novibackend.services.PermissionPolicy;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,8 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public abstract class ChildServiceUnitTestBase<R extends AbstractEntity,P extends AbstractOwnedEntity> extends UnitTestBase<R> {
 
-    abstract protected ChildBaseService<R, P> getService();
-    abstract protected ParentBaseService<P> getParentService();
+    abstract protected ChildResourceBaseService<R, P> getService();
+    abstract protected ParentResourceBaseService<P> getParentService();
 
     protected void mockParentResourceExists(P parentResource){
         Mockito.when(getParentService().exists(parentResource.getId())).thenReturn(true);

@@ -53,7 +53,8 @@ public class BlogpostServiceUnitTest extends ParentServiceUnitTestBase<Blogpost>
     }
 
     @Autowired
-    private @Getter BlogpostService service;
+    private @Getter
+    BlogpostService service;
 
     @MockBean
     private @Getter BlogpostRepository repository;

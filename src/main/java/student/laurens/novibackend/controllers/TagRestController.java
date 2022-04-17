@@ -1,15 +1,15 @@
 package student.laurens.novibackend.controllers;
 
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.Resources;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.Tag;
+import student.laurens.novibackend.exceptions.ResourceDuplicateException;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.services.AppUserDetailsService;
 import student.laurens.novibackend.services.TagService;
-
-import java.util.List;
 
 /**
  * Rest Controller that exposes CRUD methods for {@link Tag}.
@@ -19,9 +19,9 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/tags")
-public class TagRestController extends BaseRestController<Tag> {
+public class TagRestController extends ResourceBaseRestController<Tag> {
 
-    private @Getter TagService service;
+    private final @Getter TagService service;
 
     public TagRestController(AppUserDetailsService appUserDetailsService, TagService service) {
         super(appUserDetailsService);
@@ -29,22 +29,28 @@ public class TagRestController extends BaseRestController<Tag> {
     }
 
     @GetMapping
-    public ResponseEntity<List<Tag>> getTags() {
-        return get();
+    public ResponseEntity<Resources<Tag>> GET() {
+        return getResources();
+    }
+
+    @GetMapping("/{tagId}")
+    public ResponseEntity<Resource<Tag>> GET(@PathVariable final Integer tagId) {
+        return get(tagId);
     }
 
     @PostMapping
-    public ResponseEntity<Tag> addTag(@RequestBody Tag tag){
+    public ResponseEntity<Resource<Tag>> POST(@RequestBody final Tag tag) throws ResourceDuplicateException {
         return create(tag);
     }
 
     @PutMapping("/{tagId}")
-    public ResponseEntity<Tag> updateTag(@PathVariable Integer tagId, @RequestBody Tag tag) throws ResourceNotFoundException {
+    public ResponseEntity<Resource<Tag>> PUT(@PathVariable final Integer tagId, @RequestBody final Tag tag) throws ResourceNotFoundException {
         return update(tagId, tag);
     }
 
     @DeleteMapping("/{tagId}")
-    public ResponseEntity deleteTag(@PathVariable Integer tagId) throws ResourceNotFoundException {
+    public ResponseEntity DELETE(@PathVariable final Integer tagId) throws ResourceNotFoundException {
         return delete(tagId);
     }
+
 }

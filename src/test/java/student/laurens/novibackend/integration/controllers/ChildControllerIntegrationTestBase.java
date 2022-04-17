@@ -1,7 +1,6 @@
 package student.laurens.novibackend.integration.controllers;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -10,8 +9,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import student.laurens.novibackend.entities.AbstractOwnedEntity;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.ResourceRepository;
-
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 /**
  * Base class to provide default methods for testing RestControllers which expose HTTP method for resources which have a parent resource.
@@ -220,53 +217,69 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     protected ResultActions executeGet(final P parentResource, final R resource, final MediaType accept) throws Exception {
         return getResource(getUrlForGetWithParent(parentResource, resource), accept);
     }
-    public ResultActions defaultXmlTestForGetAll(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+    public ChildTestResults<R,P> defaultXmlTestForGetAll(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
         R resource = save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) );
 
-        return getAsXml(parentResource);
+        ResultActions mvc = getAsXml(parentResource);
+
+        return new ChildTestResults<R,P>(mvc, resource, parentResource);
     }
-    public ResultActions defaultJsonTestForGetAll(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+    public ChildTestResults<R,P> defaultJsonTestForGetAll(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
         R resource = save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) );
 
-        return getAsJson(parentResource);
+        ResultActions mvc = getAsJson(parentResource);
+
+        return new ChildTestResults<R,P>(mvc, resource, parentResource);
     }
-    public ResultActions defaultXmlTestForGet(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+    public ChildTestResults<R,P> defaultXmlTestForGet(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
         R resource = save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) );
 
-        return getAsXml(parentResource, resource);
+        ResultActions mvc = getAsXml(parentResource, resource);
+
+         return new ChildTestResults<R,P>(mvc, resource, parentResource);
     }
-    public ResultActions defaultJsonTestForGet(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+    public ChildTestResults<R,P>  defaultJsonTestForGet(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
         R resource = save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) );
 
-        return getAsJson(parentResource, resource);
+        ResultActions mvc = getAsJson(parentResource, resource);
+
+         return new ChildTestResults<R,P>(mvc, resource, parentResource);
     }
-    public ResultActions defaultXmlTestForGetNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+    public ChildTestResults<R,P>  defaultXmlTestForGetNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() );
         R resource = isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource);
 
-        return getAsXml(parentResource, resource);
+        ResultActions mvc = getAsXml(parentResource, resource);
+
+         return new ChildTestResults<R,P>(mvc, resource, parentResource);
     }
-    public ResultActions defaultJsonTestForGetNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+    public ChildTestResults<R,P> defaultJsonTestForGetNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() );
         R resource = isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource);
 
-        return getAsJson(parentResource, resource);
+        ResultActions mvc = getAsJson(parentResource, resource);
+
+         return new ChildTestResults<R,P>(mvc, resource, parentResource);
     }
-    public ResultActions defaultXmlTestForGetParentNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+    public ChildTestResults<R,P> defaultXmlTestForGetParentNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() );
         R resource = save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) );
 
-        return getAsXml(createNotOwnedParent(), resource);
+        ResultActions mvc = getAsXml(createNotOwnedParent(), resource);
+
+         return new ChildTestResults<R,P>(mvc, resource, parentResource);
     }
-    public ResultActions defaultJsonTestForGetParentNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+    public ChildTestResults<R,P> defaultJsonTestForGetParentNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() );
         R resource = save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) );
 
-        return getAsJson(createNotOwnedParent(), resource);
+        ResultActions mvc = getAsJson(createNotOwnedParent(), resource);
+
+         return new ChildTestResults<R,P>(mvc, resource, parentResource);
     }
 
     protected ResultActions postAsJson(final P parentResource, final R resource) throws Exception {
@@ -278,29 +291,37 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     protected ResultActions executePost(final P parentResource, final R resource, final MediaType contentType, final MediaType accept) throws Exception {
         return postResource(getUrlForPostWithParent(parentResource), resource, accept, contentType);
     }
-    public ResultActions defaultXmlTestForPost(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+    public ChildTestResults<R,P> defaultXmlTestForPost(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
         R resource = save(isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource));
 
-        return postAsXml(parentResource, resource);
+        ResultActions mvc = postAsXml(parentResource, resource);
+
+         return new ChildTestResults<R,P>(mvc, resource, parentResource);
     }
-    public ResultActions defaultJsonTestForPost(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+    public ChildTestResults<R,P> defaultJsonTestForPost(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
         R resource = isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource);
 
-        return postAsJson(parentResource, resource);
+        ResultActions mvc = postAsJson(parentResource, resource);
+
+         return new ChildTestResults<R,P>(mvc, resource, parentResource);
     }
-    public ResultActions defaultXmlTestForPostParentNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+    public ChildTestResults<R,P> defaultXmlTestForPostParentNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
         R resource = save(isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource));
 
-        return postAsXml(createNotOwnedParent(), resource);
+        ResultActions mvc = postAsXml(createNotOwnedParent(), resource);
+
+         return new ChildTestResults<R,P>(mvc, resource, parentResource);
     }
-    public ResultActions defaultJsonTestForPostParentNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+    public ChildTestResults<R,P> defaultJsonTestForPostParentNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
         R resource = isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource);
 
-        return postAsJson(createNotOwnedParent(), resource);
+        ResultActions mvc = postAsJson(createNotOwnedParent(), resource);
+
+         return new ChildTestResults<R,P>(mvc, resource, parentResource);
     }
 
     protected ResultActions putAsJson(final P parentResource, final R resource) throws Exception {
@@ -312,41 +333,54 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     protected ResultActions executePut(final P parentResource, final R resource, final MediaType contentType, final MediaType accept) throws Exception {
         return putResource(getUrlForPutWithParent(parentResource, resource), resource, accept, contentType);
     }
-    public ResultActions defaultXmlTestForPut(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+    public ChildTestResults<R,P> defaultXmlTestForPut(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
         R resource = modify(save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) ));
 
-        return putAsXml(parentResource, resource);
+        ResultActions mvc = putAsXml(parentResource, resource);
+
+         return new ChildTestResults<R,P>(mvc, resource, parentResource);
+
     }
-    public ResultActions defaultJsonTestForPut(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+    public ChildTestResults<R,P> defaultJsonTestForPut(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
         R resource = modify(save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) ));
 
-        return putAsJson(parentResource, resource);
+        ResultActions mvc =  putAsJson(parentResource, resource);
+
+         return new ChildTestResults<R,P>(mvc, resource, parentResource);
     }
-    public ResultActions defaultXmlTestForPutNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+    public ChildTestResults<R,P> defaultXmlTestForPutNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
         R resource = modify( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) );
 
-        return putAsXml(parentResource, resource);
+        ResultActions mvc = putAsXml(parentResource, resource);
+
+         return new ChildTestResults<R,P>(mvc, resource, parentResource);
     }
-    public ResultActions defaultJsonTestForPutNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+    public ChildTestResults<R,P> defaultJsonTestForPutNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
         R resource = modify( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) );
 
-        return putAsJson(parentResource, resource);
+        ResultActions mvc = putAsJson(parentResource, resource);
+
+         return new ChildTestResults<R,P>(mvc, resource, parentResource);
     }
-    public ResultActions defaultXmlTestForPutParentNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+    public ChildTestResults<R,P> defaultXmlTestForPutParentNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
         R resource = modify(save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) ));
 
-        return putAsXml(createNotOwnedParent(), resource);
+        ResultActions mvc = putAsXml(createNotOwnedParent(), resource);
+
+         return new ChildTestResults<R,P>(mvc, resource, parentResource);
     }
-    public ResultActions defaultJsonTestForPutParentNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+    public ChildTestResults<R,P> defaultJsonTestForPutParentNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
         R resource = modify(save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) ));
 
-        return putAsJson(createNotOwnedParent(), resource);
+        ResultActions mvc = putAsJson(createNotOwnedParent(), resource);
+
+         return new ChildTestResults<R,P>(mvc, resource, parentResource);
     }
 
     protected ResultActions deleteAsJson(final P parentResource, final R resource) throws Exception {
@@ -358,41 +392,53 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     protected ResultActions executeDelete(final P parentResource, final R resource, final MediaType contentType, final MediaType accept) throws Exception {
         return deleteResource(getUrlForDeleteWithParent(parentResource, resource), accept);
     }
-    public ResultActions defaultXmlTestForDelete(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+    public ChildTestResults<R,P> defaultXmlTestForDelete(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
         R resource = save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) );
 
-        return deleteAsXml(parentResource, resource);
+        ResultActions mvc = deleteAsXml(parentResource, resource);
+
+         return new ChildTestResults<R,P>(mvc, resource, parentResource);
     }
-    public ResultActions defaultJsonTestForDelete(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+    public ChildTestResults<R,P> defaultJsonTestForDelete(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
         R resource = save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) );
 
-        return deleteAsJson(parentResource, resource);
+        ResultActions mvc = deleteAsJson(parentResource, resource);
+
+         return new ChildTestResults<R,P>(mvc, resource, parentResource);
     }
-    public ResultActions defaultXmlTestForDeleteNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+    public ChildTestResults<R,P> defaultXmlTestForDeleteNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
         R resource =  isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) ;
 
-        return deleteAsXml(parentResource, resource);
+        ResultActions mvc = deleteAsXml(parentResource, resource);
+
+         return new ChildTestResults<R,P>(mvc, resource, parentResource);
     }
-    public ResultActions defaultJsonTestForDeleteNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+    public ChildTestResults<R,P> defaultJsonTestForDeleteNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
         R resource = isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) ;
 
-        return deleteAsJson(parentResource, resource);
+        ResultActions mvc = deleteAsJson(parentResource, resource);
+
+         return new ChildTestResults<R,P>(mvc, resource, parentResource);
     }
-    public ResultActions defaultXmlTestForDeleteParentNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+    public ChildTestResults<R,P> defaultXmlTestForDeleteParentNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
         R resource = save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) );
 
-        return deleteAsXml(createNotOwnedParent(), resource);
+        ResultActions mvc = deleteAsXml(createNotOwnedParent(), resource);
+
+         return new ChildTestResults<R,P>(mvc, resource, parentResource);
     }
-    public ResultActions defaultJsonTestForDeleteParentNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
+    public ChildTestResults<R,P> defaultJsonTestForDeleteParentNotExists(boolean isOwned, boolean isParentOwned, User user) throws Exception {
         P parentResource = saveParent( isParentOwned ? createOwnedParent(user) : createNotOwnedParent() ) ;
         R resource = save( isOwned ? createOwned(parentResource, user) : createNotOwned(parentResource) );
 
-        return deleteAsJson(createNotOwnedParent(), resource);
+        ResultActions mvc = deleteAsJson(createNotOwnedParent(), resource);
+
+         return new ChildTestResults<R,P>(mvc, resource, parentResource);
     }
 
     @Test
@@ -401,11 +447,15 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForGetAsUser();
-        ResultActions mvc = defaultJsonTestForGetAll(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForGetAll(true, false, user);
+        ResultActions mvc = result.getMvc();
+        R resource = result.getResource();
+        P parent = result.getParent();
 
         validateJsonResponse(mvc, expectedStatus);
-        if(expectedStatus.equals(HttpStatus.OK)){
+        if(expectedStatus.is2xxSuccessful()){
             validateJsonArrayLengthGreaterThan(mvc, 1);
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
         }
     }
 
@@ -415,11 +465,15 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForGetAsContentCreator();
-        ResultActions mvc = defaultJsonTestForGetAll(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForGetAll(true, false, user);
+        ResultActions mvc = result.getMvc();
+        R resource = result.getResource();
+        P parent = result.getParent();
 
         validateJsonResponse(mvc, expectedStatus);
-        if(expectedStatus.equals(HttpStatus.OK)){
+        if(expectedStatus.is2xxSuccessful()){
             validateJsonArrayLengthGreaterThan(mvc, 1);
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
         }
     }
 
@@ -429,11 +483,15 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForGetAsModerator();
-        ResultActions mvc = defaultJsonTestForGetAll(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForGetAll(true, false, user);
+        ResultActions mvc = result.getMvc();
+        R resource = result.getResource();
+        P parent = result.getParent();
 
         validateJsonResponse(mvc, expectedStatus);
-        if(expectedStatus.equals(HttpStatus.OK)){
+        if(expectedStatus.is2xxSuccessful()){
             validateJsonArrayLengthGreaterThan(mvc, 1);
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
         }
     }
 
@@ -443,11 +501,15 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForGetAsAdmin();
-        ResultActions mvc = defaultJsonTestForGetAll(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForGetAll(true, false, user);
+        ResultActions mvc = result.getMvc();
+        R resource = result.getResource();
+        P parent = result.getParent();
 
         validateJsonResponse(mvc, expectedStatus);
-        if(expectedStatus.equals(HttpStatus.OK)){
+        if(expectedStatus.is2xxSuccessful()){
             validateJsonArrayLengthGreaterThan(mvc, 1);
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
         }
     }
 
@@ -457,9 +519,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForGetAsUserParentNotOwnedChildNotExists();
-        ResultActions mvc = defaultJsonTestForGetNotExists(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForGetNotExists(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "PUT", getUrlForPutWithParent(parent, resource));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -468,9 +540,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForGetAsContentCreatorParentNotOwnedChildNotExists();
-        ResultActions mvc = defaultJsonTestForGetNotExists(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForGetNotExists(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "PUT", getUrlForPutWithParent(parent, resource));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -479,9 +561,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForGetAsModeratorParentNotOwnedChildNotExists();
-        ResultActions mvc = defaultJsonTestForGetNotExists(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForGetNotExists(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "PUT", getUrlForPutWithParent(parent, resource));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -490,9 +582,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForGetAsAdminParentNotOwnedChildNotExists();
-        ResultActions mvc = defaultJsonTestForGetNotExists(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForGetNotExists(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "PUT", getUrlForPutWithParent(parent, resource));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -501,9 +603,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForGetAsUserParentNotExistsChildOwned();
-        ResultActions mvc = defaultJsonTestForGetParentNotExists(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForGetParentNotExists(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "PUT", getUrlForPutWithParent(parent, resource));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -512,9 +624,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForGetAsContentCreatorParentNotExistsChildOwned();
-        ResultActions mvc = defaultJsonTestForGetParentNotExists(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForGetParentNotExists(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "PUT", getUrlForPutWithParent(parent, resource));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -523,9 +645,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForGetAsModeratorParentNotExistsChildOwned();
-        ResultActions mvc = defaultJsonTestForGetParentNotExists(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForGetParentNotExists(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "PUT", getUrlForPutWithParent(parent, resource));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -534,9 +666,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForGetAsAdminParentNotExistsChildOwned();
-        ResultActions mvc = defaultJsonTestForGetParentNotExists(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForGetParentNotExists(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "PUT", getUrlForPutWithParent(parent, resource));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -545,9 +687,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForGetAsUserParentNotOwnedChildOwned();
-        ResultActions mvc = defaultJsonTestForGet(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForGet(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "PUT", getUrlForPutWithParent(parent, resource));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -556,9 +708,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForGetAsContentCreatorParentNotOwnedChildOwned();
-        ResultActions mvc = defaultJsonTestForGet(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForGet(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "PUT", getUrlForPutWithParent(parent, resource));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -567,9 +729,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForGetAsModeratorParentNotOwnedChildOwned();
-        ResultActions mvc = defaultJsonTestForGet(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForGet(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "PUT", getUrlForPutWithParent(parent, resource));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -578,9 +750,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForGetAsAdminParentNotOwnedChildOwned();
-        ResultActions mvc = defaultJsonTestForGet(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForGet(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "PUT", getUrlForPutWithParent(parent, resource));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -589,9 +771,20 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForPostAsUserParentNotExistsChildOwned();
-        ResultActions mvc = defaultJsonTestForPostParentNotExists(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPostParentNotExists(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            resource.setId(extractJsonId(mvc));
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "PUT", getUrlForPutWithParent(parent, resource));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -600,9 +793,20 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForPostAsContentCreatorParentNotExistsChildOwned();
-        ResultActions mvc = defaultJsonTestForPostParentNotExists(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPostParentNotExists(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            resource.setId(extractJsonId(mvc));
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "PUT", getUrlForPutWithParent(parent, resource));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -611,9 +815,20 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForPostAsModeratorParentNotExistsChildOwned();
-        ResultActions mvc = defaultJsonTestForPostParentNotExists(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPostParentNotExists(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            resource.setId(extractJsonId(mvc));
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "PUT", getUrlForPutWithParent(parent, resource));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -622,9 +837,20 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForPostAsAdminParentNotExistsChildOwned();
-        ResultActions mvc = defaultJsonTestForPostParentNotExists(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPostParentNotExists(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            resource.setId(extractJsonId(mvc));
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "PUT", getUrlForPutWithParent(parent, resource));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -633,9 +859,20 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForPostAsUserParentNotOwnedChildOwned();
-        ResultActions mvc = defaultJsonTestForPost(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPost(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            resource.setId(extractJsonId(mvc));
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "PUT", getUrlForPutWithParent(parent, resource));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -644,9 +881,20 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForPostAsContentCreatorParentNotOwnedChildOwned();
-        ResultActions mvc = defaultJsonTestForPost(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPost(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            resource.setId(extractJsonId(mvc));
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "PUT", getUrlForPutWithParent(parent, resource));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -655,9 +903,20 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForPostAsModeratorParentNotOwnedChildOwned();
-        ResultActions mvc = defaultJsonTestForPost(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPost(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            resource.setId(extractJsonId(mvc));
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "PUT", getUrlForPutWithParent(parent, resource));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -666,9 +925,20 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForPostAsAdminParentNotOwnedChildOwned();
-        ResultActions mvc = defaultJsonTestForPost(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPost(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            resource.setId(extractJsonId(mvc));
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "PUT", getUrlForPutWithParent(parent, resource));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -677,9 +947,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForPutAsUserParentNotOwnedChildNotExists();
-        ResultActions mvc = defaultJsonTestForPutNotExists(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPutNotExists(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -688,9 +968,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsContentCreatorParentNotOwnedChildNotExists();
-        ResultActions mvc = defaultJsonTestForPutNotExists(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPutNotExists(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -699,9 +989,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsModeratorParentNotOwnedChildNotExists();
-        ResultActions mvc = defaultJsonTestForPutNotExists(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPutNotExists(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -710,9 +1010,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForPutAsAdminParentNotOwnedChildNotExists();
-        ResultActions mvc = defaultJsonTestForPutNotExists(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPutNotExists(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -721,9 +1031,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForPutAsUserParentNotExistsChildOwned();
-        ResultActions mvc = defaultJsonTestForPutParentNotExists(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPutParentNotExists(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -732,9 +1052,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsContentCreatorParentNotExistsChildOwned();
-        ResultActions mvc = defaultJsonTestForPutParentNotExists(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPutParentNotExists(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -743,9 +1073,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsModeratorParentNotExistsChildOwned();
-        ResultActions mvc = defaultJsonTestForPutParentNotExists(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPutParentNotExists(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -754,9 +1094,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForPutAsAdminParentNotExistsChildOwned();
-        ResultActions mvc = defaultJsonTestForPutParentNotExists(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPutParentNotExists(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -765,9 +1115,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForPutAsUserParentNotOwnedChildOwned();
-        ResultActions mvc = defaultJsonTestForPut(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPut(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -776,9 +1136,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsContentCreatorParentNotOwnedChildOwned();
-        ResultActions mvc = defaultJsonTestForPut(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPut(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -787,9 +1157,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsModeratorParentNotOwnedChildOwned();
-        ResultActions mvc = defaultJsonTestForPut(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPut(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -798,9 +1178,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForPutAsAdminParentNotOwnedChildOwned();
-        ResultActions mvc = defaultJsonTestForPut(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPut(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
     @Test
     @WithMockUser(value = USER)
@@ -808,9 +1198,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForPutAsUserParentNotOwnedChildNotOwned();
-        ResultActions mvc = defaultJsonTestForPut(false, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPut(false, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -819,9 +1219,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsContentCreatorParentNotOwnedChildNotOwned();
-        ResultActions mvc = defaultJsonTestForPut(false, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPut(false, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -830,9 +1240,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsModeratorParentNotOwnedChildNotOwned();
-        ResultActions mvc = defaultJsonTestForPut(false, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPut(false, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -841,9 +1261,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForPutAsAdminParentNotOwnedChildNotOwned();
-        ResultActions mvc = defaultJsonTestForPut(false, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPut(false, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
 
@@ -853,9 +1283,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForPutAsUserParentOwnedChildNotOwned();
-        ResultActions mvc = defaultJsonTestForPut(false, true, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPut(false, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -864,9 +1304,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsContentCreatorParentOwnedChildNotOwned();
-        ResultActions mvc = defaultJsonTestForPut(false, true, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPut(false, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -875,9 +1325,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsModeratorParentOwnedChildNotOwned();
-        ResultActions mvc = defaultJsonTestForPut(false, true, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPut(false, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -886,9 +1346,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForPutAsAdminParentOwnedChildNotOwned();
-        ResultActions mvc = defaultJsonTestForPut(false, true, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPut(false, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -897,9 +1367,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForPutAsUserParentOwnedChildOwned();
-        ResultActions mvc = defaultJsonTestForPut(true, true, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPut(true, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -908,9 +1388,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsContentCreatorParentOwnedChildOwned();
-        ResultActions mvc = defaultJsonTestForPut(true, true, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPut(true, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -919,9 +1409,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsModeratorParentOwnedChildOwned();
-        ResultActions mvc = defaultJsonTestForPut(true, true, user).andDo(print());
+        ChildTestResults<R,P> result = defaultJsonTestForPut(true, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -930,9 +1430,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForPutAsAdminParentOwnedChildOwned();
-        ResultActions mvc = defaultJsonTestForPut(true, true, user);
+        ChildTestResults<R,P> result = defaultJsonTestForPut(true, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateJsonLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateJsonLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -941,9 +1451,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsUserParentNotOwnedChildOwned();
-        ResultActions mvc = defaultJsonTestForDelete(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForDelete(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -952,9 +1470,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsContentCreatorParentNotOwnedChildOwned();
-        ResultActions mvc = defaultJsonTestForDelete(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForDelete(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -963,9 +1489,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsModeratorParentNotOwnedChildOwned();
-        ResultActions mvc = defaultJsonTestForDelete(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForDelete(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -974,9 +1508,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsAdminParentNotOwnedChildOwned();
-        ResultActions mvc = defaultJsonTestForDelete(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForDelete(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -985,9 +1527,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsUserParentNotOwnedChildNotOwned();
-        ResultActions mvc = defaultJsonTestForDelete(false, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForDelete(false, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -996,9 +1546,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsContentCreatorParentNotOwnedChildNotOwned();
-        ResultActions mvc = defaultJsonTestForDelete(false, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForDelete(false, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1007,9 +1565,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsModeratorParentNotOwnedChildNotOwned();
-        ResultActions mvc = defaultJsonTestForDelete(false, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForDelete(false, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1018,9 +1584,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsAdminParentNotOwnedChildNotOwned();
-        ResultActions mvc = defaultJsonTestForDelete(false, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForDelete(false, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
 
@@ -1030,9 +1604,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsUserParentOwnedChildNotOwned();
-        ResultActions mvc = defaultJsonTestForDelete(false, true, user);
+        ChildTestResults<R,P> result = defaultJsonTestForDelete(false, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1041,9 +1623,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsContentCreatorParentOwnedChildNotOwned();
-        ResultActions mvc = defaultJsonTestForDelete(false, true, user);
+        ChildTestResults<R,P> result = defaultJsonTestForDelete(false, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1052,9 +1642,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsModeratorParentOwnedChildNotOwned();
-        ResultActions mvc = defaultJsonTestForDelete(false, true, user);
+        ChildTestResults<R,P> result = defaultJsonTestForDelete(false, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1063,9 +1661,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsAdminParentOwnedChildNotOwned();
-        ResultActions mvc = defaultJsonTestForDelete(false, true, user);
+        ChildTestResults<R,P> result = defaultJsonTestForDelete(false, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1074,9 +1680,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsUserParentOwnedChildOwned();
-        ResultActions mvc = defaultJsonTestForDelete(true, true, user);
+        ChildTestResults<R,P> result = defaultJsonTestForDelete(true, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1085,9 +1699,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsContentCreatorParentOwnedChildOwned();
-        ResultActions mvc = defaultJsonTestForDelete(true, true, user);
+        ChildTestResults<R,P> result = defaultJsonTestForDelete(true, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1096,9 +1718,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsModeratorParentOwnedChildOwned();
-        ResultActions mvc = defaultJsonTestForDelete(true, true, user);
+        ChildTestResults<R,P> result = defaultJsonTestForDelete(true, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1107,9 +1737,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsAdminParentOwnedChildOwned();
-        ResultActions mvc = defaultJsonTestForDelete(true, true, user);
+        ChildTestResults<R,P> result = defaultJsonTestForDelete(true, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
 
@@ -1119,9 +1757,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForGetAsUserParentNotOwnedChildOwned();
-        ResultActions mvc = defaultXmlTestForGet(true, false, user);
+        ChildTestResults<R,P> result = defaultXmlTestForGet(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateXmlLink(mvc, "PUT", getUrlForPutWithParent(parent, resource));
+            validateXmlLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -1130,9 +1778,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForGetAsContentCreatorParentNotOwnedChildOwned();
-        ResultActions mvc = defaultXmlTestForGet(true, false, user);
+        ChildTestResults<R,P> result = defaultXmlTestForGet(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateXmlLink(mvc, "PUT", getUrlForPutWithParent(parent, resource));
+            validateXmlLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -1141,9 +1799,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForGetAsModeratorParentNotOwnedChildOwned();
-        ResultActions mvc = defaultXmlTestForGet(true, false, user);
+        ChildTestResults<R,P> result = defaultXmlTestForGet(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateXmlLink(mvc, "PUT", getUrlForPutWithParent(parent, resource));
+            validateXmlLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -1152,9 +1820,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForGetAsAdminParentNotOwnedChildOwned();
-        ResultActions mvc = defaultXmlTestForGet(true, false, user);
+        ChildTestResults<R,P> result = defaultXmlTestForGet(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateXmlLink(mvc, "PUT", getUrlForPutWithParent(parent, resource));
+            validateXmlLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -1163,9 +1841,20 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForPostAsUserParentNotOwnedChildOwned();
-        ResultActions mvc = defaultXmlTestForPost(true, false, user);
+        ChildTestResults<R,P> result = defaultXmlTestForPost(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            resource.setId(extractXmlId(mvc));
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateXmlLink(mvc, "PUT", getUrlForPutWithParent(parent, resource));
+            validateXmlLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -1174,9 +1863,20 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForPostAsContentCreatorParentNotOwnedChildOwned();
-        ResultActions mvc = defaultXmlTestForPost(true, false, user);
+        ChildTestResults<R,P> result = defaultXmlTestForPost(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            resource.setId(extractXmlId(mvc));
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateXmlLink(mvc, "PUT", getUrlForPutWithParent(parent, resource));
+            validateXmlLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -1185,9 +1885,20 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForPostAsModeratorParentNotOwnedChildOwned();
-        ResultActions mvc = defaultXmlTestForPost(true, false, user);
+        ChildTestResults<R,P> result = defaultXmlTestForPost(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            resource.setId(extractXmlId(mvc));
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateXmlLink(mvc, "PUT", getUrlForPutWithParent(parent, resource));
+            validateXmlLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -1196,9 +1907,20 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForPostAsAdminParentNotOwnedChildOwned();
-        ResultActions mvc = defaultXmlTestForPost(true, false, user);
+        ChildTestResults<R,P> result = defaultXmlTestForPost(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            resource.setId(extractXmlId(mvc));
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateXmlLink(mvc, "PUT", getUrlForPutWithParent(parent, resource));
+            validateXmlLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -1207,9 +1929,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForPutAsUserParentNotOwnedChildOwned();
-        ResultActions mvc = defaultXmlTestForPut(true, false, user);
+        ChildTestResults<R,P> result = defaultXmlTestForPut(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateXmlLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateXmlLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -1218,9 +1950,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsContentCreatorParentNotOwnedChildOwned();
-        ResultActions mvc = defaultXmlTestForPut(true, false, user);
+        ChildTestResults<R,P> result = defaultXmlTestForPut(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateXmlLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateXmlLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -1229,9 +1971,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsModeratorParentNotOwnedChildOwned();
-        ResultActions mvc = defaultXmlTestForPut(true, false, user);
+        ChildTestResults<R,P> result = defaultXmlTestForPut(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateXmlLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateXmlLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -1240,19 +1992,40 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForPutAsAdminParentNotOwnedChildOwned();
-        ResultActions mvc = defaultXmlTestForPut(true, false, user);
+        ChildTestResults<R,P> result = defaultXmlTestForPut(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateXmlLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateXmlLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
+
     @Test
     @WithMockUser(value = USER)
     public void putXmlAsUserParentNotOwnedChildNotOwned() throws Exception {
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForPutAsUserParentNotOwnedChildNotOwned();
-        ResultActions mvc = defaultXmlTestForPut(false, false, user);
+        ChildTestResults<R,P> result = defaultXmlTestForPut(false, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateXmlLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateXmlLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -1261,9 +2034,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsContentCreatorParentNotOwnedChildNotOwned();
-        ResultActions mvc = defaultXmlTestForPut(false, false, user);
+        ChildTestResults<R,P> result = defaultXmlTestForPut(false, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateXmlLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateXmlLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -1272,9 +2055,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsModeratorParentNotOwnedChildNotOwned();
-        ResultActions mvc = defaultXmlTestForPut(false, false, user);
+        ChildTestResults<R,P> result = defaultXmlTestForPut(false, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateXmlLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateXmlLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -1283,9 +2076,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForPutAsAdminParentNotOwnedChildNotOwned();
-        ResultActions mvc = defaultXmlTestForPut(false, false, user);
+        ChildTestResults<R,P> result = defaultXmlTestForPut(false, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateXmlLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateXmlLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
 
@@ -1295,9 +2098,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForPutAsUserParentOwnedChildNotOwned();
-        ResultActions mvc = defaultXmlTestForPut(false, true, user);
+        ChildTestResults<R,P> result = defaultXmlTestForPut(false, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateXmlLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateXmlLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -1306,9 +2119,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsContentCreatorParentOwnedChildNotOwned();
-        ResultActions mvc = defaultXmlTestForPut(false, true, user);
+        ChildTestResults<R,P> result = defaultXmlTestForPut(false, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateXmlLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateXmlLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -1317,9 +2140,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsModeratorParentOwnedChildNotOwned();
-        ResultActions mvc = defaultXmlTestForPut(false, true, user);
+        ChildTestResults<R,P> result = defaultXmlTestForPut(false, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateXmlLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateXmlLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -1328,9 +2161,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForPutAsAdminParentOwnedChildNotOwned();
-        ResultActions mvc = defaultXmlTestForPut(false, true, user);
+        ChildTestResults<R,P> result = defaultXmlTestForPut(false, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateXmlLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateXmlLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -1339,9 +2182,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForPutAsUserParentOwnedChildOwned();
-        ResultActions mvc = defaultXmlTestForPut(true, true, user);
+        ChildTestResults<R,P> result = defaultXmlTestForPut(true, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateXmlLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateXmlLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -1350,9 +2203,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsContentCreatorParentOwnedChildOwned();
-        ResultActions mvc = defaultXmlTestForPut(true, true, user);
+        ChildTestResults<R,P> result = defaultXmlTestForPut(true, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateXmlLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateXmlLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -1361,9 +2224,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForPutAsModeratorParentOwnedChildOwned();
-        ResultActions mvc = defaultXmlTestForPut(true, true, user);
+        ChildTestResults<R,P> result = defaultXmlTestForPut(true, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateXmlLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateXmlLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -1372,9 +2245,19 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForPutAsAdminParentOwnedChildOwned();
-        ResultActions mvc = defaultXmlTestForPut(true, true, user);
+        ChildTestResults<R,P> result = defaultXmlTestForPut(true, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET", getUrlForGetWithParent(parent, resource));
+            validateXmlLink(mvc, "POST", getUrlForPostWithParent(parent));
+            validateXmlLink(mvc, "DELETE", getUrlForDeleteWithParent(parent, resource));
+        }
     }
 
     @Test
@@ -1383,9 +2266,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsUserParentNotOwnedChildNotExists();
-        ResultActions mvc = defaultJsonTestForDeleteNotExists(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForDeleteNotExists(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1394,9 +2285,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsContentCreatorParentNotOwnedChildNotExists();
-        ResultActions mvc = defaultJsonTestForDeleteNotExists(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForDeleteNotExists(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1405,9 +2304,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsModeratorParentNotOwnedChildNotExists();
-        ResultActions mvc = defaultJsonTestForDeleteNotExists(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForDeleteNotExists(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1416,9 +2323,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsAdminParentNotOwnedChildNotExists();
-        ResultActions mvc = defaultJsonTestForDeleteNotExists(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForDeleteNotExists(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1427,9 +2342,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsUserParentNotExistsChildOwned();
-        ResultActions mvc = defaultJsonTestForDeleteParentNotExists(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForDeleteParentNotExists(true, false, user);;
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1438,9 +2361,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsContentCreatorParentNotExistsChildOwned();
-        ResultActions mvc = defaultJsonTestForDeleteParentNotExists(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForDeleteParentNotExists(true, false, user);;
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1449,9 +2380,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsModeratorParentNotExistsChildOwned();
-        ResultActions mvc = defaultJsonTestForDeleteParentNotExists(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForDeleteParentNotExists(true, false, user);;
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1460,9 +2399,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsAdminParentNotExistsChildOwned();
-        ResultActions mvc = defaultJsonTestForDeleteParentNotExists(true, false, user);
+        ChildTestResults<R,P> result = defaultJsonTestForDeleteParentNotExists(true, false, user);;
+
+        ResultActions mvc = result.getMvc();
 
         validateJsonResponse(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateJsonLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1471,9 +2418,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsUserParentNotOwnedChildOwned();
-        ResultActions mvc = defaultXmlTestForDelete(true, false, user);
+        ChildTestResults<R,P> result = defaultXmlTestForDelete(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1482,9 +2437,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsContentCreatorParentNotOwnedChildOwned();
-        ResultActions mvc = defaultXmlTestForDelete(true, false, user);
+        ChildTestResults<R,P> result = defaultXmlTestForDelete(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1493,9 +2456,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsModeratorParentNotOwnedChildOwned();
-        ResultActions mvc = defaultXmlTestForDelete(true, false, user);
+        ChildTestResults<R,P> result = defaultXmlTestForDelete(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1504,9 +2475,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsAdminParentNotOwnedChildOwned();
-        ResultActions mvc = defaultXmlTestForDelete(true, false, user);
+        ChildTestResults<R,P> result = defaultXmlTestForDelete(true, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1515,9 +2494,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsUserParentNotOwnedChildNotOwned();
-        ResultActions mvc = defaultXmlTestForDelete(false, false, user);
+        ChildTestResults<R,P> result = defaultXmlTestForDelete(false, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1526,9 +2513,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsContentCreatorParentNotOwnedChildNotOwned();
-        ResultActions mvc = defaultXmlTestForDelete(false, false, user);
+        ChildTestResults<R,P> result = defaultXmlTestForDelete(false, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1537,9 +2532,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsModeratorParentNotOwnedChildNotOwned();
-        ResultActions mvc = defaultXmlTestForDelete(false, false, user);
+        ChildTestResults<R,P> result = defaultXmlTestForDelete(false, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1548,9 +2551,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsAdminParentNotOwnedChildNotOwned();
-        ResultActions mvc = defaultXmlTestForDelete(false, false, user);
+        ChildTestResults<R,P> result = defaultXmlTestForDelete(false, false, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
 
@@ -1560,9 +2571,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsUserParentOwnedChildNotOwned();
-        ResultActions mvc = defaultXmlTestForDelete(false, true, user);
+        ChildTestResults<R,P> result = defaultXmlTestForDelete(false, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1571,9 +2590,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsContentCreatorParentOwnedChildNotOwned();
-        ResultActions mvc = defaultXmlTestForDelete(false, true, user);
+        ChildTestResults<R,P> result = defaultXmlTestForDelete(false, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1582,9 +2609,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsModeratorParentOwnedChildNotOwned();
-        ResultActions mvc = defaultXmlTestForDelete(false, true, user);
+        ChildTestResults<R,P> result = defaultXmlTestForDelete(false, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1593,9 +2628,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsAdminParentOwnedChildNotOwned();
-        ResultActions mvc = defaultXmlTestForDelete(false, true, user);
+        ChildTestResults<R,P> result = defaultXmlTestForDelete(false, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1604,9 +2647,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultUser());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsUserParentOwnedChildOwned();
-        ResultActions mvc = defaultXmlTestForDelete(true, true, user);
+        ChildTestResults<R,P> result = defaultXmlTestForDelete(true, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1615,9 +2666,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsContentCreatorParentOwnedChildOwned();
-        ResultActions mvc = defaultXmlTestForDelete(true, true, user);
+        ChildTestResults<R,P> result = defaultXmlTestForDelete(true, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1626,9 +2685,17 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultModerator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsModeratorParentOwnedChildOwned();
-        ResultActions mvc = defaultXmlTestForDelete(true, true, user);
+        ChildTestResults<R,P> result = defaultXmlTestForDelete(true, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 
     @Test
@@ -1637,8 +2704,16 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsAdminParentOwnedChildOwned();
-        ResultActions mvc = defaultXmlTestForDelete(true, true, user);
+        ChildTestResults<R,P> result = defaultXmlTestForDelete(true, true, user);
+
+        ResultActions mvc = result.getMvc();
 
         validateXmlUtf8Response(mvc, expectedStatus);
+        if(expectedStatus.is2xxSuccessful()){
+            R resource = result.getResource();
+            P parent = result.getParent();
+
+            validateXmlLink(mvc, "GET All", getUrlForGetWithParent(parent));
+        }
     }
 }

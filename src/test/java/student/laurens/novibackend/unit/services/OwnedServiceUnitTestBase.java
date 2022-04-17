@@ -3,6 +3,7 @@ package student.laurens.novibackend.unit.services;
 import org.junit.Test;
 import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.entities.User;
+import student.laurens.novibackend.services.ResourceBaseService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -15,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public abstract class OwnedServiceUnitTestBase<R extends AbstractEntity> extends UnitTestBase<R> {
 
     abstract protected R create(User owner);
-
+    abstract protected ResourceBaseService<R> getService();
     @Test
     public void get_resource_owned_admin() {
         // given

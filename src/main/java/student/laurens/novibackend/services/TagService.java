@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import student.laurens.novibackend.entities.Tag;
-import student.laurens.novibackend.repositories.RoleRepository;
 import student.laurens.novibackend.repositories.TagRepository;
 
 import javax.transaction.Transactional;
@@ -13,14 +12,14 @@ import javax.transaction.Transactional;
 @Service
 @Component
 @Transactional
-public class TagService extends BaseService<Tag> {
+public class TagService extends ResourceBaseService<Tag> {
 
     public TagService(TagRepository repository){
         this.repository = repository;
     }
 
     @Autowired
-    private @Getter TagRepository repository;
+    private final @Getter TagRepository repository;
 
     public Tag getResource(final String title) {
         return repository.getTagByTitle(title);

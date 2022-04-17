@@ -22,7 +22,8 @@ public class TagsServiceUnitTest extends ServiceUnitTestBase<Tag> {
     }
 
     @Autowired
-    private @Getter TagService service;
+    private @Getter
+    TagService service;
 
     @MockBean
     private @Getter TagRepository repository;

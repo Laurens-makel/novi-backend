@@ -27,7 +27,8 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
 
     @Override
     protected String getUrlForGet(Role resource) {
-        return null;
+        Integer id = resource.getId();
+        return "/roles/" + (id == null ? 9999 : id);
     }
 
     @Override
@@ -425,7 +426,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     public void deleteNonExistingRole_AsAdmin_AcceptJSON_NotFound() throws Exception {
         // given
         Role role = createRole("TEST_ROLE");
-
+        saveUser(createDefaultAdmin());
         // when
         ResultActions mvc = deleteAsJson(role)
 
@@ -441,7 +442,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     public void deleteNonExistingRole_AsAdmin_AcceptXML_NotFound() throws Exception {
         // given
         Role role = createRole("TEST_ROLE");
-
+        saveUser(createDefaultAdmin());
         // when
         ResultActions mvc = deleteAsXml(role)
 
@@ -606,7 +607,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     public void updateNonExistingRole_AsAdmin_AcceptJson_NotFound() throws Exception {
         // given
         Role role = createRole("TEST_ROLE");
-
+        saveUser(createDefaultAdmin());
         // when
         ResultActions mvc = updateAsJson(role)
 
@@ -621,6 +622,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
     public void updateNonExistingRole_AsAdmin_AcceptXML_NotFound() throws Exception {
         // given
+        saveUser(createDefaultAdmin());
         Role role = createRole("TEST_ROLE");
 
         // when

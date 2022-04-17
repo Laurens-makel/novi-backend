@@ -2,11 +2,9 @@ package student.laurens.novibackend.services;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import student.laurens.novibackend.entities.Role;
-import student.laurens.novibackend.repositories.CommentRepository;
 import student.laurens.novibackend.repositories.RoleRepository;
 
 import javax.transaction.Transactional;
@@ -20,14 +18,14 @@ import javax.transaction.Transactional;
 @Service
 @Component
 @Transactional
-public class RoleService extends BaseService<Role> {
+public class RoleService extends ResourceBaseService<Role> {
 
     public RoleService(RoleRepository repository){
         this.repository = repository;
     }
 
     @Autowired
-    private @Getter RoleRepository repository;
+    private final @Getter RoleRepository repository;
 
     public Role getResource(final String roleName){
         return repository.getRoleByName(roleName);

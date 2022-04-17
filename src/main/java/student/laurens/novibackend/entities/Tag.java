@@ -23,7 +23,7 @@ public class Tag extends AbstractEntity {
     @Id
     @Column(name = "TAG_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private @Getter Integer id;
+    private @Getter @Setter Integer id;
 
     @Column(name = "TITLE", nullable = false)
     private @Getter @Setter String title;

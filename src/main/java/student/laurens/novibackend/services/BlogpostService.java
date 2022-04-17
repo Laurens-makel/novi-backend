@@ -1,7 +1,6 @@
 package student.laurens.novibackend.services;
 
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -24,9 +23,9 @@ import java.util.stream.StreamSupport;
 @Component
 @Transactional
 @Qualifier("BlogpostService")
-public class BlogpostService extends ParentBaseService<Blogpost> {
+public class BlogpostService extends ParentResourceBaseService<Blogpost> {
 
-    private @Getter BlogpostRepository repository;
+    private final @Getter BlogpostRepository repository;
 
     public BlogpostService(BlogpostRepository repository){
         this.repository = repository;

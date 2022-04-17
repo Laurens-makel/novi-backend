@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -21,6 +20,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({ ResourceException.class })
     protected ResponseEntity<Object> handleResourceException(final ResourceException ex, final WebRequest request) {
+        logger.info("Exception of type ["+ex.getClass().getName()+"] occurred, will be handled by RestExceptionHandler.");
         final String accept = parseAcceptHeader(request);
 
         final HttpHeaders responseHeaders = new HttpHeaders();
@@ -37,6 +37,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private Map<String, String> createError(final ResourceException exception, final WebRequest request) {
+        logger.info("Translation to consumer friendly error of exception of type ["+exception.getClass().getName()+"] started.");
         final Map<String, String> error = new HashMap<>();
 
         error.put("exception", exception.getClass().getName().split("[.]")[4]);
@@ -44,6 +45,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         error.put("path", request.getDescription(false).split("=")[1]);
         error.put("resource", exception.getResourceClassName().split("[.]")[4]);
 
+        logger.info("Translation to consumer friendly error of exception of type ["+exception.getClass().getName()+"] finished.");
         return error;
     }
 
@@ -51,8 +53,10 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         final String response;
 
         if(MediaType.APPLICATION_JSON_VALUE.equals(accept)) {
+            logger.info("Consumer accepts JSON, writing error response as ["+MediaType.APPLICATION_JSON_VALUE+"].");
             response = new ObjectMapper().writeValueAsString(error);
         } else {
+            logger.info("Consumer accepts XML, writing error response as ["+MediaType.APPLICATION_XML_VALUE+"].");
             response = new XmlMapper().writer().withRootName("error").writeValueAsString(error);
         }
 
@@ -60,8 +64,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private String parseAcceptHeader(final WebRequest request){
-        String accept = request.getHeader(HttpHeaders.ACCEPT);
+        logger.info("Parsing accept header.");
 
-        return accept == null ? DEFAULT_CONTENT_TYPE : accept;
+        String accept = request.getHeader(HttpHeaders.ACCEPT);
+        String result = (accept == null  || accept.equals(MediaType.ALL_VALUE)) ? DEFAULT_CONTENT_TYPE : accept;
+
+        logger.info("Consumer provided ["+accept+"], determined to use ["+result+"].");
+        return result;
     }
 }

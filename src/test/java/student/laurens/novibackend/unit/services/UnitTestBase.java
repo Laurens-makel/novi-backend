@@ -12,6 +12,7 @@ import student.laurens.novibackend.entities.Role;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.ResourceRepository;
 import student.laurens.novibackend.services.BaseService;
+import student.laurens.novibackend.services.ResourceBaseService;
 
 import java.util.Date;
 
@@ -96,7 +97,7 @@ public abstract class UnitTestBase<R extends AbstractEntity> {
         testUser.setUsername(username);
         testUser.setPassword(password);
         testUser.getRoles().add(createRole(role));
-        testUser.setUid(generateId());
+        testUser.setId(generateId());
 
         return testUser;
     }

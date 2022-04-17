@@ -1,15 +1,15 @@
 package student.laurens.novibackend.controllers;
 
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.Resources;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.Role;
+import student.laurens.novibackend.exceptions.ResourceDuplicateException;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.services.AppUserDetailsService;
 import student.laurens.novibackend.services.RoleService;
-
-import java.util.List;
 
 /**
  * Rest Controller that exposes CRUD methods for {@link Role}.
@@ -33,9 +33,9 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/roles")
-public class RoleRestController extends BaseRestController<Role> {
+public class RoleRestController extends ResourceBaseRestController<Role> {
 
-    private @Getter RoleService service;
+    private final @Getter RoleService service;
 
     public RoleRestController(AppUserDetailsService appUserDetailsService, RoleService service) {
         super(appUserDetailsService);
@@ -43,22 +43,27 @@ public class RoleRestController extends BaseRestController<Role> {
     }
 
     @GetMapping
-    public ResponseEntity<List<Role>> getRoles() {
-        return get();
+    public ResponseEntity<Resources<Role>>  GET() {
+        return getResources();
+    }
+
+    @GetMapping("/{roleId}")
+    public ResponseEntity<Resource<Role>> GET(@PathVariable final Integer roleId) {
+        return get(roleId);
     }
 
     @PostMapping
-    public ResponseEntity<Role> addRole(@RequestBody Role role){
+    public ResponseEntity<Resource<Role>> POST(@RequestBody final Role role) throws ResourceDuplicateException {
         return create(role);
     }
 
     @PutMapping("/{roleId}")
-    public ResponseEntity<Role> updateRole(@PathVariable Integer roleId, @RequestBody Role role) throws ResourceNotFoundException{
+    public ResponseEntity<Resource<Role>> PUT(@PathVariable final Integer roleId, @RequestBody final Role role) throws ResourceNotFoundException{
         return update(roleId, role);
     }
 
     @DeleteMapping("/{roleId}")
-    public ResponseEntity deleteRole(@PathVariable Integer roleId) throws ResourceNotFoundException {
+    public ResponseEntity DELETE(@PathVariable final Integer roleId) throws ResourceNotFoundException {
         return delete(roleId);
     }
 

@@ -46,7 +46,7 @@ public class Comment extends AbstractOwnedWithParentEntity<Blogpost> {
 
     @Override
     public Integer getOwnerUid() {
-        return getAuthor().getUid();
+        return getAuthor().getId();
     }
 
     @Override

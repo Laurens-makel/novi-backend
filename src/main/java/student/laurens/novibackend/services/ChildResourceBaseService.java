@@ -4,16 +4,18 @@ import org.springframework.http.HttpMethod;
 import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.entities.AbstractOwnedEntity;
 import student.laurens.novibackend.entities.User;
+import student.laurens.novibackend.exceptions.ResourceDuplicateException;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.exceptions.ResourceForbiddenException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public abstract class ChildBaseService <R extends AbstractEntity, P extends AbstractEntity> extends BaseService<R> {
+public abstract class ChildResourceBaseService<R extends AbstractEntity, P extends AbstractEntity> extends BaseService<R> {
 
-    abstract protected ParentBaseService<P> getParentService();
+    abstract protected ParentResourceBaseService<P> getParentService();
 
     /**
      * Retrieves a resource from repository, specified by resource id.
@@ -27,8 +29,12 @@ public abstract class ChildBaseService <R extends AbstractEntity, P extends Abst
     public R getResourceById(final Integer parentResourceId, final Integer resourceId, final User consumer) throws ResourceNotFoundException {
         getParentService().exists(parentResourceId);
         exists(resourceId);
-        validateOwnershipOfResources(parentResourceId, resourceId, HttpMethod.GET, consumer);
-        return getRepository().getOne(resourceId);
+        return validateOwnershipOfResources(parentResourceId, resourceId, HttpMethod.GET, consumer)
+                .orElse(
+                        getRepository()
+                                .findById(resourceId)
+                                .orElseThrow( () -> new ResourceNotFoundException(getResourceClass(), resourceId) )
+                );
     }
 
     /**
@@ -57,12 +63,13 @@ public abstract class ChildBaseService <R extends AbstractEntity, P extends Abst
      *
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
      */
-    public R createResource(final Integer parentResourceId, final R resource, final User consumer) throws ResourceNotFoundException {
+    public R createResource(final Integer parentResourceId, final R resource, final User consumer) throws ResourceNotFoundException, ResourceDuplicateException {
         log.info("Processing started for create request for resource with parent ID ["+parentResourceId+"], request by ["+consumer.getUsername()+"]");
         getParentService().exists(parentResourceId);
         validateOwnershipOfResources(parentResourceId, null, HttpMethod.POST, consumer);
+        R created = create(resource);
         log.info("Processing finished with success for create request for resource with parent ID ["+parentResourceId+"], request by ["+consumer.getUsername()+"]");
-        return getRepository().save(resource);
+        return created;
     }
 
     /**
@@ -114,7 +121,7 @@ public abstract class ChildBaseService <R extends AbstractEntity, P extends Abst
      * @throws ResourceNotFoundException - Thrown when parent or resource could not be found.
      * @throws ResourceForbiddenException - Thrown when parent or resource could is not owned by current consumer of API.
      */
-    public void validateOwnershipOfResources(final Integer parentResourceId, final Integer resourceId, final HttpMethod method, final User consumer) throws ResourceNotFoundException, ResourceForbiddenException {
+    public Optional<R> validateOwnershipOfResources(final Integer parentResourceId, final Integer resourceId, final HttpMethod method, final User consumer) throws ResourceNotFoundException, ResourceForbiddenException {
         log.info("Checking which PermissionPolicy applies for ["+method+"] on resourceId ["+resourceId+"] and parentResourceId ["+parentResourceId+"], request by ["+consumer.getUsername()+"]");
         PermissionPolicy childPolicy;
         switch (method){
@@ -134,7 +141,7 @@ public abstract class ChildBaseService <R extends AbstractEntity, P extends Abst
                 childPolicy = PermissionPolicy.DENY;
         }
         log.info("Finished checking, PermissionPolicy ["+childPolicy+"] applies for ["+method+"] on resourceId ["+resourceId+"] and parentResourceId ["+parentResourceId+"], request by ["+consumer.getUsername()+"]");
-        validatePermissionPolicy(parentResourceId, resourceId, consumer, childPolicy, method);
+        return validatePermissionPolicy(parentResourceId, resourceId, consumer, childPolicy, method);
     }
 
     /**
@@ -149,38 +156,44 @@ public abstract class ChildBaseService <R extends AbstractEntity, P extends Abst
      * @throws ResourceNotFoundException - Thrown when parent or resource could not be found.
      * @throws ResourceForbiddenException - Thrown when parent or resource is not owned by current consumer of API.
      */
-    protected void validatePermissionPolicy(final Integer parentResourceId, final Integer resourceId, final User consumer,
-                                            final PermissionPolicy policy, HttpMethod method) throws ResourceNotFoundException, ResourceForbiddenException {
+    protected Optional<R> validatePermissionPolicy(final Integer parentResourceId, final Integer resourceId, final User consumer,
+                                                   final PermissionPolicy policy, HttpMethod method) throws ResourceNotFoundException, ResourceForbiddenException {
         log.info("Checking policy ["+policy+"]");
+        Optional<R> optional = Optional.empty();
 
-        if(policy.equals(PermissionPolicy.ALLOW)){
-            log.info("Policy ["+policy+"], validation complete.");
-            return;
-        }
-
-        if(policy.equals(PermissionPolicy.ALLOW_CHILD_OWNED)){
-            log.info("Policy ["+policy+"], validation of child ownership started.");
-            validateOwnershipOfResource(resourceId, method, consumer);
-            log.info("Policy ["+policy+"], validation of child ownership completed.");
-        }
-        else if(policy.equals(PermissionPolicy.ALLOW_PARENT_OR_CHILD_OWNED)) {
-            try {
+        switch(policy){
+            case ALLOW:
+                log.info("Policy ["+policy+"], validation complete.");
+                optional = Optional.empty();
+                break;
+            case ALLOW_CHILD_OWNED:
+                log.info("Policy ["+policy+"], validation of child ownership started.");
+                optional = validateOwnershipOfResource(resourceId, method, consumer);
+                log.info("Policy ["+policy+"], validation of child ownership completed.");
+                break;
+            case ALLOW_PARENT_OR_CHILD_OWNED:
+                try {
+                    log.info("Policy ["+policy+"], validation of parent ownership started.");
+                    getParentService().validateOwnershipOfResource(parentResourceId, method, consumer);
+                    log.info("Policy ["+policy+"], validation of parent ownership completed.");
+                } catch (ResourceForbiddenException e){
+                    log.info("Parent resource ["+parentResourceId+"] not owned, validation of child ownership started.");
+                    optional = validateOwnershipOfResource(resourceId, method, consumer);
+                    log.info("Parent resource ["+parentResourceId+"] not owned, validation of child ownership completed.");
+                }
+                break;
+            case ALLOW_PARENT_OWNED:
                 log.info("Policy ["+policy+"], validation of parent ownership started.");
                 getParentService().validateOwnershipOfResource(parentResourceId, method, consumer);
                 log.info("Policy ["+policy+"], validation of parent ownership completed.");
-            } catch (ResourceForbiddenException e){
-                log.info("Parent resource ["+parentResourceId+"] not owned, validation of child ownership started.");
-                validateOwnershipOfResource(resourceId, method, consumer);
-                log.info("Parent resource ["+parentResourceId+"] not owned, validation of child ownership completed.");
-            }
-        } else if(policy.equals(PermissionPolicy.ALLOW_PARENT_OWNED)){
-            log.info("Policy ["+policy+"], validation of parent ownership started.");
-            getParentService().validateOwnershipOfResource(parentResourceId, method, consumer);
-            log.info("Policy ["+policy+"], validation of parent ownership completed.");
-        } else if(policy.equals(PermissionPolicy.DENY)){
-            log.info("Policy ["+policy+"], access is denied.");
-            throw new ResourceForbiddenException(getResourceClass(), resourceId);
+                break;
+            case DENY:
+                log.warn("Policy ["+policy+"], access is denied.");
+                throw new ResourceForbiddenException(getResourceClass(), resourceId);
+            default:
+                return optional;
         }
+        return optional;
     }
 
 }

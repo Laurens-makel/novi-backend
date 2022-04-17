@@ -37,7 +37,8 @@ public class AppUserDetailsServiceUnitTest extends OwnedServiceUnitTestBase<User
     }
 
     @Autowired
-    private @Getter AppUserDetailsService service;
+    private @Getter
+    AppUserDetailsService service;
 
     @MockBean
     private @Getter UserRepository repository;

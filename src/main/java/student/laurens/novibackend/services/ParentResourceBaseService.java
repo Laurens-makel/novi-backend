@@ -8,7 +8,7 @@ import student.laurens.novibackend.entities.*;
  * @author Laurens Mäkel
  * @version 1.0, March 2022
  */
-public abstract class ParentBaseService<R extends AbstractEntity> extends BaseService<R> {
+public abstract class ParentResourceBaseService<R extends AbstractEntity> extends ResourceBaseService<R> {
 
     /**
      * Validates if user is allowed to read a child.

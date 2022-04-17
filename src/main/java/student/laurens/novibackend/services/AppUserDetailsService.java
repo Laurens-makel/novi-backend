@@ -2,14 +2,12 @@ package student.laurens.novibackend.services;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import student.laurens.novibackend.entities.AppUserDetails;
-import student.laurens.novibackend.entities.Blogpost;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.UserRepository;
 
@@ -24,7 +22,7 @@ import javax.transaction.Transactional;
 @Service
 @Component
 @Transactional
-public class AppUserDetailsService extends BaseService<User> implements UserDetailsService {
+public class AppUserDetailsService extends ResourceBaseService<User> implements UserDetailsService {
 
     @Autowired
     private @Getter UserRepository repository;
