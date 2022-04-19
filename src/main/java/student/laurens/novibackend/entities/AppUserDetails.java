@@ -34,6 +34,9 @@ public class AppUserDetails extends AbstractEntity implements UserDetails  {
 
         for (Role role : roles) {
             authorities.add(new SimpleGrantedAuthority("ROLE_" +role.getName()));
+            for(Authority authority : role.getAuthorities()){
+                authorities.add(new SimpleGrantedAuthority(authority.getName()));
+            }
         }
 
         return authorities;

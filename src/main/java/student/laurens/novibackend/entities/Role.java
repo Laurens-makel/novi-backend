@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Entity class for ROLES table.
@@ -26,5 +28,15 @@ public class Role extends AbstractEntity {
 
     @Column(name = "ROLE_NAME", nullable = false, unique = true)
     private @Getter @Setter String name;
+
+
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "ROLE_AUTHORITIES",
+            joinColumns = @JoinColumn(name = "ROLE_ID"),
+            inverseJoinColumns = @JoinColumn(name = "AUTHORITY_ID")
+    )
+    private @Getter Set<Authority> authorities = new HashSet<>();
+
 
 }

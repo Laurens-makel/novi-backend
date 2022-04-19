@@ -40,7 +40,7 @@ public class Comment extends AbstractOwnedWithParentEntity<Blogpost> {
     @Column(name = "CREATED_AT", nullable = false, updatable = false, insertable=false)
     private @Getter Date createdAt;
 
-    @ManyToOne( cascade = CascadeType.MERGE )
+    @ManyToOne( cascade = CascadeType.REFRESH )
     @JoinColumn( name = "BLOGPOST_ID", nullable = false)
     private @Getter @Setter Blogpost blogpost;
 

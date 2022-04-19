@@ -5,9 +5,11 @@ import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import student.laurens.novibackend.entities.AbstractOwnedEntity;
 import student.laurens.novibackend.entities.User;
+import student.laurens.novibackend.entities.dto.ResourceDto;
 import student.laurens.novibackend.repositories.ResourceRepository;
 
 /**
@@ -16,8 +18,8 @@ import student.laurens.novibackend.repositories.ResourceRepository;
  * @author Laurens Mäkel
  * @version 1.0, March 2022
  */
-public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwnedEntity, P extends AbstractOwnedEntity>
-        extends IntegrationTestBase<R> {
+public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwnedEntity, P extends AbstractOwnedEntity, D extends ResourceDto>
+        extends IntegrationTestBase<R,D> {
 
 
     abstract protected ResourceRepository<R> getRepository();
@@ -28,8 +30,6 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
         log.debug("Deleting all users from repository.");
         getRepository().deleteAll();
         getParentRepository().deleteAll();
-
-        userRepository.deleteAll();
     }
 
     @Override
@@ -496,7 +496,7 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void getJsonAsAdmin() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -577,7 +577,7 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void getJsonAsAdminParentNotOwnedChildNotExists() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -661,7 +661,7 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void getJsonAsAdminParentNotExistsChildOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -745,7 +745,7 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void getJsonAsAdminParentNotOwnedChildOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -832,7 +832,7 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void postJsonAsAdminParentNotExistsChildOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -920,7 +920,7 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void postJsonAsAdminParentNotOwnedChildOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -1005,7 +1005,7 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void putJsonAsAdminParentNotOwnedChildNotExists() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -1089,7 +1089,7 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void putJsonAsAdminParentNotExistsChildOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -1173,7 +1173,7 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void putJsonAsAdminParentNotOwnedChildOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -1256,7 +1256,7 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void putJsonAsAdminParentNotOwnedChildNotOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -1341,7 +1341,7 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void putJsonAsAdminParentOwnedChildNotOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -1425,7 +1425,7 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void putJsonAsAdminParentOwnedChildOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -1503,7 +1503,7 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteJsonAsAdminParentNotOwnedChildOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -1579,7 +1579,7 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteJsonAsAdminParentNotOwnedChildNotOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -1656,7 +1656,7 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteJsonAsAdminParentOwnedChildNotOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -1732,7 +1732,7 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteJsonAsAdminParentOwnedChildOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -1815,7 +1815,7 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void getXmlAsAdminParentNotOwnedChildOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -1902,7 +1902,7 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void postXmlAsAdminParentNotOwnedChildOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -1987,7 +1987,7 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void putXmlAsAdminParentNotOwnedChildOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -2071,7 +2071,7 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void putXmlAsAdminParentNotOwnedChildNotOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -2156,7 +2156,7 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void putXmlAsAdminParentOwnedChildNotOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -2240,7 +2240,7 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void putXmlAsAdminParentOwnedChildOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -2318,7 +2318,7 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteJsonAsAdminParentNotOwnedChildNotExists() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -2394,7 +2394,7 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteJsonAsAdminParentNotExistsChildOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -2470,7 +2470,7 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteXmlAsAdminParentNotOwnedChildOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -2546,7 +2546,7 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteXmlAsAdminParentNotOwnedChildNotOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -2623,7 +2623,7 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteXmlAsAdminParentOwnedChildNotOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -2699,7 +2699,7 @@ public abstract class ChildControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE})
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteXmlAsAdminParentOwnedChildOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 

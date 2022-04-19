@@ -6,6 +6,8 @@ import org.springframework.hateoas.Resources;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.Tag;
+import student.laurens.novibackend.entities.dto.TagDto;
+import student.laurens.novibackend.entities.dto.mappers.TagMapper;
 import student.laurens.novibackend.exceptions.ResourceDuplicateException;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.services.AppUserDetailsService;
@@ -19,8 +21,9 @@ import student.laurens.novibackend.services.TagService;
  */
 @RestController
 @RequestMapping("/tags")
-public class TagRestController extends ResourceBaseRestController<Tag> {
+public class TagRestController extends ResourceBaseRestController<Tag, TagDto> {
 
+    private final @Getter TagMapper mapper = new TagMapper();
     private final @Getter TagService service;
 
     public TagRestController(AppUserDetailsService appUserDetailsService, TagService service) {
@@ -34,17 +37,17 @@ public class TagRestController extends ResourceBaseRestController<Tag> {
     }
 
     @GetMapping("/{tagId}")
-    public ResponseEntity<Resource<Tag>> GET(@PathVariable final Integer tagId) {
+    public ResponseEntity<Resource<TagDto>> GET(@PathVariable final Integer tagId) {
         return get(tagId);
     }
 
     @PostMapping
-    public ResponseEntity<Resource<Tag>> POST(@RequestBody final Tag tag) throws ResourceDuplicateException {
+    public ResponseEntity<Resource<TagDto>> POST(@RequestBody final TagDto tag) throws ResourceDuplicateException {
         return create(tag);
     }
 
     @PutMapping("/{tagId}")
-    public ResponseEntity<Resource<Tag>> PUT(@PathVariable final Integer tagId, @RequestBody final Tag tag) throws ResourceNotFoundException {
+    public ResponseEntity<Resource<TagDto>> PUT(@PathVariable final Integer tagId, @RequestBody final TagDto tag) throws ResourceNotFoundException {
         return update(tagId, tag);
     }
 

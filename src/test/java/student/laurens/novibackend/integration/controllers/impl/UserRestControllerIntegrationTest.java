@@ -1,10 +1,15 @@
 package student.laurens.novibackend.integration.controllers.impl;
 
+import lombok.Getter;
 import org.junit.After;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
+import student.laurens.novibackend.entities.dto.UserDto;
+import student.laurens.novibackend.entities.dto.mappers.TagMapper;
+import student.laurens.novibackend.entities.dto.mappers.UserMapper;
 import student.laurens.novibackend.integration.controllers.OwnedControllerIntegrationTestBase;
 import student.laurens.novibackend.controllers.UserRestController;
 import student.laurens.novibackend.entities.User;
@@ -18,12 +23,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Laurens Mäkel
  * @version 1.0, March 2022
  */
-public class UserRestControllerIntegrationTest extends OwnedControllerIntegrationTestBase<User> {
-
-    @After
-    public void after(){
-        userRepository.deleteAll();
-    }
+public class UserRestControllerIntegrationTest extends OwnedControllerIntegrationTestBase<User, UserDto> {
+    private final @Getter UserMapper mapper = new UserMapper();
 
     @Override
     protected String getUrlForGet() {
@@ -73,7 +74,7 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
 
     @Override
     protected User modify(User resource) {
-        resource.setUsername(unique("MODIFIED"));
+        resource.setFirstName(unique("MODIFIED"));
 
         return resource;
     }
@@ -214,59 +215,59 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
         saveUser(createDefaultUser());
 
         // when
-        postAsJson(createTestUser("DJ", "Tiesto", "DJ_TIESTO", "MyPassword123", "USER"))
+        postAsJson(createTestUser("DJ", "Tiesto", unique("tiesto"), "MyPassword123", "USER"))
 
         // then
         .andExpect(status().isUnauthorized());
     }
 
     @Test
-    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void postUser_AsUser_Forbidden() throws Exception {
         // given
         saveUser(createDefaultUser());
 
         // when
-        postAsJson(createTestUser("DJ", "Tiesto", "DJ_TIESTO", "MyPassword123", "USER"))
+        postAsJson(createTestUser("DJ", "Tiesto", unique("tiesto"), "MyPassword123", "USER"))
 
         // then
         .andExpect(status().isForbidden());
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void postUser_AsContentCreator_Forbidden() throws Exception {
         // given
         saveUser(createDefaultUser());
 
         // when
-        postAsJson(createTestUser("DJ", "Tiesto", "DJ_TIESTO", "MyPassword123", "USER"))
+        postAsJson(createTestUser("DJ", "Tiesto", unique("tiesto"), "MyPassword123", "USER"))
 
         // then
         .andExpect(status().isForbidden());
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void postUser_AsModerator_Forbidden() throws Exception {
         // given
         saveUser(createDefaultUser());
 
         // when
-        postAsJson(createTestUser("DJ", "Tiesto", "DJ_TIESTO", "MyPassword123", "USER"))
+        postAsJson(createTestUser("DJ", "Tiesto", unique("tiesto"), "MyPassword123", "USER"))
 
         // then
         .andExpect(status().isForbidden());
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void postUser_AsAdmin_JSON_Created() throws Exception {
         // given
         saveUser(createDefaultUser());
 
         // when
-        ResultActions mvc = postAsJson(createTestUser("DJ", "Tiesto", "DJ_TIESTO", "MyPassword123", "USER"))
+        ResultActions mvc = postAsJson(createTestUser("DJ", "Tiesto", unique("tiesto"), "MyPassword123", "USER"))
 
         // then
         .andExpect(status().isCreated());
@@ -275,13 +276,13 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void postUser_AsAdmin_XML_Created() throws Exception {
         // given
         saveUser(createDefaultUser());
 
         // when
-        ResultActions mvc = postAsXml(createTestUser("DJ", "Tiesto", "DJ_TIESTO", "MyPassword123", "USER"))
+        ResultActions mvc = postAsXml(createTestUser("DJ", "Tiesto", unique("tiesto"), "MyPassword123", "USER"))
 
         // then
         .andExpect(status().isCreated());
@@ -302,7 +303,7 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void getCurrentUser_AsUser_JSON_Ok() throws Exception {
         // given
         User user = saveUser(createDefaultUser());
@@ -317,7 +318,7 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void getCurrentUser_AsUser_XML_Ok() throws Exception {
         // given
         User user = saveUser(createDefaultUser());
@@ -332,7 +333,7 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void getCurrentUser_AsContentCreator_JSON_Ok() throws Exception {
         // given
         User user = saveUser(createDefaultContentCreator());
@@ -347,7 +348,7 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void getCurrentUser_AsContentCreator_XML_Ok() throws Exception {
         // given
         User user = saveUser(createDefaultContentCreator());
@@ -362,7 +363,7 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void getCurrentUser_AsModerator_JSON_Ok() throws Exception {
         // given
         User user = saveUser(createDefaultModerator());
@@ -377,7 +378,7 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void getCurrentUser_AsModerator_XML_Ok() throws Exception {
         // given
         User user = saveUser(createDefaultModerator());
@@ -392,7 +393,7 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void getCurrentUser_AsAdmin_JSON_Ok() throws Exception {
         // given
         User user = saveUser(createDefaultAdmin());
@@ -407,7 +408,7 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void getCurrentUser_AsAdmin_XML_Ok() throws Exception {
         // given
         User user = saveUser(createDefaultAdmin());
@@ -434,7 +435,7 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void getUsers_AsUser_Forbidden() throws Exception {
         // given
         saveUser(createDefaultUser());
@@ -447,7 +448,7 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void getUsers_AsContentCreator_Forbidden() throws Exception {
         // given
         saveUser(createDefaultUser());
@@ -460,7 +461,7 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void getUsers_AsModerator_JSON_Ok() throws Exception {
         // given
         saveUser(createDefaultAdmin());
@@ -475,7 +476,7 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void getUsers_AsModerator_XML_Ok() throws Exception {
         // given
         saveUser(createDefaultAdmin());
@@ -490,7 +491,7 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void getUsers_AsAdmin_JSON_Ok() throws Exception {
         // given
         saveUser(createDefaultAdmin());
@@ -505,7 +506,7 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void getUsers_AsAdmin_XML_Ok() throws Exception {
         // given
         saveUser(createDefaultAdmin());
@@ -520,11 +521,11 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteUser_AsAdmin_JSON_Ok() throws Exception {
         // given
         saveUser(createDefaultAdmin());
-        User user = saveUser(createTestUser("Jan", "Smit", "SMIT", "MyPassword123", "USER"));
+        User user = saveUser(createTestUser("Jan", "Smit", unique("SMIT"), "MyPassword123", "USER"));
 
         // when
         ResultActions mvc = deleteAsJson(user)
@@ -536,7 +537,7 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteUser_AsAdmin_XML_Ok() throws Exception {
         // given
         saveUser(createDefaultAdmin());
@@ -552,10 +553,10 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteUser_AsContentCreator_Forbidden() throws Exception {
         // given
-        User user = saveUser(createTestUser("Jan", "Smit", "SMIT", "MyPassword123", "USER"));
+        User user = saveUser(createTestUser("Jan", "Smit", unique("SMIT"), "MyPassword123", "USER"));
 
         // when
         deleteAsJson(user)
@@ -568,7 +569,7 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
     public void deleteUser_AsModerator_Forbidden() throws Exception {
         // given
-        User user = saveUser(createTestUser("Jan", "Smit", "SMIT", "MyPassword123", "USER"));
+        User user = saveUser(createTestUser("Jan", "Smit", unique("SMIT"), "MyPassword123", "USER"));
 
         // when
         deleteAsJson(user)
@@ -578,10 +579,10 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteUser_AsUser_Forbidden() throws Exception {
         // given
-        User user = saveUser(createTestUser("Jan", "Smit", "SMIT", "MyPassword123", "USER"));
+        User user = saveUser(createTestUser("Jan", "Smit", unique("SMIT"), "MyPassword123", "USER"));
 
         // when
         deleteAsJson(user)
@@ -594,7 +595,7 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     @Test
     public void deleteUser_isUnauthorized() throws Exception {
         // given
-        User user = saveUser(createTestUser("Jan", "Smit", "SMIT", "MyPassword123", "USER"));
+        User user = saveUser(createTestUser("Jan", "Smit", unique("SMIT"), "MyPassword123", "USER"));
 
         // when
         deleteAsJson(user)
@@ -604,11 +605,11 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteNonExistingUser_AsAdmin_AcceptJSON_NotFound() throws Exception {
         // when
         saveUser(createDefaultAdmin());
-        ResultActions mvc = deleteAsJson(createTestUser("Jan", "Smit", "SMIT", "MyPassword123", "USER"))
+        ResultActions mvc = deleteAsJson(createTestUser("Jan", "Smit", unique("SMIT"), "MyPassword123", "USER"))
 
         // then
         .andExpect(status().isNotFound())
@@ -618,11 +619,11 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteNonExistingUser_AsAdmin_AcceptXML_NotFound() throws Exception {
         // when
         saveUser(createDefaultAdmin());
-        ResultActions mvc = deleteAsXml(createTestUser("Jan", "Smit", "SMIT", "MyPassword123", "USER"))
+        ResultActions mvc = deleteAsXml(createTestUser("Jan", "Smit", unique("SMIT"), "MyPassword123", "USER"))
 
         // then
         .andExpect(status().isNotFound())
@@ -632,10 +633,10 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteNonExistingUser_AsContentCreator_Forbidden() throws Exception {
         // when
-        deleteAsJson(createTestUser("Jan", "Smit", "SMIT", "MyPassword123", "USER"))
+        deleteAsJson(createTestUser("Jan", "Smit", unique("SMIT"), "MyPassword123", "USER"))
 
         // then
         .andExpect(status().isForbidden());
@@ -645,17 +646,17 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
     public void deleteNonExistingUser_AsModerator_Forbidden() throws Exception {
         // when
-        deleteAsJson(createTestUser("Jan", "Smit", "SMIT", "MyPassword123", "USER"))
+        deleteAsJson(createTestUser("Jan", "Smit", unique("SMIT"), "MyPassword123", "USER"))
 
         // then
         .andExpect(status().isForbidden());
     }
 
     @Test
-    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteNonExistingUser_AsUser_Forbidden() throws Exception {
         // when
-        deleteAsJson(createTestUser("Jan", "Smit", "SMIT", "MyPassword123", "USER"))
+        deleteAsJson(createTestUser("Jan", "Smit", unique("SMIT"), "MyPassword123", "USER"))
 
         // then
         .andExpect(status().isForbidden());
@@ -664,14 +665,14 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     @Test
     public void deleteNonExistingUser_isUnauthorized() throws Exception {
         // when
-        deleteAsJson(createTestUser("Jan", "Smit", "SMIT", "MyPassword123", "USER"))
+        deleteAsJson(createTestUser("Jan", "Smit", unique("SMIT"), "MyPassword123", "USER"))
 
         // then
         .andExpect(status().isUnauthorized());
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void updateUser_AsAdmin_JSON_Ok() throws Exception {
         // given
         saveUser(createDefaultAdmin());
@@ -689,13 +690,13 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void updateUser_AsAdmin_XML_Ok() throws Exception {
         // given
         saveUser(createDefaultAdmin());
-        User user = saveUser(createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER"));
+        User user = saveUser(createTestUser("Kayne", "West", unique("WEST"), "MyPassword123", "USER"));
 
-        user.setUsername("UPDATED_USERNAME");
+        user.setFirstName(unique("UPDATED_USERNAME"));
 
         // when
         ResultActions mvc = updateAsXml(user)
@@ -707,12 +708,12 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void updateOwnUser_AsUser_isAccepted() throws Exception {
         // given
         User user = saveUser(createDefaultUser());
 
-        user.setUsername("UPDATED_USERNAME");
+        user.setFirstName(unique("UPDATED_USERNAME"));
 
         // when
         updateAsJson(user)
@@ -722,12 +723,12 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void updateOwnUser_AsContentCreator_isAccepted() throws Exception {
         // given
         User user = saveUser(createDefaultContentCreator());
 
-        user.setUsername("UPDATED_USERNAME");
+        user.setFirstName(unique("UPDATED_USERNAME"));
 
         // when
         updateAsJson(user)
@@ -737,12 +738,12 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void updateOwnUser_AsModerator_IsAccepted() throws Exception {
         // given
         User user = saveUser(createDefaultModerator());
 
-        user.setUsername("UPDATED_USERNAME");
+        user.setFirstName(unique("UPDATED_USERNAME"));
 
         // when
         updateAsJson(user)
@@ -754,9 +755,9 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     @Test
     public void updateUser_isUnauthorized() throws Exception {
         // given
-        User user = saveUser(createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER"));
+        User user = saveUser(createTestUser("Kayne", "West", unique("WEST"), "MyPassword123", "USER"));
 
-        user.setUsername("UPDATED_USERNAME");
+        user.setFirstName(unique("UPDATED_USERNAME"));
 
         // when
         updateAsJson(user)
@@ -766,11 +767,11 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void updateNonExistingUser_AsAdmin_AcceptJSON_NotFound() throws Exception {
         // given
         saveUser(createDefaultAdmin());
-        User user = createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER");
+        User user = createTestUser("Kayne", "West", unique("WEST"), "MyPassword123", "USER");
 
         // when
         ResultActions mvc = updateAsJson(user)
@@ -783,11 +784,11 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void updateNonExistingUser_AsAdmin_AcceptXML_NotFound() throws Exception {
         // given
         saveUser(createDefaultAdmin());
-        User user = createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER");
+        User user = createTestUser("Kayne", "West", unique("WEST"), "MyPassword123", "USER");
 
         // when
         ResultActions mvc = updateAsXml(user)
@@ -800,11 +801,11 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void updateNonExistingUser_AsUser_NotFound() throws Exception {
         // given
         saveUser(createDefaultUser());
-        User user = createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER");
+        User user = createTestUser("Kayne", "West", unique("WEST"), "MyPassword123", "USER");
 
         // when
         updateAsJson(user)
@@ -814,11 +815,11 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void updateNonExistingUser_AsContentCreator_isNotFound() throws Exception {
         // given
         saveUser(createUniqueContentCreator());
-        User user = createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER");
+        User user = createTestUser("Kayne", "West", unique("WEST"), "MyPassword123", "USER");
 
         // when
         updateAsJson(user)
@@ -828,11 +829,11 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void updateNonExistingUser_AsModerator_isNotFound() throws Exception {
         // given
         saveUser(createDefaultModerator());
-        User user = createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER");
+        User user = createTestUser("Kayne", "West", unique("WEST"), "MyPassword123", "USER");
 
         // when
         updateAsJson(user)
@@ -844,7 +845,7 @@ public class UserRestControllerIntegrationTest extends OwnedControllerIntegratio
     @Test
     public void updateNonExistingUser_isUnauthorized() throws Exception {
         // given
-        User user = createTestUser("Kayne", "West", "WEST", "MyPassword123", "USER");
+        User user = createTestUser("Kayne", "West", unique("WEST"), "MyPassword123", "USER");
 
         // when
         updateAsJson(user)

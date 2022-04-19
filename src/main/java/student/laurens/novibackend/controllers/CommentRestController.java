@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.Blogpost;
 import student.laurens.novibackend.entities.Comment;
+import student.laurens.novibackend.entities.dto.CommentDto;
+import student.laurens.novibackend.entities.dto.mappers.CommentMapper;
 import student.laurens.novibackend.exceptions.ResourceDuplicateException;
 import student.laurens.novibackend.exceptions.ResourceForbiddenException;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
@@ -21,8 +23,9 @@ import student.laurens.novibackend.services.CommentService;
  */
 @RestController
 @RequestMapping("/blogposts/{blogpostId}/comments")
-public class CommentRestController extends ChildBaseRestController<Comment, Blogpost> {
+public class CommentRestController extends ChildBaseRestController<Comment, Blogpost, CommentDto> {
 
+    private final @Getter CommentMapper mapper = new CommentMapper();
     private final @Getter CommentService service;
 
     public CommentRestController(AppUserDetailsService appUserDetailsService, CommentService service) {
@@ -31,7 +34,7 @@ public class CommentRestController extends ChildBaseRestController<Comment, Blog
     }
 
     @GetMapping("/{commentId}")
-    public ResponseEntity<Resource<Comment>> GET(@PathVariable final Integer blogpostId, @PathVariable final Integer commentId) throws ResourceNotFoundException {
+    public ResponseEntity<Resource<CommentDto>> GET(@PathVariable final Integer blogpostId, @PathVariable final Integer commentId) throws ResourceNotFoundException {
         return get(blogpostId, commentId);
     }
 
@@ -41,12 +44,12 @@ public class CommentRestController extends ChildBaseRestController<Comment, Blog
     }
 
     @PostMapping
-    public ResponseEntity<Resource<Comment>> POST(@PathVariable final Integer blogpostId, @RequestBody final Comment comment) throws ResourceNotFoundException, ResourceForbiddenException, ResourceDuplicateException {
+    public ResponseEntity<Resource<CommentDto>> POST(@PathVariable final Integer blogpostId, @RequestBody final CommentDto comment) throws ResourceNotFoundException, ResourceForbiddenException, ResourceDuplicateException {
         return create(blogpostId, comment);
     }
 
     @PutMapping("/{commentId}")
-    public ResponseEntity<Resource<Comment>> PUT(@PathVariable final Integer blogpostId, @PathVariable final Integer commentId, @RequestBody final Comment comment) throws ResourceNotFoundException, ResourceForbiddenException {
+    public ResponseEntity<Resource<CommentDto>> PUT(@PathVariable final Integer blogpostId, @PathVariable final Integer commentId, @RequestBody final CommentDto comment) throws ResourceNotFoundException, ResourceForbiddenException {
         return update(blogpostId, commentId, comment);
     }
 

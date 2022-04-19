@@ -2,6 +2,7 @@ package student.laurens.novibackend.services;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,6 +23,7 @@ import javax.transaction.Transactional;
 @Service
 @Component
 @Transactional
+@Qualifier("AppUserDetailsService")
 public class AppUserDetailsService extends ResourceBaseService<User> implements UserDetailsService {
 
     @Autowired

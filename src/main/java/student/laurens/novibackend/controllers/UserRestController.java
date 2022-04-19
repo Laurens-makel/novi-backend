@@ -10,6 +10,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.AppUserDetails;
 import student.laurens.novibackend.entities.User;
+import student.laurens.novibackend.entities.dto.UserDto;
+import student.laurens.novibackend.entities.dto.mappers.CommentMapper;
+import student.laurens.novibackend.entities.dto.mappers.UserMapper;
 import student.laurens.novibackend.exceptions.ResourceDuplicateException;
 import student.laurens.novibackend.exceptions.UserNotFoundException;
 import student.laurens.novibackend.services.AppUserDetailsService;
@@ -44,8 +47,8 @@ import java.security.Principal;
  * @version 1.0, March 2022
  */
 @RestController
-public class UserRestController extends ResourceBaseRestController<User>{
-
+public class UserRestController extends ResourceBaseRestController<User, UserDto>{
+    private final @Getter UserMapper mapper = new UserMapper();
     private final @Getter AppUserDetailsService service;
 
     public UserRestController(final AppUserDetailsService appUserDetailsService) {
@@ -70,17 +73,17 @@ public class UserRestController extends ResourceBaseRestController<User>{
     }
 
     @GetMapping("/users/{uid}")
-    public ResponseEntity<Resource<User>> GET(@PathVariable final Integer uid) {
+    public ResponseEntity<Resource<UserDto>> GET(@PathVariable final Integer uid) {
         return get(uid);
     }
 
     @PostMapping("/users")
-    public ResponseEntity<Resource<User>> POST(@RequestBody final User user) throws ResourceDuplicateException {
+    public ResponseEntity<Resource<UserDto>> POST(@RequestBody final UserDto user) throws ResourceDuplicateException {
         return create(user);
     }
 
     @PutMapping("/users/{uid}")
-    public ResponseEntity<Resource<User>> PUT(@PathVariable final Integer uid, @RequestBody final User user) throws UserNotFoundException {
+    public ResponseEntity<Resource<UserDto>> PUT(@PathVariable final Integer uid, @RequestBody final UserDto user) throws UserNotFoundException {
         return update(uid, user);
     }
 

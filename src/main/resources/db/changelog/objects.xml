@@ -151,5 +151,33 @@
                                   referencedTableName="BLOGPOSTS" referencedColumnNames="BLOGPOST_ID" />
     </changeSet>
 
+    <changeSet  id="Create AUTHORITIES table"  author="Laurens Mäkel">
+        <createTable  tableName="AUTHORITIES">
+            <column  name="AUTHORITY_ID"  type="int"  autoIncrement="true">
+                <constraints  primaryKey="true"  nullable="false"/>
+            </column>
+            <column  name="AUTHORITY_NAME"   type="varchar(255)">
+                <constraints  nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet  id="Create ROLE_AUTHORITIES table"  author="Laurens Mäkel">
+        <createTable  tableName="ROLE_AUTHORITIES">
+            <column  name="ROLE_AUTH_ID"  type="int"  autoIncrement="true">
+                <constraints  primaryKey="true"  nullable="false"/>
+            </column>
+            <column  name="AUTHORITY_ID" type="int"/>
+            <column  name="ROLE_ID"      type="int"/>
+        </createTable>
+
+        <addForeignKeyConstraint  constraintName="Fk_ROLE_AUTHORITIES_AUTHORITY_ID"
+                                  baseTableName="ROLE_AUTHORITIES" baseColumnNames="AUTHORITY_ID"
+                                  referencedTableName="AUTHORITIES" referencedColumnNames="AUTHORITY_ID" />
+
+        <addForeignKeyConstraint  constraintName="Fk_ROLE_AUTHORITIES_ROLE_ID"
+                                  baseTableName="ROLE_AUTHORITIES" baseColumnNames="ROLE_ID"
+                                  referencedTableName="ROLES" referencedColumnNames="ROLE_ID" />
+    </changeSet>
 
 </databaseChangeLog>

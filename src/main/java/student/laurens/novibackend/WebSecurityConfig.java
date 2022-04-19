@@ -50,21 +50,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers(HttpMethod.POST,"/blogposts").hasAnyRole("ADMIN", "CONTENT_CREATOR")
-                .antMatchers(HttpMethod.PUT,"/blogposts/{blogpostId}").hasAnyRole("ADMIN", "CONTENT_CREATOR")
-                .antMatchers(HttpMethod.DELETE,"/blogposts/{blogpostId}").hasAnyRole("ADMIN", "CONTENT_CREATOR")
+                .antMatchers(HttpMethod.POST,"/blogposts").hasAuthority("BLOGPOSTS_WRITE")
+                .antMatchers(HttpMethod.PUT,"/blogposts/{blogpostId}").hasAnyAuthority("BLOGPOSTS_UPDATE_OWNED","BLOGPOSTS_UPDATE_NOT_OWNED")
+                .antMatchers(HttpMethod.DELETE,"/blogposts/{blogpostId}").hasAnyAuthority("BLOGPOSTS_DELETE_OWNED","BLOGPOSTS_DELETE_NOT_OWNED")
 
-                .antMatchers(HttpMethod.GET,"/users").hasAnyRole("ADMIN", "MODERATOR")
-                .antMatchers(HttpMethod.POST,"/users").hasRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/users/{uid}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET,"/users").hasAuthority("USERS_READ_ALL")
+                .antMatchers(HttpMethod.POST,"/users").hasAuthority("USERS_WRITE")
+                .antMatchers(HttpMethod.DELETE, "/users/{uid}").hasAnyAuthority("USERS_DELETE_OWNED","USERS_DELETE_NOT_OWNED")
 
-                .antMatchers(HttpMethod.POST, "/roles").hasRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/roles/{roleId}").hasRole("ADMIN")
-                .antMatchers(HttpMethod.PUT, "/roles/{roleId}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/roles").hasAuthority("ROLES_WRITE")
+                .antMatchers(HttpMethod.DELETE, "/roles/{roleId}").hasAuthority("ROLES_DELETE")
+                .antMatchers(HttpMethod.PUT, "/roles/{roleId}").hasAuthority("ROLES_UPDATE")
 
-                .antMatchers(HttpMethod.POST, "/tags").hasAnyRole("ADMIN", "CONTENT_CREATOR")
-                .antMatchers(HttpMethod.DELETE, "/tags/{roleId}").hasAnyRole("ADMIN", "CONTENT_CREATOR")
-                .antMatchers(HttpMethod.PUT, "/tags/{roleId}").hasAnyRole("ADMIN", "CONTENT_CREATOR")
+                .antMatchers(HttpMethod.POST, "/tags").hasAuthority("TAGS_WRITE")
+                .antMatchers(HttpMethod.DELETE, "/tags/{roleId}").hasAuthority("TAGS_DELETE")
+                .antMatchers(HttpMethod.PUT, "/tags/{roleId}").hasAuthority("TAGS_UPDATE")
                 .anyRequest().authenticated()
                 .and().httpBasic()
                 .and()

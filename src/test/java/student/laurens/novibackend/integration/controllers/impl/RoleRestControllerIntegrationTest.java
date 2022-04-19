@@ -1,10 +1,15 @@
 package student.laurens.novibackend.integration.controllers.impl;
 
+import lombok.Getter;
 import org.junit.After;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
+import student.laurens.novibackend.entities.dto.RoleDto;
+import student.laurens.novibackend.entities.dto.mappers.CommentMapper;
+import student.laurens.novibackend.entities.dto.mappers.RoleMapper;
 import student.laurens.novibackend.integration.controllers.ControllerIntegrationTestBase;
 import student.laurens.novibackend.controllers.RoleRestController;
 import student.laurens.novibackend.entities.Role;
@@ -18,7 +23,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Laurens Mäkel
  * @version 1.0, March 2022
  */
-public class RoleRestControllerIntegrationTest extends ControllerIntegrationTestBase<Role> {
+public class RoleRestControllerIntegrationTest extends ControllerIntegrationTestBase<Role, RoleDto> {
+    private final @Getter RoleMapper mapper = new RoleMapper();
 
     @Override
     protected String getUrlForGet() {
@@ -178,7 +184,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void getRoles_AsUser_JSON_Ok() throws Exception {
         // when
         ResultActions mvc = getAsJson()
@@ -190,7 +196,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void getRoles_AsUser_XML_Ok() throws Exception {
         // when
         ResultActions mvc = getAsXml()
@@ -202,7 +208,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void getRoles_AsAdmin_JSON_Ok() throws Exception {
         // when
         ResultActions mvc = getAsJson()
@@ -214,7 +220,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void getRoles_AsAdmin_XML_Ok() throws Exception {
         // when
         ResultActions mvc = getAsXml()
@@ -226,7 +232,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void getRoles_AsContentCreator_JSON_Ok() throws Exception {
         // when
         ResultActions mvc = getAsJson()
@@ -238,7 +244,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void getRoles_AsContentCreator_XML_Ok() throws Exception {
         // when
         ResultActions mvc = getAsXml()
@@ -250,7 +256,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void getRoles_AsModerator_JSON_Ok() throws Exception {
         // when
         ResultActions mvc = getAsJson()
@@ -262,7 +268,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void getRoles_AsModerator_XML_Ok() throws Exception {
         // when
         ResultActions mvc = getAsXml()
@@ -283,7 +289,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void postRoles_AsUser_Forbidden() throws Exception {
         // when
         postAsJson(createRole("TEST"))
@@ -293,7 +299,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void postRoles_AsContentCreator_Forbidden() throws Exception {
         // when
         postAsJson(createRole("TEST"))
@@ -303,7 +309,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void postRoles_AsModerator_Forbidden() throws Exception {
         // when
         postAsJson(createRole("TEST"))
@@ -313,7 +319,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void postRoles_AsAdmin_JSON_Ok() throws Exception {
         // when
         ResultActions mvc = postAsJson(createRole("TEST"))
@@ -325,7 +331,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void postRoles_AsAdmin_XML_Ok() throws Exception {
         // when
         ResultActions mvc = postAsXml(createRole("TEST2"))
@@ -337,7 +343,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteRoles_AsAdmin_JSON_Ok() throws Exception {
         saveUser(createDefaultAdmin());
 
@@ -354,7 +360,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteRoles_AsAdmin_XML_Ok() throws Exception {
         saveUser(createDefaultAdmin());
 
@@ -371,7 +377,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteRoles_AsUser_Forbidden() throws Exception {
         // given
         Role role = saveRole(createRole("TEST_ROLE"));
@@ -384,7 +390,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteRoles_AsContentCreator_Forbidden() throws Exception {
         // given
         Role role = saveRole(createRole("TEST_ROLE"));
@@ -397,7 +403,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteRoles_AsModerator_Forbidden() throws Exception {
         // given
         Role role = saveRole(createRole("TEST_ROLE"));
@@ -422,7 +428,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteNonExistingRole_AsAdmin_AcceptJSON_NotFound() throws Exception {
         // given
         Role role = createRole("TEST_ROLE");
@@ -438,7 +444,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteNonExistingRole_AsAdmin_AcceptXML_NotFound() throws Exception {
         // given
         Role role = createRole("TEST_ROLE");
@@ -455,7 +461,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
 
 
     @Test
-    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteNonExistingRole_AsUser_Forbidden() throws Exception {
         // given
         Role role = createRole("TEST_ROLE");
@@ -468,7 +474,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteNonExistingRole_AsContentCreator_Forbidden() throws Exception {
         // given
         Role role = createRole("TEST_ROLE");
@@ -481,7 +487,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteNonExistingRole_AsModerator_Forbidden() throws Exception {
         // given
         Role role = createRole("TEST_ROLE");
@@ -506,7 +512,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void updateRoles_AsAdmin_JSON_Ok() throws Exception {
         saveUser(createDefaultAdmin());
         // given
@@ -524,7 +530,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void updateRoles_AsAdmin_XML_Ok() throws Exception {
         saveUser(createDefaultAdmin());
 
@@ -543,7 +549,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void updateRoles_AsUser_Forbidden() throws Exception {
         // given
         Role role = saveRole(createRole("TEST_ROLE"));
@@ -558,7 +564,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void updateRoles_AsContentCreator_Forbidden() throws Exception {
         // given
         Role role = saveRole(createRole("TEST_ROLE"));
@@ -573,7 +579,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void updateRoles_AsModerator_Forbidden() throws Exception {
         // given
         Role role = saveRole(createRole("TEST_ROLE"));
@@ -603,7 +609,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void updateNonExistingRole_AsAdmin_AcceptJson_NotFound() throws Exception {
         // given
         Role role = createRole("TEST_ROLE");
@@ -619,7 +625,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void updateNonExistingRole_AsAdmin_AcceptXML_NotFound() throws Exception {
         // given
         saveUser(createDefaultAdmin());
@@ -636,7 +642,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void updateNonExistingRole_AsUser_Forbidden() throws Exception {
         // given
         Role role = createRole("TEST_ROLE");
@@ -649,7 +655,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void updateNonExistingRole_AsContentCreator_Forbidden() throws Exception {
         // given
         Role role = createRole("TEST_ROLE");
@@ -662,7 +668,7 @@ public class RoleRestControllerIntegrationTest extends ControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void updateNonExistingRole_AsModerator_Forbidden() throws Exception {
         // given
         Role role = createRole("TEST_ROLE");

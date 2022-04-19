@@ -3,8 +3,10 @@ package student.laurens.novibackend.integration.controllers;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import student.laurens.novibackend.entities.AbstractOwnedEntity;
 import student.laurens.novibackend.entities.User;
+import student.laurens.novibackend.entities.dto.ResourceDto;
 
 /**
  * Base class to provide default methods for testing RestControllers which expose HTTP method for resources which are owned.
@@ -12,7 +14,7 @@ import student.laurens.novibackend.entities.User;
  * @author Laurens Mäkel
  * @version 1.0, March 2022
  */
-public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwnedEntity> extends ControllerIntegrationTestBase<R> {
+public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwnedEntity, D extends ResourceDto> extends ControllerIntegrationTestBase<R,D> {
 
     /**
      * Implement this method by a resource specific implementation to create sample owned instances of the resource.
@@ -119,7 +121,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void getXmlAsUserResourceNotOwned() throws Exception {
         User user = saveUser(createDefaultUser());
 
@@ -130,7 +132,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void getJsonAsUserResourceNotOwned() throws Exception {
         User user = saveUser(createDefaultUser());
 
@@ -141,7 +143,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void getXmlAsUserResourceOwned() throws Exception {
         User user = saveUser(createDefaultUser());
 
@@ -152,7 +154,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void getJsonAsUserResourceOwned() throws Exception {
         User user = saveUser(createDefaultUser());
 
@@ -163,7 +165,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void getXmlAsContentCreatorResourceNotOwned() throws Exception {
         User user = saveUser(createDefaultContentCreator());
 
@@ -174,7 +176,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void getJsonAsContentCreatorResourceNotOwned() throws Exception {
         User user = saveUser(createDefaultContentCreator());
 
@@ -185,7 +187,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void getXmlAsContentCreatorResourceOwned() throws Exception {
         User user = saveUser(createDefaultContentCreator());
 
@@ -196,7 +198,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void getJsonAsContentCreatorResourceOwned() throws Exception {
         User user = saveUser(createDefaultContentCreator());
 
@@ -207,7 +209,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void getXmlAsModeratorResourceNotOwned() throws Exception {
         User user = saveUser(createDefaultModerator());
 
@@ -218,7 +220,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void getJsonAsModeratorResourceNotOwned() throws Exception {
         User user = saveUser(createDefaultModerator());
 
@@ -229,7 +231,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void getXmlAsModeratorResourceOwned() throws Exception {
         User user = saveUser(createDefaultModerator());
 
@@ -240,7 +242,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void getJsonAsModeratorResourceOwned() throws Exception {
         User user = saveUser(createDefaultModerator());
 
@@ -251,7 +253,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void getXmlAsAdminResourceNotOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -262,7 +264,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void getJsonAsAdminResourceNotOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -273,7 +275,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void getXmlAsAdminResourceOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -284,7 +286,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void getJsonAsAdminResourceOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -295,7 +297,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void putJsonAsAdminResourceOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -306,7 +308,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void putXmlAsAdminResourceOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -318,7 +320,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
 
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void putJsonAsAdminResourceNotOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -329,7 +331,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void putXmlAsAdminResourceNotOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -340,20 +342,20 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteJsonAsAdminResourceOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsAdminResourceOwned();
-        TestResults<R> results = defaultJsonTestForDelete(true, user);
+        TestResults<R> results = defaultJsonTestForDelete(true, saveUser(createUniqueContentCreator()));
 
         validateJsonResponse(results.getMvc(), expectedStatus);
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteXmlAsAdminResourceOwned() throws Exception {
-        User user = saveUser(createDefaultAdmin());
+        User user = saveUser(createUniqueContentCreator());
 
         HttpStatus expectedStatus = expectedStatusForDeleteAsAdminResourceOwned();
         TestResults<R> results = defaultXmlTestForDelete(true, user);
@@ -362,7 +364,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteJsonAsAdminResourceNotOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -373,7 +375,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteXmlAsAdminResourceNotOwned() throws Exception {
         User user = saveUser(createDefaultAdmin());
 
@@ -384,7 +386,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void putJsonAsContentCreatorResourceOwned() throws Exception {
         User user = saveUser(createDefaultContentCreator());
 
@@ -395,7 +397,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void putXmlAsContentCreatorResourceOwned() throws Exception {
         User user = saveUser(createDefaultContentCreator());
 
@@ -407,7 +409,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
 
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void putJsonAsContentCreatorResourceNotOwned() throws Exception {
         User user = saveUser(createDefaultContentCreator());
 
@@ -418,7 +420,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void putXmlAsContentCreatorResourceNotOwned() throws Exception {
         User user = saveUser(createDefaultContentCreator());
 
@@ -429,7 +431,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteJsonAsContentCreatorResourceOwned() throws Exception {
         User user = saveUser(createDefaultContentCreator());
 
@@ -440,7 +442,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteXmlAsContentCreatorResourceOwned() throws Exception {
         User user = saveUser(createDefaultContentCreator());
 
@@ -451,7 +453,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteJsonAsContentCreatorResourceNotOwned() throws Exception {
         User user = saveUser(createDefaultContentCreator());
 
@@ -462,7 +464,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteXmlAsContentCreatorResourceNotOwned() throws Exception {
         User user = saveUser(createDefaultContentCreator());
 
@@ -473,7 +475,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void putJsonAsModeratorResourceOwned() throws Exception {
         User user = saveUser(createDefaultModerator());
 
@@ -484,7 +486,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void putXmlAsModeratorResourceOwned() throws Exception {
         User user = saveUser(createDefaultModerator());
 
@@ -496,7 +498,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
 
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void putJsonAsModeratorResourceNotOwned() throws Exception {
         User user = saveUser(createDefaultModerator());
 
@@ -507,7 +509,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void putXmlAsModeratorResourceNotOwned() throws Exception {
         User user = saveUser(createDefaultModerator());
 
@@ -518,7 +520,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteJsonAsModeratorResourceOwned() throws Exception {
         User user = saveUser(createDefaultModerator());
 
@@ -529,7 +531,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteXmlAsModeratorResourceOwned() throws Exception {
         User user = saveUser(createDefaultModerator());
 
@@ -541,7 +543,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
 
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteJsonAsModeratorResourceNotOwned() throws Exception {
         User user = saveUser(createDefaultModerator());
 
@@ -552,7 +554,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteXmlAsModeratorResourceNotOwned() throws Exception {
         User user = saveUser(createDefaultModerator());
 
@@ -563,7 +565,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void putJsonAsUserResourceOwned() throws Exception {
         User user = saveUser(createDefaultUser());
 
@@ -574,7 +576,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void putXmlAsUserResourceOwned() throws Exception {
         User user = saveUser(createDefaultUser());
 
@@ -586,7 +588,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
 
 
     @Test
-    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void putJsonAsUserResourceNotOwned() throws Exception {
         User user = saveUser(createDefaultUser());
 
@@ -597,7 +599,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void putXmlAsUserResourceNotOwned() throws Exception {
         User user = saveUser(createDefaultUser());
 
@@ -608,7 +610,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteJsonAsUserResourceOwned() throws Exception {
         User user = saveUser(createDefaultUser());
 
@@ -619,7 +621,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteXmlAsUserResourceOwned() throws Exception {
         User user = saveUser(createDefaultUser());
 
@@ -631,7 +633,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
 
 
     @Test
-    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteJsonAsUserResourceNotOwned() throws Exception {
         User user = saveUser(createDefaultUser());
 
@@ -642,7 +644,7 @@ public abstract class OwnedControllerIntegrationTestBase<R extends AbstractOwned
     }
 
     @Test
-    @WithMockUser(value = USER, roles = {USER_ROLE} )
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteXmlAsUserResourceNotOwned() throws Exception {
         User user = saveUser(createDefaultUser());
 

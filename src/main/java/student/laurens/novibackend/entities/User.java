@@ -1,6 +1,5 @@
 package student.laurens.novibackend.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -43,24 +42,35 @@ public class User extends AbstractOwnedEntity {
     private @Getter @Setter String lastName;
 
     @Column(name = "PASSWORD", nullable = false, length = 60)
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private @Getter String password;
 
-    @JsonProperty
     public void setPassword(String password){
         this.password = new BCryptPasswordEncoder().encode(password);
     }
 
-    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinTable(
             name = "USER_ROLES",
             joinColumns = @JoinColumn(name = "UID"),
             inverseJoinColumns = @JoinColumn(name = "ROLE_ID")
     )
-    private @Getter Set<Role> roles = new HashSet<>();
+    private @Getter @Setter Set<Role> roles = new HashSet<>();
 
     public boolean hasRole(String name){
-        return getRoles().stream().peek((role -> log.info("User has role ["+role.getName()+"]"))).anyMatch( (role -> role.getName().equalsIgnoreCase(name)));
+        return getRoles()
+                .stream()
+                .peek((role -> log.info("User has role ["+role.getName()+"]")))
+                .anyMatch( (role -> role.getName().equalsIgnoreCase(name)));
+    }
+    public boolean hasAuthority(String name){
+        return getRoles()
+                .stream()
+                .peek((role -> log.info("User has role ["+role.getName()+"]")))
+                .anyMatch( (role ->
+                        role.getAuthorities()
+                                .stream()
+                                .anyMatch(authority -> authority.getName().equals(name))));
     }
 
     @Override
