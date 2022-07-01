@@ -1,15 +1,19 @@
 package student.laurens.novibackend.integration.controllers.impl;
 
+import lombok.Getter;
 import org.junit.After;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import student.laurens.novibackend.entities.dto.RoleDto;
+import student.laurens.novibackend.entities.dto.mappers.RoleMapper;
 import student.laurens.novibackend.integration.controllers.ControllerIntegrationTestBase;
 import student.laurens.novibackend.entities.Role;
 import student.laurens.novibackend.repositories.RoleRepository;
 
 import java.util.Date;
 
-public class V2RoleRestControllerIntegrationTest extends ControllerIntegrationTestBase<Role> {
+public class V2RoleRestControllerIntegrationTest extends ControllerIntegrationTestBase<Role, RoleDto> {
+    private final @Getter RoleMapper mapper = new RoleMapper();
 
     @Override
     protected String getUrlForGet() {

@@ -6,14 +6,28 @@
 
     <changeSet  id="Fill USERS table"  author="Laurens Mäkel" context="DEV">
         <insert tableName="USERS">
-            <column name="USERNAME">ADMIN</column>
+            <column name="USERNAME">DefaultAdmin</column>
             <column name="PASSWORD">$2a$10$NxRWDQv3S9gP712lmscWzeewhROdokezkgjfgf8bt59XRRyuFrZsq</column>
             <column name="FIRSTNAME">John</column>
             <column name="LASTNAME">Doe</column>
         </insert>
 
         <insert tableName="USERS">
-            <column name="USERNAME">USER</column>
+            <column name="USERNAME">DefaultUser</column>
+            <column name="PASSWORD">$2a$10$NxRWDQv3S9gP712lmscWzeewhROdokezkgjfgf8bt59XRRyuFrZsq</column>
+            <column name="FIRSTNAME">Peter</column>
+            <column name="LASTNAME">Griffin</column>
+        </insert>
+
+        <insert tableName="USERS">
+            <column name="USERNAME">DefaultContentCreator</column>
+            <column name="PASSWORD">$2a$10$NxRWDQv3S9gP712lmscWzeewhROdokezkgjfgf8bt59XRRyuFrZsq</column>
+            <column name="FIRSTNAME">Peter</column>
+            <column name="LASTNAME">Griffin</column>
+        </insert>
+
+        <insert tableName="USERS">
+            <column name="USERNAME">DefaultModerator</column>
             <column name="PASSWORD">$2a$10$NxRWDQv3S9gP712lmscWzeewhROdokezkgjfgf8bt59XRRyuFrZsq</column>
             <column name="FIRSTNAME">Peter</column>
             <column name="LASTNAME">Griffin</column>
@@ -29,6 +43,16 @@
         <insert tableName="USER_ROLES">
             <column name="UID">2</column>
             <column name="ROLE_ID">2</column>
+        </insert>
+
+        <insert tableName="USER_ROLES">
+            <column name="UID">3</column>
+            <column name="ROLE_ID">3</column>
+        </insert>
+
+        <insert tableName="USER_ROLES">
+            <column name="UID">4</column>
+            <column name="ROLE_ID">4</column>
         </insert>
     </changeSet>
 

@@ -6,6 +6,9 @@ import org.springframework.hateoas.Resources;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.Role;
+import student.laurens.novibackend.entities.dto.RoleDto;
+import student.laurens.novibackend.entities.dto.mappers.CommentMapper;
+import student.laurens.novibackend.entities.dto.mappers.RoleMapper;
 import student.laurens.novibackend.exceptions.ResourceDuplicateException;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.services.AppUserDetailsService;
@@ -33,8 +36,9 @@ import student.laurens.novibackend.services.RoleService;
  */
 @RestController
 @RequestMapping("/roles")
-public class RoleRestController extends ResourceBaseRestController<Role> {
+public class RoleRestController extends ResourceBaseRestController<Role, RoleDto> {
 
+    private final @Getter RoleMapper mapper = new RoleMapper();
     private final @Getter RoleService service;
 
     public RoleRestController(AppUserDetailsService appUserDetailsService, RoleService service) {
@@ -48,17 +52,17 @@ public class RoleRestController extends ResourceBaseRestController<Role> {
     }
 
     @GetMapping("/{roleId}")
-    public ResponseEntity<Resource<Role>> GET(@PathVariable final Integer roleId) {
+    public ResponseEntity<Resource<RoleDto>> GET(@PathVariable final Integer roleId) {
         return get(roleId);
     }
 
     @PostMapping
-    public ResponseEntity<Resource<Role>> POST(@RequestBody final Role role) throws ResourceDuplicateException {
+    public ResponseEntity<Resource<RoleDto>> POST(@RequestBody final RoleDto role) throws ResourceDuplicateException {
         return create(role);
     }
 
     @PutMapping("/{roleId}")
-    public ResponseEntity<Resource<Role>> PUT(@PathVariable final Integer roleId, @RequestBody final Role role) throws ResourceNotFoundException{
+    public ResponseEntity<Resource<RoleDto>> PUT(@PathVariable final Integer roleId, @RequestBody final RoleDto role) throws ResourceNotFoundException{
         return update(roleId, role);
     }
 

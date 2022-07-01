@@ -6,6 +6,8 @@ import org.springframework.hateoas.Resources;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import student.laurens.novibackend.entities.Blogpost;
+import student.laurens.novibackend.entities.dto.BlogpostDto;
+import student.laurens.novibackend.entities.dto.mappers.BlogpostMapper;
 import student.laurens.novibackend.exceptions.ResourceDuplicateException;
 import student.laurens.novibackend.exceptions.ResourceForbiddenException;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
@@ -31,8 +33,9 @@ import student.laurens.novibackend.services.BlogpostService;
  */
 @RestController
 @RequestMapping("/blogposts")
-public class BlogpostRestController extends ResourceBaseRestController<Blogpost> {
+public class BlogpostRestController extends ResourceBaseRestController<Blogpost, BlogpostDto> {
 
+    private final @Getter BlogpostMapper mapper = new BlogpostMapper();
     private final @Getter BlogpostService service;
 
     public BlogpostRestController(final AppUserDetailsService appUserDetailsService, final BlogpostService service) {
@@ -41,7 +44,7 @@ public class BlogpostRestController extends ResourceBaseRestController<Blogpost>
     }
 
     @GetMapping("/{blogpostId}")
-    public ResponseEntity<Resource<Blogpost>> GET(@PathVariable final Integer blogpostId) throws ResourceNotFoundException {
+    public ResponseEntity<Resource<BlogpostDto>> GET(@PathVariable final Integer blogpostId) throws ResourceNotFoundException {
         return get(blogpostId);
     }
 
@@ -51,12 +54,12 @@ public class BlogpostRestController extends ResourceBaseRestController<Blogpost>
     }
 
     @PostMapping
-    public ResponseEntity<Resource<Blogpost>> POST(@RequestBody final Blogpost blogpost) throws ResourceDuplicateException {
+    public ResponseEntity<Resource<BlogpostDto>> POST(@RequestBody final BlogpostDto blogpost) throws ResourceDuplicateException {
         return create(blogpost);
     }
 
     @PutMapping("/{blogpostId}")
-    public ResponseEntity<Resource<Blogpost>> PUT(@PathVariable final Integer blogpostId, @RequestBody final Blogpost blogpost) throws ResourceNotFoundException, ResourceForbiddenException {
+    public ResponseEntity<Resource<BlogpostDto>> PUT(@PathVariable final Integer blogpostId, @RequestBody final BlogpostDto blogpost) throws ResourceNotFoundException, ResourceForbiddenException {
         return update(blogpostId, blogpost);
     }
 

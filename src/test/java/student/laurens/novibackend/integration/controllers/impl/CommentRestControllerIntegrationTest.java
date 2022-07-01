@@ -1,7 +1,10 @@
 package student.laurens.novibackend.integration.controllers.impl;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import student.laurens.novibackend.entities.dto.CommentDto;
+import student.laurens.novibackend.entities.dto.mappers.CommentMapper;
 import student.laurens.novibackend.integration.controllers.ChildControllerIntegrationTestBase;
 import student.laurens.novibackend.entities.Blogpost;
 import student.laurens.novibackend.entities.Comment;
@@ -9,7 +12,8 @@ import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.repositories.CommentRepository;
 import student.laurens.novibackend.repositories.ResourceRepository;
 
-public class CommentRestControllerIntegrationTest extends ChildControllerIntegrationTestBase<Comment, Blogpost> {
+public class CommentRestControllerIntegrationTest extends ChildControllerIntegrationTestBase<Comment, Blogpost, CommentDto> {
+    private final @Getter CommentMapper mapper = new CommentMapper();
 
     @Autowired
     private CommentRepository repository;

@@ -6,6 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.ResultActions;
@@ -13,10 +14,8 @@ import student.laurens.novibackend.NoviBackendApplication;
 import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.entities.Role;
 import student.laurens.novibackend.entities.User;
+import student.laurens.novibackend.entities.dto.ResourceDto;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -29,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = NoviBackendApplication.class)
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-integration-test.properties")
-public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> extends IntegrationTestBase<R> {
+public abstract class ControllerIntegrationTestBase<R extends AbstractEntity, D extends ResourceDto> extends IntegrationTestBase<R,D> {
 
     /**
      * Implement this method and provide a value for this specific test case.
@@ -161,7 +160,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = USER)
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void getJsonAsUser() throws Exception {
         saveUser(createDefaultUser());
 
@@ -180,7 +179,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = USER)
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void getXmlAsUser() throws Exception {
         saveUser(createDefaultUser());
 
@@ -200,7 +199,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void getJsonAsContentCreator() throws Exception {
         saveUser(createDefaultContentCreator());
 
@@ -219,7 +218,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void getXmlAsContentCreator() throws Exception {
         saveUser(createDefaultContentCreator());
 
@@ -239,7 +238,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void getJsonAsModerator() throws Exception {
         saveUser(createDefaultModerator());
 
@@ -258,7 +257,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void getXmlAsModerator() throws Exception {
         saveUser(createDefaultModerator());
 
@@ -278,7 +277,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails( value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void getJsonAsAdmin() throws Exception {
         saveUser(createDefaultAdmin());
 
@@ -297,7 +296,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void getXmlAsAdmin() throws Exception {
         saveUser(createDefaultAdmin());
 
@@ -317,7 +316,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = USER)
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void postJsonAsUser() throws Exception {
         saveUser(createDefaultUser());
 
@@ -337,7 +336,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = USER)
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void postXmlAsUser() throws Exception {
         saveUser(createDefaultUser());
 
@@ -358,7 +357,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
 
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void postXmlAsContentCreator() throws Exception {
         saveUser(createDefaultContentCreator());
 
@@ -378,7 +377,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void postJsonAsContentCreator() throws Exception {
         saveUser(createDefaultContentCreator());
 
@@ -398,7 +397,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void postXmlAsModerator() throws Exception {
         saveUser(createDefaultModerator());
 
@@ -418,7 +417,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void postJsonAsModerator() throws Exception {
         saveUser(createDefaultModerator());
 
@@ -438,7 +437,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void postJsonAsAdmin() throws Exception {
         saveUser(createDefaultAdmin());
 
@@ -458,7 +457,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void postXmlAsAdmin() throws Exception {
         saveUser(createDefaultAdmin());
 
@@ -478,7 +477,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = USER)
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void putJsonAsUser() throws Exception {
         saveUser(createDefaultUser());
 
@@ -497,7 +496,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = USER)
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void putXmlAsUser() throws Exception {
         saveUser(createDefaultUser());
 
@@ -516,7 +515,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void putJsonAsContentCreator() throws Exception {
         saveUser(createDefaultContentCreator());
 
@@ -535,7 +534,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void putXmlAsContentCreator() throws Exception {
         saveUser(createDefaultContentCreator());
 
@@ -554,7 +553,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void putJsonAsModerator() throws Exception {
         saveUser(createDefaultModerator());
 
@@ -573,7 +572,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void putXmlAsModerator() throws Exception {
         saveUser(createDefaultModerator());
 
@@ -592,7 +591,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void putJsonAsAdmin() throws Exception {
         saveUser(createDefaultAdmin());
 
@@ -611,7 +610,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void putXmlAsAdmin() throws Exception {
         saveUser(createDefaultAdmin());
 
@@ -630,7 +629,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = USER)
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteJsonAsUser() throws Exception {
         saveUser(createDefaultUser());
 
@@ -645,7 +644,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = USER)
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteXmlAsUser() throws Exception {
         saveUser(createDefaultUser());
 
@@ -660,7 +659,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = USER)
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteNonExistingResourceJsonAsUser() throws Exception {
         saveUser(createDefaultUser());
 
@@ -675,7 +674,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = USER)
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteNonExistingResourceXmlAsUser() throws Exception {
         saveUser(createDefaultUser());
 
@@ -690,7 +689,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteJsonAsContentCreator() throws Exception {
         saveUser(createDefaultContentCreator());
 
@@ -705,7 +704,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteXmlAsContentCreator() throws Exception {
         saveUser(createDefaultContentCreator());
 
@@ -720,7 +719,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteNonExistingResourceJsonAsContentCreator() throws Exception {
         saveUser(createDefaultContentCreator());
 
@@ -735,7 +734,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = CONTENT_CREATOR, roles = {CONTENT_CREATOR_ROLE} )
+    @WithUserDetails(value = CONTENT_CREATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteNonExistingResourceXmlAsContentCreator() throws Exception {
         saveUser(createDefaultContentCreator());
 
@@ -750,7 +749,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteJsonAsModerator() throws Exception {
         saveUser(createDefaultModerator());
 
@@ -765,7 +764,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteXmlAsModerator() throws Exception {
         saveUser(createDefaultModerator());
 
@@ -780,7 +779,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteNonExistingResourceJsonAsModerator() throws Exception {
         saveUser(createDefaultModerator());
 
@@ -795,7 +794,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = MODERATOR, roles = {MODERATOR_ROLE} )
+    @WithUserDetails(value = MODERATOR, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteNonExistingResourceXmlAsModerator() throws Exception {
         saveUser(createDefaultModerator());
 
@@ -810,7 +809,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteJsonAsAdmin() throws Exception {
         saveUser(createDefaultAdmin());
 
@@ -825,7 +824,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteXmlAsAdmin() throws Exception {
         saveUser(createDefaultAdmin());
 
@@ -840,7 +839,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteNonExistingResourceJsonAsAdmin() throws Exception {
         saveUser(createDefaultAdmin());
 
@@ -855,7 +854,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity> ex
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = {ADMIN_ROLE} )
+    @WithUserDetails(value = ADMIN, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteNonExistingResourceXmlAsAdmin() throws Exception {
         saveUser(createDefaultAdmin());
 

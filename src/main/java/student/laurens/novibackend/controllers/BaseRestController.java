@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.entities.User;
+import student.laurens.novibackend.entities.dto.ResourceDto;
+import student.laurens.novibackend.entities.dto.mappers.ResourceMapper;
 import student.laurens.novibackend.exceptions.UserNotFoundException;
 import student.laurens.novibackend.services.AppUserDetailsService;
 import student.laurens.novibackend.services.BaseService;
@@ -27,7 +29,7 @@ import java.util.Map;
  * @author Laurens Mäkel
  * @version 1.0, March 2022
  */
-public abstract class BaseRestController<R extends AbstractEntity> {
+public abstract class BaseRestController<R extends AbstractEntity, D extends ResourceDto> {
 
     protected Logger log = LoggerFactory.getLogger(BaseRestController.class);
 
@@ -43,6 +45,7 @@ public abstract class BaseRestController<R extends AbstractEntity> {
      * @return Class of R.
      */
     abstract protected BaseService<R> getService();
+    abstract protected ResourceMapper<R, D> getMapper();
 
     /**
      * Uses SecurityContextHolder.getContext().getAuthentication().getName() to retrieve current consumer of the API.
@@ -68,19 +71,19 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         log.info("Creating ResponseEntity for GET resources on resource class ["+getService().getResourceClass()+"] with size of ["+resources.getContent().size()+"]");
         return new ResponseEntity(resources, HttpStatus.OK);
     }
-    protected ResponseEntity<Resource<R>> createSuccessResponseGET(final Resource<R> resource){
+    protected ResponseEntity<Resource<D>> createSuccessResponseGET(final Resource<D> resource){
         log.info("Creating ResponseEntity for GET resource on resource class ["+getService().getResourceClass()+"] with id ["+resource.getContent().getId()+"]");
         return new ResponseEntity<>(resource, HttpStatus.OK);
     }
-    protected ResponseEntity<Resource<R>> createSuccessResponsePOST(final Resource<R> resource){
+    protected ResponseEntity<Resource<D>> createSuccessResponsePOST(final Resource<D> resource){
         log.info("Creating ResponseEntity for POST resource on resource class ["+getService().getResourceClass()+"].");
         return new ResponseEntity<>(resource, HttpStatus.CREATED);
     }
-    protected ResponseEntity<Resource<R>> createSuccessResponsePUT(final Resource<R> resource){
+    protected ResponseEntity<Resource<D>> createSuccessResponsePUT(final Resource<D> resource){
         log.info("Creating ResponseEntity for PUT resource on resource class ["+getService().getResourceClass()+"].");
         return new ResponseEntity<>(resource, HttpStatus.ACCEPTED);
     }
-    protected ResponseEntity<R> createSuccessResponseDELETE(final Resource resource){
+    protected ResponseEntity<D> createSuccessResponseDELETE(final Resource<D> resource){
         log.info("Creating ResponseEntity for DELETE resource on resource class ["+getService().getResourceClass()+"].");
         return new ResponseEntity(resource, HttpStatus.ACCEPTED);
     }
@@ -99,8 +102,8 @@ public abstract class BaseRestController<R extends AbstractEntity> {
         return resources;
     }
 
-    protected Resource<R> resourceWithLinks(final R resource, Map<String, ControllerLinkBuilder> links){
-        return resourceWithLinks(new Resource<R>(resource), links);
+    protected Resource<D> resourceWithLinks(final R resource, Map<String, ControllerLinkBuilder> links){
+        return resourceWithLinks(new Resource<D>(getMapper().toDto(resource)), links);
     }
     protected Resource resourceWithLinks(final Resource resource, Map<String, ControllerLinkBuilder> links){
         for (Map.Entry<String, ControllerLinkBuilder> entry : links.entrySet()) {

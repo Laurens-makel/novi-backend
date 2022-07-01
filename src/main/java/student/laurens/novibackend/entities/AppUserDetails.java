@@ -1,8 +1,6 @@
 package student.laurens.novibackend.entities;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,6 +32,9 @@ public class AppUserDetails extends AbstractEntity implements UserDetails  {
 
         for (Role role : roles) {
             authorities.add(new SimpleGrantedAuthority("ROLE_" +role.getName()));
+            for(Authority authority : role.getAuthorities()){
+                authorities.add(new SimpleGrantedAuthority(authority.getName()));
+            }
         }
 
         return authorities;

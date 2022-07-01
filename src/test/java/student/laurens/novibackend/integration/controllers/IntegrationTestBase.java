@@ -3,7 +3,7 @@ package student.laurens.novibackend.integration.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.jayway.jsonpath.JsonPath;
-import org.junit.After;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,11 +17,15 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 import org.xml.sax.InputSource;
 import student.laurens.novibackend.NoviBackendApplication;
 import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.entities.Blogpost;
 import student.laurens.novibackend.entities.User;
+import student.laurens.novibackend.entities.dto.ResourceDto;
+import student.laurens.novibackend.entities.dto.mappers.ResourceMapper;
 import student.laurens.novibackend.repositories.BlogpostRepository;
 import student.laurens.novibackend.repositories.RoleRepository;
 import student.laurens.novibackend.repositories.UserRepository;
@@ -34,8 +38,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 import static org.hamcrest.Matchers.*;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -48,7 +52,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = NoviBackendApplication.class)
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-integration-test.properties")
-public abstract class IntegrationTestBase<R extends AbstractEntity>  {
+public abstract class IntegrationTestBase<R extends AbstractEntity, D extends ResourceDto>  {
     protected Logger log = LoggerFactory.getLogger(ControllerIntegrationTestBase.class);
 
     protected final String USER = "DefaultUser";
@@ -85,20 +89,27 @@ public abstract class IntegrationTestBase<R extends AbstractEntity>  {
     protected MockMvc mvc;
 
     @Autowired
-    protected UserRepository userRepository;
+    private WebApplicationContext context;
 
-    @After
-    public void base_after(){
-        log.debug("Deleting all users from repository.");
-
-        userRepository.deleteAll();
+    @Before
+    public void setup() {
+        mvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .apply(springSecurity())
+                .build();
     }
+
+    @Autowired
+    protected UserRepository userRepository;
 
     @Autowired
     protected RoleRepository roleRepository;
 
     @Autowired
     protected BlogpostRepository blogpostRepository;
+
+
+    abstract protected ResourceMapper<R,D> getMapper();
 
     /* Prepare HTTP calls with media types for content type and accept headers. */
 
@@ -289,15 +300,18 @@ public abstract class IntegrationTestBase<R extends AbstractEntity>  {
     }
 
     protected User createDefaultUser(){
-        return createTestUser("Bob", "Doe", USER, "MyPassword123", "USER");
+        User user = userRepository.getUserByUsername(USER);
+        return user == null ? createTestUser("Bob", "Doe", USER, "MyPassword123", "USER") : user;
     }
 
     protected User createDefaultAdmin(){
-        return createTestUser("John", "Doe", ADMIN, "MyPassword123", "ADMIN");
+        User user = userRepository.getUserByUsername(ADMIN);
+        return user == null ? createTestUser("John", "Doe", ADMIN, "MyPassword123", "ADMIN") : user;
     }
 
     protected User createDefaultContentCreator(){
-        return createTestUser("Kanye", "West", CONTENT_CREATOR, "MyPassword123", "CONTENT_CREATOR");
+        User user = userRepository.getUserByUsername(CONTENT_CREATOR);
+        return user == null ? createTestUser("Kanye", "West", CONTENT_CREATOR, "MyPassword123", "CONTENT_CREATOR") : user;
     }
 
     protected User createUniqueContentCreator(){
@@ -305,7 +319,9 @@ public abstract class IntegrationTestBase<R extends AbstractEntity>  {
     }
 
     protected User createDefaultModerator(){
-        return createTestUser("Kanye", "West", MODERATOR, "MyPassword123", "MODERATOR");
+        User user = userRepository.getUserByUsername(MODERATOR);
+        return user == null ? createTestUser("Kanye", "West", MODERATOR, "MyPassword123", "MODERATOR") : user;
+//        return createTestUser("Kanye", "West", MODERATOR, "MyPassword123", "MODERATOR");
     }
 
     protected User createTestUser(String firstname, String lastname, String username, String password, String role){
@@ -393,14 +409,14 @@ public abstract class IntegrationTestBase<R extends AbstractEntity>  {
 
     protected ResultActions putResource(final String url, final R resource, final MediaType accept, final MediaType contentType) throws Exception {
         return mvc.perform(put(url)
-                .content(asString(contentType, resource))
+                .content(asString(contentType, getMapper().toDto(resource)))
                 .contentType(contentType)
                 .accept(accept));
     }
 
     protected ResultActions postResource(final String url, R resource, final MediaType accept, final MediaType contentType) throws Exception {
         return mvc.perform(post(url)
-                .content(asString(contentType, resource))
+                .content(asString(contentType, getMapper().toDto(resource)))
                 .contentType(contentType)
                 .accept(accept));
     }

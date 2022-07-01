@@ -1,12 +1,16 @@
 package student.laurens.novibackend.integration.controllers.impl;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import student.laurens.novibackend.entities.dto.TagDto;
+import student.laurens.novibackend.entities.dto.mappers.TagMapper;
 import student.laurens.novibackend.integration.controllers.ControllerIntegrationTestBase;
 import student.laurens.novibackend.entities.Tag;
 import student.laurens.novibackend.repositories.TagRepository;
 
-public class TagsRestControllerIntegrationTest extends ControllerIntegrationTestBase<Tag> {
+public class TagsRestControllerIntegrationTest extends ControllerIntegrationTestBase<Tag, TagDto> {
+    private final @Getter TagMapper mapper = new TagMapper();
 
     @Autowired
     private TagRepository repository;

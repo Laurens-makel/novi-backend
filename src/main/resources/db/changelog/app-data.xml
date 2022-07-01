@@ -25,5 +25,442 @@
         </insert>
     </changeSet>
 
+    <changeSet id="Fill initial AUTHORITIES and role bindings" author="Laurens Mäkel">
 
+        <!-- Create and assign USERS_READ_OWNED -->
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">USERS_READ_OWNED</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'USERS_READ_OWNED')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+
+        <!-- Create and assign USERS_READ_NOT_OWNED -->
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">USERS_READ_NOT_OWNED</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'USERS_READ_NOT_OWNED')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+
+        <!-- Create and assign USERS_READ_ALL -->
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">USERS_READ_ALL</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'USERS_READ_ALL')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'USERS_READ_ALL')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'MODERATOR')"/>
+        </insert>
+
+        <!-- Create and assign USERS_WRITE -->
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">USERS_WRITE</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'USERS_WRITE')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+
+        <!-- Create and assign USERS_UPDATE_OWNED -->
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">USERS_UPDATE_OWNED</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'USERS_UPDATE_OWNED')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+
+        <!-- Create and assign USERS_UPDATE_NOT_OWNED -->
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">USERS_UPDATE_NOT_OWNED</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'USERS_UPDATE_NOT_OWNED')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+
+        <!-- Create and assign USERS_DELETE_OWNED -->
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">USERS_DELETE_OWNED</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'USERS_DELETE_OWNED')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+
+        <!-- Create and assign USERS_DELETE_NOT_OWNED -->
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">USERS_DELETE_NOT_OWNED</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'USERS_DELETE_NOT_OWNED')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+
+
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">ROLES_READ</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'ROLES_READ')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">ROLES_READ_ALL</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'ROLES_READ_ALL')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">ROLES_WRITE</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'ROLES_WRITE')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">ROLES_UPDATE</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'ROLES_UPDATE')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">ROLES_DELETE</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'ROLES_DELETE')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">BLOGPOSTS_READ</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'BLOGPOSTS_READ')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">BLOGPOSTS_READ_ALL</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'BLOGPOSTS_READ_ALL')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">BLOGPOSTS_WRITE</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'BLOGPOSTS_WRITE')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'BLOGPOSTS_WRITE')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'CONTENT_CREATOR')"/>
+        </insert>
+
+
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">BLOGPOSTS_UPDATE_OWNED</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'BLOGPOSTS_UPDATE_OWNED')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'BLOGPOSTS_UPDATE_OWNED')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'CONTENT_CREATOR')"/>
+        </insert>
+
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">BLOGPOSTS_UPDATE_NOT_OWNED</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'BLOGPOSTS_UPDATE_NOT_OWNED')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">BLOGPOSTS_DELETE_OWNED</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'BLOGPOSTS_DELETE_OWNED')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'BLOGPOSTS_DELETE_OWNED')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'CONTENT_CREATOR')"/>
+        </insert>
+
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">BLOGPOSTS_DELETE_NOT_OWNED</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'BLOGPOSTS_DELETE_NOT_OWNED')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+
+
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">COMMENTS_READ</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'COMMENTS_READ')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">COMMENTS_READ_ALL</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'COMMENTS_READ_ALL')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">COMMENTS_WRITE</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'COMMENTS_WRITE')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">COMMENTS_UPDATE_OWNED_OR_PARENT_OWNED</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'COMMENTS_UPDATE_OWNED_OR_PARENT_OWNED')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">COMMENTS_UPDATE_OWNED</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'COMMENTS_UPDATE_OWNED')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'COMMENTS_UPDATE_OWNED')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'MODERATOR')"/>
+        </insert>
+
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">COMMENTS_UPDATE_NOT_OWNED</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'COMMENTS_UPDATE_NOT_OWNED')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'COMMENTS_UPDATE_NOT_OWNED')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'MODERATOR')"/>
+        </insert>
+
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">COMMENTS_DELETE_OWNED_OR_PARENT_OWNED</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'COMMENTS_DELETE_OWNED_OR_PARENT_OWNED')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'COMMENTS_DELETE_OWNED_OR_PARENT_OWNED')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'MODERATOR')"/>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'COMMENTS_DELETE_OWNED_OR_PARENT_OWNED')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'CONTENT_CREATOR')"/>
+        </insert>
+
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">COMMENTS_DELETE_OWNED</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'COMMENTS_DELETE_OWNED')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'COMMENTS_DELETE_OWNED')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'MODERATOR')"/>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'COMMENTS_DELETE_OWNED')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'USER')"/>
+        </insert>
+
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">COMMENTS_DELETE_NOT_OWNED</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'COMMENTS_DELETE_NOT_OWNED')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'COMMENTS_DELETE_NOT_OWNED')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'MODERATOR')"/>
+        </insert>
+
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">TAGS_READ</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'TAGS_READ')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">TAGS_READ_ALL</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'TAGS_READ_ALL')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">TAGS_WRITE</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'TAGS_WRITE')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'TAGS_WRITE')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'CONTENT_CREATOR')"/>
+        </insert>
+
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">TAGS_UPDATE</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'TAGS_UPDATE')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'TAGS_UPDATE')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'CONTENT_CREATOR')"/>
+        </insert>
+
+        <insert tableName="AUTHORITIES">
+            <column name="AUTHORITY_NAME">TAGS_DELETE</column>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'TAGS_DELETE')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'ADMIN')"/>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'TAGS_DELETE')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'CONTENT_CREATOR')"/>
+        </insert>
+
+    </changeSet>
 </databaseChangeLog>

@@ -6,6 +6,7 @@ import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import student.laurens.novibackend.entities.*;
+import student.laurens.novibackend.entities.dto.ResourceDto;
 import student.laurens.novibackend.exceptions.ResourceDuplicateException;
 import student.laurens.novibackend.exceptions.ResourceNotFoundException;
 import student.laurens.novibackend.exceptions.ResourceForbiddenException;
@@ -25,8 +26,8 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
  * @author Laurens Mäkel
  * @version 1.0, March 2022
  */
-public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentEntity, P extends AbstractEntity>
-        extends BaseRestController<R>{
+public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentEntity, P extends AbstractEntity, D extends ResourceDto>
+        extends BaseRestController<R, D> {
 
     public ChildBaseRestController(AppUserDetailsService appUserDetailsService) {
         super(appUserDetailsService);
@@ -46,23 +47,23 @@ public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentE
      *
      * @return Persisted resource, specified by identifier.
      */
-    public ResponseEntity<Resource<R>> get(final Integer parentResourceId, final Integer resourceId) throws ResourceNotFoundException, ResourceForbiddenException {
+    public ResponseEntity<Resource<D>> get(final Integer parentResourceId, final Integer resourceId) throws ResourceNotFoundException, ResourceForbiddenException {
         logProcessingStarted(HttpMethod.GET, parentResourceId, resourceId);
 
         R r = getService().getResourceById(parentResourceId, resourceId, getConsumer());
-        Resource<R> resource = resourceWithLinks(r, getLinksForGetResource(resourceId, r));
+        Resource<D> resource = resourceWithLinks(r, getLinksForGetResource(resourceId, r));
 
         logProcessingFinished(HttpMethod.GET, parentResourceId, resourceId);
         return createSuccessResponseGET(resource);
     }
 
-    abstract public ResponseEntity<Resource<R>> GET(final Integer parentResourceId, final Integer resourceId);
+    abstract public ResponseEntity<Resource<D>> GET(final Integer parentResourceId, final Integer resourceId);
 
     protected Map<String, ControllerLinkBuilder> getLinksForGetResource(final Integer resourceId, final R resource) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
 
-        links.put(HttpMethod.POST.name(), linkTo(methodOn(this.getClass()).POST(resource.getParentId(), resource)));
-        links.put(HttpMethod.PUT.name(), linkTo(methodOn(this.getClass()).PUT(resource.getParentId(), resource.getId(), resource)));
+        links.put(HttpMethod.POST.name(), linkTo(methodOn(this.getClass()).POST(resource.getParentId(), getMapper().toDto(resource))));
+        links.put(HttpMethod.PUT.name(), linkTo(methodOn(this.getClass()).PUT(resource.getParentId(), resource.getId(), getMapper().toDto(resource))));
         links.put(HttpMethod.DELETE.name(), linkTo(methodOn(this.getClass()).DELETE(resource.getParentId(), resource.getId())));
 
         return links;
@@ -115,7 +116,7 @@ public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentE
      * Provides a default way to handle POST requests on {@link student.laurens.novibackend.entities.AbstractOwnedWithParentEntity} resources.
      *
      * @param parentResourceId - The identifier of the parent resource to create a child for.
-     * @param resource - The new resource to be created.
+     * @param dto - The new resource to be created.
      *
      * @throws ResourceNotFoundException - Thrown when parent resource or resource could not be found.
      * @throws ResourceForbiddenException - Thrown when parent resource or resource is not owned by current consumer of the API.
@@ -123,11 +124,11 @@ public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentE
      *
      * @return Confirmation message.
      */
-    public ResponseEntity<Resource<R>> create(final Integer parentResourceId, final R resource) throws ResourceNotFoundException, ResourceForbiddenException, ResourceDuplicateException {
+    public ResponseEntity<Resource<D>> create(final Integer parentResourceId, final D dto) throws ResourceNotFoundException, ResourceForbiddenException, ResourceDuplicateException {
         logProcessingStarted(HttpMethod.POST, parentResourceId);
 
-        R r = getService().createResource(parentResourceId, resource, getConsumer());
-        Resource<R> created = resourceWithLinks(r, getLinksForPostResource(resource));
+        R r = getService().createResource(parentResourceId, getMapper().toEntity(dto), getConsumer());
+        Resource<D> created = resourceWithLinks(r, getLinksForPostResource(r));
 
         logProcessingFinished(HttpMethod.POST, parentResourceId);
         return createSuccessResponsePOST(created);
@@ -138,19 +139,19 @@ public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentE
      * Referred to in HATEOAS resource link building.
      *
      * @param parentResourceId - The identifier of the parent resource to create a child for.
-     * @param resource - The new resource to be created.
+     * @param dto - The new resource to be created.
      *
      * @throws ResourceNotFoundException - Thrown when to be created resource is a duplicate.
      *
      * @return Confirmation message.
      */
-    abstract public ResponseEntity<Resource<R>> POST(final Integer parentResourceId, final R resource) throws ResourceDuplicateException;
+    abstract public ResponseEntity<Resource<D>> POST(final Integer parentResourceId, final D dto) throws ResourceDuplicateException;
 
     protected Map<String, ControllerLinkBuilder> getLinksForPostResource(R resource) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
 
         links.put(HttpMethod.GET.name(), linkTo(methodOn(this.getClass()).GET(resource.getParentId(), resource.getId())));
-        links.put(HttpMethod.PUT.name(), linkTo(methodOn(this.getClass()).PUT(resource.getParentId(), resource.getId(), resource)));
+        links.put(HttpMethod.PUT.name(), linkTo(methodOn(this.getClass()).PUT(resource.getParentId(), resource.getId(), getMapper().toDto(resource))));
         links.put(HttpMethod.DELETE.name(), linkTo(methodOn(this.getClass()).DELETE(resource.getParentId(), resource.getId())));
 
         return links;
@@ -161,18 +162,18 @@ public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentE
      *
      * @param parentResourceId - Identifier of parent resource of the resource to update.
      * @param resourceId - Identifier of the resource to update.
-     * @param resource - New state of the resource.
+     * @param dto - New state of the resource.
      *
      * @throws ResourceNotFoundException - Thrown when parent resource or resource could not be found.
      * @throws ResourceForbiddenException - Thrown when parent resource or resource is not owned by current consumer of the API.
      *
      * @return Confirmation message.
      */
-    public ResponseEntity<Resource<R>> update(final Integer parentResourceId, final Integer resourceId, final R resource) throws ResourceNotFoundException, ResourceForbiddenException {
+    public ResponseEntity<Resource<D>> update(final Integer parentResourceId, final Integer resourceId, final D dto) throws ResourceNotFoundException, ResourceForbiddenException {
         logProcessingStarted(HttpMethod.PUT, parentResourceId, resourceId);
 
-        R r = getService().updateResourceById(parentResourceId, resourceId, resource, getConsumer());
-        Resource<R> updated = resourceWithLinks(r, getLinksForPutResource(r));
+        R r = getService().updateResourceById(parentResourceId, resourceId, getMapper().toEntity(dto), getConsumer());
+        Resource<D> updated = resourceWithLinks(r, getLinksForPutResource(r));
 
         logProcessingFinished(HttpMethod.PUT, parentResourceId, resourceId);
         return createSuccessResponsePUT(updated);
@@ -184,20 +185,20 @@ public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentE
      *
      * @param parentResourceId - Identifier of parent resource of the resource to update.
      * @param resourceId - Identifier of the resource to update.
-     * @param resource - New state of the resource.
+     * @param dto - New state of the resource.
      *
      * @throws ResourceNotFoundException - Thrown when resource could not be found.
      * @throws ResourceForbiddenException - Thrown when resource could is not owned by current consumer of the API.
      *
      * @return Confirmation message.
      */
-    abstract public ResponseEntity<Resource<R>> PUT(final Integer parentResourceId, final Integer resourceId, final R resource) throws ResourceNotFoundException, ResourceForbiddenException;
+    abstract public ResponseEntity<Resource<D>> PUT(final Integer parentResourceId, final Integer resourceId, final D dto) throws ResourceNotFoundException, ResourceForbiddenException;
 
     protected Map<String, ControllerLinkBuilder> getLinksForPutResource(R resource) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
 
         links.put(HttpMethod.GET.name(), linkTo(methodOn(this.getClass()).GET(resource.getParentId(), resource.getId())));
-        links.put(HttpMethod.POST.name(), linkTo(methodOn(this.getClass()).POST(resource.getParentId(), resource)));
+        links.put(HttpMethod.POST.name(), linkTo(methodOn(this.getClass()).POST(resource.getParentId(), getMapper().toDto(resource))));
         links.put(HttpMethod.DELETE.name(), linkTo(methodOn(this.getClass()).DELETE(resource.getParentId(), resource.getId())));
 
         return links;
@@ -214,7 +215,7 @@ public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentE
      *
      * @return Confirmation message.
      */
-    public ResponseEntity<R> delete(final Integer parentResourceId, final Integer resourceId) throws ResourceNotFoundException, ResourceForbiddenException {
+    public ResponseEntity<D> delete(final Integer parentResourceId, final Integer resourceId) throws ResourceNotFoundException, ResourceForbiddenException {
         logProcessingStarted(HttpMethod.DELETE, parentResourceId, resourceId);
 
         getService().deleteResourceById(parentResourceId, resourceId, getConsumer());
@@ -236,7 +237,7 @@ public abstract class ChildBaseRestController<R extends AbstractOwnedWithParentE
      *
      * @return Confirmation message.
      */
-    abstract public ResponseEntity<R> DELETE(final Integer parentResourceId, final Integer resourceId) throws ResourceNotFoundException, ResourceForbiddenException;
+    abstract public ResponseEntity<D> DELETE(final Integer parentResourceId, final Integer resourceId) throws ResourceNotFoundException, ResourceForbiddenException;
 
     protected Map<String, ControllerLinkBuilder> getLinksForDeleteResource(final Integer parentResourceId) {
         Map<String, ControllerLinkBuilder> links = new HashMap<>();
