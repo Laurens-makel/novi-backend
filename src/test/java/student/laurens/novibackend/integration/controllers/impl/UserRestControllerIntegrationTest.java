@@ -1,14 +1,12 @@
 package student.laurens.novibackend.integration.controllers.impl;
 
 import lombok.Getter;
-import org.junit.After;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import student.laurens.novibackend.entities.dto.UserDto;
-import student.laurens.novibackend.entities.dto.mappers.TagMapper;
 import student.laurens.novibackend.entities.dto.mappers.UserMapper;
 import student.laurens.novibackend.integration.controllers.OwnedControllerIntegrationTestBase;
 import student.laurens.novibackend.controllers.UserRestController;

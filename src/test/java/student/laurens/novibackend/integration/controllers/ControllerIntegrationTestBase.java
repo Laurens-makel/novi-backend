@@ -2,11 +2,9 @@ package student.laurens.novibackend.integration.controllers;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.test.context.support.TestExecutionEvent;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestPropertySource;
@@ -17,11 +15,7 @@ import student.laurens.novibackend.entities.AbstractEntity;
 import student.laurens.novibackend.entities.Role;
 import student.laurens.novibackend.entities.User;
 import student.laurens.novibackend.entities.dto.ResourceDto;
-import student.laurens.novibackend.services.AppUserDetailsService;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**

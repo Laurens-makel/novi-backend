@@ -4,7 +4,6 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import student.laurens.novibackend.entities.dto.CommentDto;
-import student.laurens.novibackend.entities.dto.mappers.BlogpostMapper;
 import student.laurens.novibackend.entities.dto.mappers.CommentMapper;
 import student.laurens.novibackend.integration.controllers.ChildControllerIntegrationTestBase;
 import student.laurens.novibackend.entities.Blogpost;

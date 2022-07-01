@@ -4,7 +4,6 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import student.laurens.novibackend.entities.dto.TagDto;
-import student.laurens.novibackend.entities.dto.mappers.RoleMapper;
 import student.laurens.novibackend.entities.dto.mappers.TagMapper;
 import student.laurens.novibackend.integration.controllers.ControllerIntegrationTestBase;
 import student.laurens.novibackend.entities.Tag;
