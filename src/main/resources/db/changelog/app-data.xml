@@ -347,6 +347,12 @@
             <column name="AUTHORITY_ID"
                     valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'COMMENTS_DELETE_OWNED_OR_PARENT_OWNED')"/>
             <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'MODERATOR')"/>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'COMMENTS_DELETE_OWNED_OR_PARENT_OWNED')"/>
+            <column name="ROLE_ID"
                     valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'CONTENT_CREATOR')"/>
         </insert>
 
@@ -364,6 +370,12 @@
                     valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'COMMENTS_DELETE_OWNED')"/>
             <column name="ROLE_ID"
                     valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'MODERATOR')"/>
+        </insert>
+        <insert tableName="ROLE_AUTHORITIES">
+            <column name="AUTHORITY_ID"
+                    valueComputed="(SELECT AUTHORITY_ID FROM AUTHORITIES WHERE AUTHORITY_NAME = 'COMMENTS_DELETE_OWNED')"/>
+            <column name="ROLE_ID"
+                    valueComputed="(SELECT ROLE_ID FROM ROLES WHERE ROLE_NAME = 'USER')"/>
         </insert>
 
         <insert tableName="AUTHORITIES">

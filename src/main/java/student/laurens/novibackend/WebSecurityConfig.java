@@ -54,6 +54,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT,"/blogposts/{blogpostId}").hasAnyAuthority("BLOGPOSTS_UPDATE_OWNED","BLOGPOSTS_UPDATE_NOT_OWNED")
                 .antMatchers(HttpMethod.DELETE,"/blogposts/{blogpostId}").hasAnyAuthority("BLOGPOSTS_DELETE_OWNED","BLOGPOSTS_DELETE_NOT_OWNED")
 
+                .antMatchers(HttpMethod.DELETE,"/blogposts/{blogpostId}/comments/{commentId}").hasAnyAuthority("COMMENTS_DELETE_OWNED","COMMENTS_DELETE_NOT_OWNED", "COMMENTS_DELETE_OWNED_OR_PARENT_OWNED")
+
                 .antMatchers(HttpMethod.GET,"/users").hasAuthority("USERS_READ_ALL")
                 .antMatchers(HttpMethod.POST,"/users").hasAuthority("USERS_WRITE")
                 .antMatchers(HttpMethod.DELETE, "/users/{uid}").hasAnyAuthority("USERS_DELETE_OWNED","USERS_DELETE_NOT_OWNED")
