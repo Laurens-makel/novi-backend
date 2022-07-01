@@ -160,7 +160,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity, D 
     }
 
     @Test
-    @WithMockUser(value = USER)
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void getJsonAsUser() throws Exception {
         saveUser(createDefaultUser());
 
@@ -179,7 +179,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity, D 
     }
 
     @Test
-    @WithMockUser(value = USER)
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void getXmlAsUser() throws Exception {
         saveUser(createDefaultUser());
 
@@ -316,7 +316,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity, D 
     }
 
     @Test
-    @WithMockUser(value = USER)
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void postJsonAsUser() throws Exception {
         saveUser(createDefaultUser());
 
@@ -336,7 +336,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity, D 
     }
 
     @Test
-    @WithMockUser(value = USER)
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void postXmlAsUser() throws Exception {
         saveUser(createDefaultUser());
 
@@ -477,7 +477,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity, D 
     }
 
     @Test
-    @WithMockUser(value = USER)
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void putJsonAsUser() throws Exception {
         saveUser(createDefaultUser());
 
@@ -496,7 +496,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity, D 
     }
 
     @Test
-    @WithMockUser(value = USER)
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void putXmlAsUser() throws Exception {
         saveUser(createDefaultUser());
 
@@ -629,7 +629,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity, D 
     }
 
     @Test
-    @WithMockUser(value = USER)
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteJsonAsUser() throws Exception {
         saveUser(createDefaultUser());
 
@@ -644,7 +644,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity, D 
     }
 
     @Test
-    @WithMockUser(value = USER)
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteXmlAsUser() throws Exception {
         saveUser(createDefaultUser());
 
@@ -659,7 +659,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity, D 
     }
 
     @Test
-    @WithMockUser(value = USER)
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteNonExistingResourceJsonAsUser() throws Exception {
         saveUser(createDefaultUser());
 
@@ -674,7 +674,7 @@ public abstract class ControllerIntegrationTestBase<R extends AbstractEntity, D 
     }
 
     @Test
-    @WithMockUser(value = USER)
+    @WithUserDetails(value = USER, userDetailsServiceBeanName = "appUserDetailsService")
     public void deleteNonExistingResourceXmlAsUser() throws Exception {
         saveUser(createDefaultUser());
 
