@@ -21,6 +21,9 @@
             <column  name="LASTNAME"   type="varchar(255)">
                 <constraints  nullable="false"/>
             </column>
+            <column name="CREATED_AT" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints  nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
 
@@ -31,6 +34,9 @@
             </column>
             <column  name="ROLE_NAME"   type="varchar(255)">
                 <constraints  nullable="false" unique="true"/>
+            </column>
+            <column name="CREATED_AT" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints  nullable="false"/>
             </column>
         </createTable>
     </changeSet>
