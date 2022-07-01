@@ -71,8 +71,11 @@ public class BlogpostService extends ParentResourceBaseService<Blogpost> {
 
     @Override
     public PermissionPolicy isDeleteOnChildPermitted(final User user) {
-        if(user.hasAuthority("COMMENTS_DELETE_OWNED") || user.hasAuthority("COMMENTS_DELETE_NOT_OWNED")){
+        if(user.hasAuthority("COMMENTS_DELETE_NOT_OWNED")){
             return PermissionPolicy.ALLOW;
+        }
+        if(user.hasAuthority("COMMENTS_DELETE_OWNED")){
+            return PermissionPolicy.ALLOW_CHILD_OWNED;
         }
         if(user.hasAuthority("COMMENTS_DELETE_OWNED_OR_PARENT_OWNED")){
             return PermissionPolicy.ALLOW_PARENT_OR_CHILD_OWNED;
